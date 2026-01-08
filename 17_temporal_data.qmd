@@ -1,0 +1,523 @@
+# Temporal Data {#sec-temporal}
+
+```{python}
+#| include: false
+import warnings
+warnings.filterwarnings('ignore')
+```
+
+::: {.callout-tip collapse="true"}
+## Practice Notebooks
+
+- Notebook17a [[Colab↗](https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook17a.ipynb?hl=en)]
+- Notebook17b [[Colab↗](https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook17b.ipynb?hl=en)]
+
+:::
+
+## Setup
+
+Load all of the modules and datasets needed for the chapter.
+
+```{python}
+#| output: false
+import numpy as np
+import polars as pl
+
+from funs import *
+from plotnine import *
+from polars import col as c
+theme_set(theme_minimal())
+
+meta = pl.read_csv("data/wiki_uk_meta.csv.gz")
+page_views = pl.read_csv("data/wiki_uk_page_views.csv")
+page_revisions = pl.read_csv("data/wiki_uk_page_revisions.csv")
+```
+
+## Introduction
+
+In this chapter, we discuss techniques for working with data that has some temporal component. This includes any kind of data that has one or more variables that record dates or times, as well as any dataset that has a meaningful ordering of its rows. For example, the annotation object that we created for textual data in @sec-text has a meaningful ordering and can be treated as having a temporal ordering even if it is not associated with fixed timestamps. We will start by focusing specifically on datasets that contain explicit information about dates and times. In the later sections, we will illustrate window functions and range joins, both of which have a wider set of applications to all ordered datasets.
+
+As we saw in @sec-restructure, it is possible to store information about dates and times in a tabular dataset. There are many different formats for storing this information; we recommend that most users start by recording these with separate columns for each numeric component of the date or time. This makes it easier to avoid errors and to record partial information, the latter being a common complication of many humanities datasets. We will begin by looking at a dataset related to the Wikipedia pages we saw in the previous two chapters that has date information stored in such a format.
+
+In showing the application of line graphs in @sec-graphics, we saw how to visualize a dataset of food prices over a 140-year period. This visualization was fairly straightforward. There was exactly one row for each year. We were able to treat the year variable as any other continuous measurement, with the only change being that it made sense to connect dots with a line when building the visualization. Here we will work with a slightly more complex example corresponding to the Wikipedia pages from the preceding chapters.
+
+## Temporal Data and Ordering
+
+Let's start by loading some data with a temporal component. Below, we read in data related to the 75 Wikipedia pages from a selection of British authors. Here, we have a different set of information about the pages than we used in the text and network analysis chapters. For each page, we have grabbed page view statistics for a 60-day period from Wikipedia. In other words, we have a record of how many people looked at a particular page each day, for each author. The data are organized with one row for each combination of item and day.
+
+```{python}
+page_views
+```
+
+The time variables are given the way we recommended in @sec-restructure, with individual columns for year, month, and day. Here, our dataset is already ordered (within each item type) from the earliest records to the latest. If this were not the case, because all of our variables are stored as numbers, we could use the `.sort()` method to sort by year, followed by month, followed by day, to get the same ordering.
+
+How could we show the change in page views over time for a particular variable? One approach is to add a numeric column running down the dataset using a row number. Below is an example of the code to create a line plot using this approach:
+
+```{python}
+(
+    page_views
+    .filter(c.doc_id == "Geoffrey Chaucer")
+    .with_row_index("row_number")
+    .pipe(ggplot, aes("row_number", "views"))
+    + geom_line(color="red")
+    + labs(
+        title="Page Views for Geoffrey Chaucer (by Day Number)",
+        x="Day Number",
+        y="Views"
+    )
+)
+```
+
+In this case, our starting plot is not a bad place to begin. The x-axis corresponds to the day number, and in many applications that may be exactly what we need. We can clearly see that the number of page views for Chaucer has a relatively stable count, possibly with some periodic swings over the course of the week. There is one day about two-thirds of the way through the plot in which the count spikes. Notice, though, that it is very hard to tell anything from the plot about exactly what days of the year are being represented. We cannot easily see which day has the spike in views, for example. Also, note that the correspondence between the row number and day only works because the data are uniformly sampled (one observation each day) and there is no missing data.
+
+Another way to work with dates is to convert the data to a fractional year format. Here, the months and days are added to form a fractional day. A quick way to do this is to compute the following fractional year:
+
+$$ year_{frac} = year + \frac{month - 1}{12} + \frac{day - 1}{12 \cdot 31}$$
+
+We are subtracting one from the month and day so, for example, on a date such as 1 July 2020 (halfway through the year) we have the fractional year equal to `2020.5`. We could make this even more exact by accounting for the fact that some months have fewer than 31 days, but as a first pass this works relatively well.
+
+```{python}
+(
+    page_views
+    .filter(c.doc_id == "Geoffrey Chaucer")
+    .with_columns(
+        year_frac = c.year + (c.month - 1) / 12 + (c.day - 1) / (12 * 31)
+    )
+    .pipe(ggplot, aes("year_frac", "views"))
+    + geom_line(color="red")
+    + labs(
+        title="Page Views for Geoffrey Chaucer (Fractional Year)",
+        x="Fractional Year",
+        y="Views"
+    )
+)
+```
+
+This revised visualization improves on several aspects of the original plot. For one thing, we can roughly see exactly what dates correspond to each data point. Also, the code will work fine regardless of whether the data are sorted, evenly distributed, or contain any missing values. As a downside, the axis labels take some explaining. We can extend the same approach to working with time data. For example, if we also had the (24-hour) time of our data points the formula would become:
+
+$$ year_{frac} = year + \frac{month - 1}{12} + \frac{day - 1}{12 \cdot 31} + \frac{hour - 1}{24 \cdot 12 \cdot 31}$$
+
+If we are only interested in the time since a specific event, say the start of an experiment, we can use the same approach but take the difference relative to a specific fractional year.
+
+Fractional times have a number of important applications. Fractional times are convenient because they can represent an arbitrarily precise date or date-time with an ordinary number. This means that they can be used in other models and applications without any special treatment. They may require different model assumptions, but at least the code should work with minimal effort. This is a great way to explore our data. However, particularly when we want to create nice publishable visualizations, it can be useful to work with specific functions for manipulating dates and times.
+
+## Date Objects
+
+Most of the variables that we have worked with so far are either strings or numbers. Dates are in some ways like numbers: they have a natural ordering, we can talk about the difference between two numbers, and it makes sense to color and plot them on a continuous scale. However, they do have some unique properties, particularly when we want to extract information such as the day of the week from a date, that require a unique data type. To create a date object in Polars, we can use the `pl.date()` function to construct a date from its components.
+
+```{python}
+chaucer_with_dates = (
+    page_views
+    .filter(c.doc_id == "Geoffrey Chaucer")
+    .with_columns(
+        date = pl.date(c.year, c.month, c.day)
+    )
+)
+chaucer_with_dates
+```
+
+Notice that the new column has the special data type `Date`. If we build a visualization using a date object, plotnine is able to make helpful built-in choices about how to label the axis. For example, the following code will make a line plot that has nicely labeled values on the x-axis.
+
+```{python}
+(
+    chaucer_with_dates
+    .pipe(ggplot, aes("date", "views"))
+    + geom_line(color="red")
+    + labs(
+        title="Page Views for Geoffrey Chaucer",
+        x="Date",
+        y="Views"
+    )
+)
+```
+
+The output shows that the algorithm decided to label the dates appropriately. We can manually change the frequency of the labels using `scale_x_date()` and setting the `date_breaks` option. For example, the code below will display one label for each week:
+
+```{python}
+(
+    chaucer_with_dates
+    .pipe(ggplot, aes("date", "views"))
+    + geom_line(color="red")
+    + scale_x_date(date_breaks="1 week", date_labels="%Y-%m-%d")
+    + theme(axis_text_x=element_text(angle=45, hjust=1))
+    + labs(
+        title="Page Views for Geoffrey Chaucer (Weekly Labels)",
+        x="Date",
+        y="Views"
+    )
+)
+```
+
+Once we have a date object, we can also extract useful information from it. For example, we can extract the weekday of the date using the `.dt` namespace in Polars. Here, we will compute the weekday and then calculate the average number of page views for each day of the week:
+
+```{python}
+(
+    chaucer_with_dates
+    .with_columns(
+        weekday = c.date.dt.weekday()
+    )
+    .group_by(c.weekday)
+    .agg(
+        views_avg = c.views.mean()
+    )
+    .sort(c.views_avg, descending=True)
+)
+```
+
+Here we see the average number of page views by day of the week, where Monday is 1 and Sunday is 7. We can also use the date objects to filter the dataset. For example, we can filter the dataset to only include those dates after 15 January 2020, about two-thirds of the way through our dataset:
+
+```{python}
+(
+    chaucer_with_dates
+    .filter(c.date > pl.date(2020, 1, 15))
+)
+```
+
+Note that we use the `pl.date()` function to create a date literal for comparison. Polars will also accept string representations of dates in ISO format for filtering.
+
+::: {.callout-note collapse="true"}
+## Extracting date components
+
+Polars provides many methods in the `.dt` namespace for extracting components from date and datetime objects. Common examples include `.dt.year()`, `.dt.month()`, `.dt.day()`, `.dt.weekday()`, `.dt.ordinal_day()` (day of year), and `.dt.quarter()`. These are useful for creating features for analysis or for grouping data by time periods.
+:::
+
+## Datetime Objects
+
+The `page_views` dataset records the date of each observation. Sometimes we have data that describes the time of an event more specifically in terms of hours, minutes, and even possibly seconds. We will use the term *datetime* to describe an object that stores the precise time that an event occurs. The idea is that to describe the time that something happens we need to specify a date and a time. Later in the chapter, we will see an object that stores time without reference to a particular day. Whereas dates have a natural precision (a single day), we might desire to work with datetime objects of different levels of granularity. In some cases we might have just hours of the day and in others we might have access to records at the level of a millisecond such as data from radio and TV. In Polars, datetime objects are stored with microsecond precision by default, but we can regard the precision as whatever granularity we have given in our data for all practical purposes.
+
+Datetime objects largely function the same as date objects. Let's grab another dataset from Wikipedia that has precise timestamps. Below, we read in a dataset consisting of the last 500 edits made to each of the 75 British author pages in our collection.
+
+```{python}
+page_revisions = (
+    page_revisions
+    .with_columns(
+        datetime = c.datetime.str.to_datetime(time_zone="UTC")
+    )
+)
+page_revisions
+```
+
+Notice that each row has a record in the column `datetime` that provides a precise datetime object giving the second at which the page was modified. The data were stored using the ISO-8601 format ("YYYY-MM-DD HH:MM:SS"), which Polars can automatically parse with the `.str.to_datetime()` method.
+
+Our `page_revisions` dataset includes several pieces of information about each of the edits. We have a username for the person who made the edit (recall that anyone can edit a Wikipedia page), the size in bytes of the page after the edit was made, and a short comment describing what was done in the change. Looking at the page size over time shows when large additions and deletions were made to each record. The code below yields a temporal visualization:
+
+```{python}
+selected_authors = ["Geoffrey Chaucer", "Emily Brontë"]
+(
+    page_revisions
+    .filter(c.doc_id.is_in(selected_authors))
+    .pipe(ggplot, aes("datetime", "size", color="doc_id"))
+    + geom_line()
+    + scale_color_manual(values=["red", "blue"])
+    + labs(
+        title="Wikipedia Page Size Over Time",
+        x="Date",
+        y="Page Size (bytes)",
+        color="Author"
+    )
+)
+```
+
+Looking at the plot, we can see that there are a few very large edits (both deletions and additions), likely consisting of large sections added and subtracted from the page. If we want to visualize when these large changes occurred, it would be useful to include a more granular set of labels on the x-axis. We can do this using `scale_x_datetime()` with custom formatting:
+
+```{python}
+(
+    page_revisions
+    .filter(c.doc_id.is_in(selected_authors))
+    .pipe(ggplot, aes("datetime", "size", color="doc_id"))
+    + geom_line()
+    + scale_color_manual(values=["red", "blue"])
+    + scale_x_datetime(date_breaks="6 months", date_labels="%b %Y")
+    + theme(axis_text_x=element_text(angle=90, hjust=1))
+    + labs(
+        title="Wikipedia Page Size Over Time (Custom Labels)",
+        x="Date",
+        y="Page Size (bytes)",
+        color="Author"
+    )
+)
+```
+
+We can also filter our dataset by a particular range of dates or times. This is useful to zoom into a specific region of our data to investigate patterns that may be otherwise lost. For example, if we wanted to see all of the page sizes for two authors from 2021 onward:
+
+```{python}
+(
+    page_revisions
+    .filter(c.doc_id.is_in(selected_authors))
+    .filter(c.datetime > pl.datetime(2021, 1, 1, time_zone="UTC"))
+)
+```
+
+Notice that the filter includes data from 2021, even though we use a strictly greater than condition. The reason for this is that `pl.datetime(2021, 1, 1)` is interpreted as the exact time corresponding to 1 January 2021 at 00:00. Any record that comes at any other time during the year of 2021 will be included in the filter.
+
+## Language and Time Zones
+
+So far, we have primarily worked with numeric summaries of the date and datetime objects. In the previous sections, notice that our example of working with the days of the week used numeric values (1-7) rather than names. Polars provides methods to extract string names for weekdays and months, though the output depends on your system locale. Below, for example, we extract various datetime components:
+
+```{python}
+(
+    page_revisions
+    .head(10)
+    .with_columns(
+        weekday_num = c.datetime.dt.weekday(),
+        month_num = c.datetime.dt.month(),
+        hour = c.datetime.dt.hour(),
+        date_only = c.datetime.dt.date()
+    )
+    .select(c.datetime, c.weekday_num, c.month_num, c.hour, c.date_only)
+)
+```
+
+::: {.callout-note collapse="true"}
+## Weekday and month names
+
+If you need weekday or month names as strings, you can create a mapping from the numeric values. For example, you could use `pl.when()` chains or join with a lookup table. The numeric representation is often more convenient for analysis and avoids locale-dependent issues.
+:::
+
+Another regional issue that arises when working with dates and times are time zones. While seemingly not too difficult a concept, getting time zones to work correctly with complex datasets can be incredibly complicated. A wide range of programming bugs have been attributed to all sorts of edge-cases surrounding the processing of time zones.
+
+All times stored in Polars can be timezone-aware or timezone-naive. By default, times are stored as timezone-naive (no timezone information). The data can be localized to a specific timezone using the `.dt.replace_time_zone()` method, and converted between time zones using `.dt.convert_time_zone()`. All of the times recorded in the dataset `page_revisions` are given in UTC. This is not surprising; most technical sources with a global focus will use this convention.
+
+We can convert between time zones using Polars datetime methods. Since we parsed our data with `time_zone="UTC"`, the datetime column is already timezone-aware. We can convert to another timezone using `.dt.convert_time_zone()`. Let's convert our UTC times to New York time:
+
+```{python}
+(
+    page_revisions
+    .head(10)
+    .with_columns(
+        datetime_utc = c.datetime,
+        datetime_nyc = c.datetime.dt.convert_time_zone("America/New_York")
+    )
+    .with_columns(
+        hour_utc = c.datetime_utc.dt.hour(),
+        hour_nyc = c.datetime_nyc.dt.hour()
+    )
+    .select(c.datetime_utc, c.datetime_nyc, c.hour_utc, c.hour_nyc)
+)
+```
+
+We can use the timezone information to display data in a useful way to a local audience. For example, the code below displays the frequency of updates as a function of the hour of the day in New York City:
+
+```{python}
+hourly_edits = (
+    page_revisions
+    .with_columns(
+        datetime_nyc = c.datetime.dt.convert_time_zone("America/New_York")
+    )
+    .with_columns(
+        hour_nyc = c.datetime_nyc.dt.hour()
+    )
+    .group_by(c.hour_nyc)
+    .agg(
+        count = pl.len()
+    )
+    .sort(c.hour_nyc)
+)
+
+(
+    hourly_edits
+    .pipe(ggplot, aes("hour_nyc", "count"))
+    + geom_col()
+    + labs(
+        title="Wikipedia Edits by Hour (New York Time)",
+        x="Hour of Day",
+        y="Number of Edits"
+    )
+)
+```
+
+While certainly many editors are living in other English-speaking cities (London, Los Angeles, or Mumbai), it is generally easier for people to do the mental math for what times correspond relative to their own time zone than relative to UTC.
+
+## Truncating Dates Data
+
+We have shown above how to create date and datetime objects using Polars functions. Also, we have seen how to extract the components from date and datetime objects with the `.dt` namespace. There are a variety of other functions that help us create and manipulate these temporal objects. While we will not give an entire list of all the available functions in Polars datetime functionality, let's look at a few of the most useful and representative examples for converting between different ways of representing information about time.
+
+The `page_revisions` dataset has revisions recorded with the precision of a second. This is likely overly granular for many applications; it might be better to have the data in a format that is only at the level of an hour, for example. We can truncate any date or datetime object by using the `.dt.truncate()` method along with a specific duration. Setting the duration to "1h" (one hour), for example, will remove all of the minutes and seconds from the time:
+
+```{python}
+(
+    page_revisions
+    .head(10)
+    .with_columns(
+        datetime_hour = c.datetime.dt.truncate("1h"),
+        datetime_day = c.datetime.dt.truncate("1d")
+    )
+    .select(c.datetime, c.datetime_hour, c.datetime_day)
+)
+```
+
+The benefit of using the `.dt.truncate()` method is that we could then group, join, or summarize the data in a way that treats each value of `datetime` the same as long as they occur during the same hour. There is also a `.dt.round()` method for rounding the datetime object to the nearest desired unit. In the special case in which we want to extract just the date part of a datetime, we can use the `.dt.date()` method. The code below illustrates this process, as well as showing how reducing the temporal granularity can be a useful first step before grouping and summarizing:
+
+```{python}
+(
+    page_revisions
+    .with_columns(
+        date = c.datetime.dt.date()
+    )
+    .group_by(c.date)
+    .agg(
+        count = pl.len()
+    )
+    .sort(c.date, descending=True)
+)
+```
+
+Above, we effectively remove the time component of the datetime object and treat the variable as having only a date element. Occasionally, we might want to do the opposite: considering only the time component of a datetime object without worrying about the specific date. For example, we might want to summarize the number of edits that are made based on the time of the day. We can do this by extracting the hour component:
+
+```{python}
+(
+    page_revisions
+    .with_columns(
+        hour = c.datetime.dt.hour()
+    )
+    .group_by(c.hour)
+    .agg(
+        count = pl.len()
+    )
+    .sort(c.hour)
+)
+```
+
+This creates a variable that stores the hour without any date information, which is useful for analyzing patterns that repeat daily.
+
+## Window Functions
+
+At the start of this chapter, we considered time series to be a sequence of events without too much focus on the specific dates and times. This viewpoint can be a useful construct when we want to look at changes over time. For example, we have the overall size of each Wikipedia page after an edit. A measurement that would be useful is the difference in page size made by an edit. To add a variable to a dataset, we usually use the `.with_columns()` method, and that will again work here. However, in this case we need to reference values that come before or after a certain value. This requires the use of window functions.
+
+A *window function* transforms a variable in a dataset into a new variable with the same length in a way that takes into account the entire ordering of the data. Two examples of window functions that are useful when working with time series data are `.shift()` with positive and negative values, which give access to rows preceding or following a row, respectively. Let's apply this to our dataset of page revisions to get the previous and next values of the page size variable.
+
+```{python}
+(
+    page_revisions
+    .with_columns(
+        size_last = c.size.shift(1),
+        size_next = c.size.shift(-1)
+    )
+    .select(c.doc_id, c.datetime, c.size, c.size_last, c.size_next)
+)
+```
+
+Notice that the first value of `size_last` is missing because there is no *last* value for the first item in our data. Similarly, the variable `size_next` will have a missing value at the end of the dataset. As written above, the code incorrectly crosses the time points at the boundary of each page. That is, for the first row of the second page (Geoffrey Chaucer) it thinks that the size of the last page is the size of the final page of the Marie de France record. To fix this, we can use the `.over()` method to apply the window function within groups. Window functions respect the grouping of the data:
+
+```{python}
+(
+    page_revisions
+    .sort(c.doc_id, c.datetime)
+    .with_columns(
+        size_last = c.size.shift(1).over(c.doc_id),
+        size_next = c.size.shift(-1).over(c.doc_id)
+    )
+    .select(c.doc_id, c.datetime, c.size, c.size_last, c.size_next)
+    .slice(495, 10)
+)
+```
+
+Notice that now, correctly, the dataset has a missing `size_next` for the final Marie de France record and a missing `size_last` for the first Geoffrey Chaucer record. Now, let's use this to compute the change in the page sizes for each of the revisions:
+
+```{python}
+(
+    page_revisions
+    .sort(c.doc_id, c.datetime)
+    .with_columns(
+        size_diff = c.size - c.size.shift(1).over(c.doc_id)
+    )
+    .select(c.doc_id, c.datetime, c.size, c.size_diff)
+)
+```
+
+In the above output, we can see the changes in page sizes. If we wanted to find reversions in the dataset, we could apply the `.shift()` function several times. As an alternative, we can also give a parameter to `.shift()` to indicate that we want to go back (or forward) more than one row. Let's put this together to indicate which commits seem to be a reversion (the page size exactly matches the page size from two commits prior) as well as the overall size of the reversion:
+
+```{python}
+(
+    page_revisions
+    .sort(c.doc_id, c.datetime)
+    .with_columns(
+        size_diff = c.size - c.size.shift(1).over(c.doc_id),
+        size_two_back = c.size.shift(2).over(c.doc_id),
+        is_reversion = c.size == c.size.shift(2).over(c.doc_id)
+    )
+    .filter(c.is_reversion)
+    .select(c.doc_id, c.datetime, c.size_diff, c.is_reversion)
+)
+```
+
+These reversions can be studied to see the nature of the Wikipedia editing process. For example, how long do these reversions tend to take? Are certain pages more likely to undergo reversions? Do these take place during a certain time of the day? These are all questions that we should now be able to address using this dataset and the tools described above.
+
+::: {.callout-note collapse="true"}
+## Additional window functions
+
+Polars provides many other window functions beyond `.shift()`. Common examples include `.cum_sum()` for cumulative sums, `.rolling_mean()` for moving averages, `.rank()` for ranking values, and `.diff()` which computes the difference between consecutive values (equivalent to `x - x.shift(1)`). All of these can be combined with `.over()` to apply within groups.
+:::
+
+## Range Joins
+
+We will finish this chapter by looking at *range joins*, which allow for combining datasets based on inequalities between keys contained in two different datasets. Range joins are functionality that can greatly simplify some operations that arise when working with temporal data. Recall that all of the join functions that we saw in @sec-restructure work by finding a correspondence where keys from one dataset equal the values of keys in another dataset. In some cases it happens that we want to join two tables on inequalities rather than exact values.
+
+Take, for example, the metadata table for the 75 authors in our Wikipedia collection. Recall that this dataset contains the years that each author was born and the years each author died. What if we wanted to make a dataset by joining the metadata to itself, matching each author with other authors that would have been alive in overlapping years? We can do this using Polars' `.join_where()` method:
+
+```{python}
+(
+    meta
+    .join_where(
+        meta,
+        (c.born <= c.born_right) & (c.died > c.born_right) & (c.doc_id != c.doc_id_right)
+    )
+    .select(c.doc_id, c.doc_id_right, c.born, c.died, c.born_right, c.died_right)
+)
+```
+
+The `.join_where()` method takes one or more expressions to specify which pairs of rows to keep in the joined dataset. To refer to columns in the second (right) dataset that share the same name, use the `_right` suffix. In the example above, we find all pairs where the first author's lifespan overlaps with the second author's birth, excluding self-matches.
+
+The resulting dataset would make an interesting type of network, showing temporal overlap of authors in the dataset. We will investigate this in the following chapter.
+
+::: {.callout-note collapse="true"}
+## Performance of conditional joins
+
+The `.join_where()` method can be slow because it needs to check every combination of rows in the two datasets. For large datasets, consider whether you can use `.join_asof()` instead, which is optimized for nearest-value matching and requires the data to be sorted. The `.join_asof()` method is particularly useful when you want to match each row to the nearest (or nearest preceding/following) value in another dataset.
+:::
+
+## Temporal Durations
+
+Sometimes we want to work not with specific dates or times, but with durations—the amount of time between two events. Polars represents durations with the `Duration` data type. We can compute durations by subtracting one datetime from another, or by using the `pl.duration()` function to create specific intervals.
+
+```{python}
+(
+    page_revisions
+    .sort(c.doc_id, c.datetime)
+    .with_columns(
+        time_since_last = c.datetime - c.datetime.shift(1).over(c.doc_id)
+    )
+    .select(c.doc_id, c.datetime, c.time_since_last)
+    .drop_nulls()
+)
+```
+
+The resulting duration can be converted to various units using methods like `.dt.total_days()`, `.dt.total_hours()`, `.dt.total_minutes()`, or `.dt.total_seconds()`. This is useful for analyzing how frequently events occur or how long processes take.
+
+```{python}
+(
+    page_revisions
+    .sort(c.doc_id, c.datetime)
+    .with_columns(
+        time_since_last = c.datetime - c.datetime.shift(1).over(c.doc_id)
+    )
+    .with_columns(
+        days_since_last = c.time_since_last.dt.total_days()
+    )
+    .select(c.doc_id, c.datetime, c.days_since_last)
+    .drop_nulls()
+    .group_by(c.doc_id)
+    .agg(
+        avg_days_between_edits = c.days_since_last.mean()
+    )
+    .sort(c.avg_days_between_edits)
+)
+```
+
+This shows us which Wikipedia pages are edited most frequently (smallest average days between edits) and which are edited less often.
+
+## Summary
+
+In this chapter, we explored techniques for working with temporal data in Polars. We learned how to create date and datetime objects from their components, extract useful information from them, and visualize temporal patterns. We saw how to work with time zones and how to truncate temporal data to different levels of granularity. Window functions allowed us to compare values across time within groups, and range joins provided a way to combine datasets based on temporal overlap. These tools are essential for any analysis involving time-based data.
+
+## References {-}

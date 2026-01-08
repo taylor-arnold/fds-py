@@ -1,0 +1,3804 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Taylor Arnold">
+
+<title>19&nbsp; Textual Data – Foundations of Data Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./20_image_data.html" rel="next">
+<link href="./18_network_data.html" rel="prev">
+<link href="./img/owl_explore.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-25064e4154141e7ea34817c6f1220590.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./16_spatial_data.html">Part IV: Applications</a></li><li class="breadcrumb-item"><a href="./19_textual_data.html"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Textual Data</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Foundations of Data Science</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/taylor-arnold/fds-py" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part I: Core</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_modify.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">EDA I: Organizing Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">EDA II: Visualizing Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_combine.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">EDA III: Restructuring Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_collect.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">EDA IV: Collecting Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part II: Programming</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_program.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Programming</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_strings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Strings</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_dataformats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Data Formats</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_requests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Requests</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part III: Models</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Inference</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_supervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Supervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_unsupervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Unsupervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13_deeplearning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Deep Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_cnnwordvec.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">CNNs and Word2Vec</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15_transferlearn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Transfer Learning</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part IV: Applications</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16_spatial_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Spatial Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17_temporal_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Temporal Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18_network_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Network Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19_textual_data.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Textual Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20_image_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Image Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part V: Notes</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./21_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Notes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./22_datasets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Datasets</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup"><span class="header-section-number">19.1</span> Setup</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction"><span class="header-section-number">19.2</span> Introduction</a></li>
+  <li><a href="#nlp-pipeline" id="toc-nlp-pipeline" class="nav-link" data-scroll-target="#nlp-pipeline"><span class="header-section-number">19.3</span> NLP Pipeline</a></li>
+  <li><a href="#n-grams-and-collocations" id="toc-n-grams-and-collocations" class="nav-link" data-scroll-target="#n-grams-and-collocations"><span class="header-section-number">19.4</span> N-grams and Collocations</a></li>
+  <li><a href="#named-entity-recognition" id="toc-named-entity-recognition" class="nav-link" data-scroll-target="#named-entity-recognition"><span class="header-section-number">19.5</span> Named Entity Recognition</a></li>
+  <li><a href="#dependency-parsing" id="toc-dependency-parsing" class="nav-link" data-scroll-target="#dependency-parsing"><span class="header-section-number">19.6</span> Dependency Parsing</a></li>
+  <li><a href="#keyword-in-context-kwic" id="toc-keyword-in-context-kwic" class="nav-link" data-scroll-target="#keyword-in-context-kwic"><span class="header-section-number">19.7</span> Keyword in Context (KWIC)</a></li>
+  <li><a href="#complexity-metrics" id="toc-complexity-metrics" class="nav-link" data-scroll-target="#complexity-metrics"><span class="header-section-number">19.8</span> Complexity Metrics</a></li>
+  <li><a href="#tf-idf" id="toc-tf-idf" class="nav-link" data-scroll-target="#tf-idf"><span class="header-section-number">19.9</span> TF-IDF</a></li>
+  <li><a href="#sparse-encoding" id="toc-sparse-encoding" class="nav-link" data-scroll-target="#sparse-encoding"><span class="header-section-number">19.10</span> Sparse Encoding</a></li>
+  <li><a href="#across-languages" id="toc-across-languages" class="nav-link" data-scroll-target="#across-languages"><span class="header-section-number">19.11</span> Across Languages</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./16_spatial_data.html">Part IV: Applications</a></li><li class="breadcrumb-item"><a href="./19_textual_data.html"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Textual Data</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-text" class="quarto-section-identifier"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Textual Data</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Practice Notebooks
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>Notebook19a [<a href="https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook19a.ipynb?hl=en">Colab↗</a>]</li>
+<li>Notebook19b [<a href="https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook19b.ipynb?hl=en">Colab↗</a>]</li>
+</ul>
+</div>
+</div>
+</div>
+<section id="setup" class="level2" data-number="19.1">
+<h2 data-number="19.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">19.1</span> Setup</h2>
+<p>Load all of the modules and datasets needed for the chapter. We also load the spacy module designed specifically for processing large collections of text.</p>
+<div id="09f5b887" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funs <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plotnine <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polars <span class="im">import</span> col <span class="im">as</span> c</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>theme_set(theme_minimal())</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> spacy</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>meta <span class="op">=</span> pl.read_csv(<span class="st">"data/wiki_uk_meta.csv.gz"</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>docs <span class="op">=</span> pl.read_csv(<span class="st">"data/wiki_uk_authors_text.csv"</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>docs_fr <span class="op">=</span> pl.read_csv(<span class="st">"data/wiki_uk_authors_text_fr.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="introduction" class="level2" data-number="19.2">
+<h2 data-number="19.2" class="anchored" data-anchor-id="introduction"><span class="header-section-number">19.2</span> Introduction</h2>
+<p>Every dataset we have encountered so far in this book has consisted of structured observations: rows with well-defined columns containing numbers, categories, or dates. But an enormous amount of the world’s information exists as unstructured text. Medical records contain free-text physician notes alongside coded diagnoses. Customer feedback arrives as open-ended survey responses. Historical archives preserve centuries of human thought in letters, newspapers, and books. Social scientists study political speeches, journalists analyze leaked documents, and humanists trace the evolution of literary style across generations.</p>
+<p>Working with textual data requires a fundamentally different approach than working with numbers. A sentence is not just a sequence of characters but a structured object with grammar, meaning, and context. The word “bank” means something different in “river bank” than in “bank account.” The phrase “not bad” typically means something positive despite containing a negation. These subtleties make text both rich and challenging to analyze computationally.</p>
+<p>In this chapter, we introduce tools for transforming unstructured text into structured data that can be analyzed using the techniques developed throughout this book. The key insight is that once we have converted text into tables of tokens, counts, and annotations, we can apply familiar operations like filtering, grouping, and joining to answer questions about language. What words distinguish one author from another? Which terms best summarize a document? How does writing style vary across languages or time periods?</p>
+<p>We will use spaCy, a modern natural language processing library, to handle the linguistic heavy lifting. SpaCy provides pre-trained models that can tokenize text, identify parts of speech, recognize named entities, and parse grammatical structure. Our job is to take the output of these models and reshape it into forms suitable for analysis.</p>
+</section>
+<section id="nlp-pipeline" class="level2" data-number="19.3">
+<h2 data-number="19.3" class="anchored" data-anchor-id="nlp-pipeline"><span class="header-section-number">19.3</span> NLP Pipeline</h2>
+<p>We load spaCy’s English language model, which contains statistical models trained on large corpora of English text. The “sm” suffix indicates the small model, which balances accuracy with speed and memory usage. Larger models are available for applications requiring higher precision.</p>
+<div id="9c7323a8" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nlp <span class="op">=</span> spacy.load(<span class="st">"en_core_web_sm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Our primary dataset consists of Wikipedia pages for authors from the United Kingdom. We have a metadata table containing information about each author.</p>
+<div id="dfcf7a8e" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>meta</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (75, 7)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">born</th>
+<th data-quarto-table-cell-role="th">died</th>
+<th data-quarto-table-cell-role="th">era</th>
+<th data-quarto-table-cell-role="th">gender</th>
+<th data-quarto-table-cell-role="th">link</th>
+<th data-quarto-table-cell-role="th">short</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>i64</th>
+<th>i64</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>1160</td>
+<td>1215</td>
+<td>"Early"</td>
+<td>"female"</td>
+<td>"Marie_de_France"</td>
+<td>"Marie d. F."</td>
+</tr>
+<tr class="even">
+<td>"Geoffrey Chaucer"</td>
+<td>1343</td>
+<td>1400</td>
+<td>"Early"</td>
+<td>"male"</td>
+<td>"Geoffrey_Chaucer"</td>
+<td>"Chaucer"</td>
+</tr>
+<tr class="odd">
+<td>"John Gower"</td>
+<td>1330</td>
+<td>1408</td>
+<td>"Early"</td>
+<td>"male"</td>
+<td>"John_Gower"</td>
+<td>"Gower"</td>
+</tr>
+<tr class="even">
+<td>"William Langland"</td>
+<td>1332</td>
+<td>1386</td>
+<td>"Early"</td>
+<td>"male"</td>
+<td>"William_Langland"</td>
+<td>"Langland"</td>
+</tr>
+<tr class="odd">
+<td>"Margery Kempe"</td>
+<td>1373</td>
+<td>1438</td>
+<td>"Early"</td>
+<td>"female"</td>
+<td>"Margery_Kempe"</td>
+<td>"Kempe"</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Stephen Spender"</td>
+<td>1909</td>
+<td>1995</td>
+<td>"Twentieth C"</td>
+<td>"male"</td>
+<td>"Stephen_Spender"</td>
+<td>"Spender"</td>
+</tr>
+<tr class="even">
+<td>"Christopher Isherwood"</td>
+<td>1904</td>
+<td>1986</td>
+<td>"Twentieth C"</td>
+<td>"male"</td>
+<td>"Christopher_Isherwood"</td>
+<td>"Isherwood"</td>
+</tr>
+<tr class="odd">
+<td>"Edward Upward"</td>
+<td>1903</td>
+<td>2009</td>
+<td>"Twentieth C"</td>
+<td>"male"</td>
+<td>"Edward_Upward"</td>
+<td>"Upward"</td>
+</tr>
+<tr class="even">
+<td>"Rex Warner"</td>
+<td>1905</td>
+<td>1986</td>
+<td>"Twentieth C"</td>
+<td>"male"</td>
+<td>"Rex_Warner"</td>
+<td>"Warner"</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>1939</td>
+<td>1939</td>
+<td>"Twentieth C"</td>
+<td>"male"</td>
+<td>"Seamus_Heaney"</td>
+<td>"Heaney"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>As well as a seperate file giving each of the texts from the documents.</p>
+<div id="4fad5582" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>docs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (75, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">text</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>"Marie de France was a poet pos…</td>
+</tr>
+<tr class="even">
+<td>"Geoffrey Chaucer"</td>
+<td>"Geoffrey Chaucer was an Englis…</td>
+</tr>
+<tr class="odd">
+<td>"John Gower"</td>
+<td>"John Gower was an English poet…</td>
+</tr>
+<tr class="even">
+<td>"William Langland"</td>
+<td>"William Langland is the presum…</td>
+</tr>
+<tr class="odd">
+<td>"Margery Kempe"</td>
+<td>"Margery Kempe was an English C…</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Stephen Spender"</td>
+<td>"Sir Stephen Harold Spender CBE…</td>
+</tr>
+<tr class="even">
+<td>"Christopher Isherwood"</td>
+<td>"Christopher William Bradshaw I…</td>
+</tr>
+<tr class="odd">
+<td>"Edward Upward"</td>
+<td>"Edward Falaise Upward FRSL was…</td>
+</tr>
+<tr class="even">
+<td>"Rex Warner"</td>
+<td>"Rex Warner was an English clas…</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>"Seamus Justin Heaney MRIA was …</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The metadata table contains structured information extracted from Wikipedia’s infoboxes: birth and death dates, occupations, and other biographical details. The text table contains the prose content of each page, which we will process using natural language techniques.</p>
+<p>Natural language processing transforms raw text into structured annotations. The <code>DSText.process</code> method sends each document through spaCy’s processing pipeline, which performs several analyses in sequence: tokenization (splitting text into words and punctuation), part-of-speech tagging (identifying nouns, verbs, adjectives), lemmatization (reducing words to their base forms), named entity recognition (identifying people, places, organizations), and dependency parsing (analyzing grammatical relationships).</p>
+<div id="c05122b1" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>anno <span class="op">=</span> DSText.process(docs, nlp)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>anno</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (408_700, 15)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">sid</th>
+<th data-quarto-table-cell-role="th">tid</th>
+<th data-quarto-table-cell-role="th">token</th>
+<th data-quarto-table-cell-role="th">token_with_ws</th>
+<th data-quarto-table-cell-role="th">lemma</th>
+<th data-quarto-table-cell-role="th">upos</th>
+<th data-quarto-table-cell-role="th">tag</th>
+<th data-quarto-table-cell-role="th">is_alpha</th>
+<th data-quarto-table-cell-role="th">is_stop</th>
+<th data-quarto-table-cell-role="th">is_punct</th>
+<th data-quarto-table-cell-role="th">dep</th>
+<th data-quarto-table-cell-role="th">head_idx</th>
+<th data-quarto-table-cell-role="th">ent_type</th>
+<th data-quarto-table-cell-role="th">ent_iob</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>i64</th>
+<th>i64</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>bool</th>
+<th>bool</th>
+<th>bool</th>
+<th>str</th>
+<th>i64</th>
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>1</td>
+<td>1</td>
+<td>"Marie"</td>
+<td>"Marie "</td>
+<td>"Marie"</td>
+<td>"PROPN"</td>
+<td>"NNP"</td>
+<td>true</td>
+<td>false</td>
+<td>false</td>
+<td>"compound"</td>
+<td>3</td>
+<td>"PERSON"</td>
+<td>"B"</td>
+</tr>
+<tr class="even">
+<td>"Marie de France"</td>
+<td>1</td>
+<td>2</td>
+<td>"de"</td>
+<td>"de "</td>
+<td>"de"</td>
+<td>"X"</td>
+<td>"FW"</td>
+<td>true</td>
+<td>false</td>
+<td>false</td>
+<td>"nmod"</td>
+<td>3</td>
+<td>"PERSON"</td>
+<td>"I"</td>
+</tr>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>1</td>
+<td>3</td>
+<td>"France"</td>
+<td>"France "</td>
+<td>"France"</td>
+<td>"PROPN"</td>
+<td>"NNP"</td>
+<td>true</td>
+<td>false</td>
+<td>false</td>
+<td>"nsubj"</td>
+<td>4</td>
+<td>"PERSON"</td>
+<td>"I"</td>
+</tr>
+<tr class="even">
+<td>"Marie de France"</td>
+<td>1</td>
+<td>4</td>
+<td>"was"</td>
+<td>"was "</td>
+<td>"be"</td>
+<td>"AUX"</td>
+<td>"VBD"</td>
+<td>true</td>
+<td>true</td>
+<td>false</td>
+<td>"ROOT"</td>
+<td>4</td>
+<td>""</td>
+<td>"O"</td>
+</tr>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>1</td>
+<td>5</td>
+<td>"a"</td>
+<td>"a "</td>
+<td>"a"</td>
+<td>"DET"</td>
+<td>"DT"</td>
+<td>true</td>
+<td>true</td>
+<td>false</td>
+<td>"det"</td>
+<td>6</td>
+<td>""</td>
+<td>"O"</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>242</td>
+<td>18</td>
+<td>"of"</td>
+<td>"of "</td>
+<td>"of"</td>
+<td>"ADP"</td>
+<td>"IN"</td>
+<td>true</td>
+<td>true</td>
+<td>false</td>
+<td>"prep"</td>
+<td>17</td>
+<td>""</td>
+<td>"O"</td>
+</tr>
+<tr class="even">
+<td>"Seamus Heaney"</td>
+<td>242</td>
+<td>19</td>
+<td>"his"</td>
+<td>"his "</td>
+<td>"his"</td>
+<td>"PRON"</td>
+<td>"PRP$"</td>
+<td>true</td>
+<td>true</td>
+<td>false</td>
+<td>"poss"</td>
+<td>21</td>
+<td>""</td>
+<td>"O"</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>242</td>
+<td>20</td>
+<td>"finest"</td>
+<td>"finest "</td>
+<td>"fine"</td>
+<td>"ADJ"</td>
+<td>"JJS"</td>
+<td>true</td>
+<td>false</td>
+<td>false</td>
+<td>"amod"</td>
+<td>21</td>
+<td>""</td>
+<td>"O"</td>
+</tr>
+<tr class="even">
+<td>"Seamus Heaney"</td>
+<td>242</td>
+<td>21</td>
+<td>"poems"</td>
+<td>"poems"</td>
+<td>"poem"</td>
+<td>"NOUN"</td>
+<td>"NNS"</td>
+<td>true</td>
+<td>false</td>
+<td>false</td>
+<td>"pobj"</td>
+<td>18</td>
+<td>""</td>
+<td>"O"</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>242</td>
+<td>22</td>
+<td>"."</td>
+<td>"."</td>
+<td>"."</td>
+<td>"PUNCT"</td>
+<td>"."</td>
+<td>false</td>
+<td>false</td>
+<td>true</td>
+<td>"punct"</td>
+<td>8</td>
+<td>""</td>
+<td>"O"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>There is a lot of information that has been automatically added to this table, thanks to the collective results of decades of research in computational linguistics and natural language processing. Each row corresponds to a word or a punctuation mark (created by the process of tokenization), along with metadata describing the token. Notice that reading down the column <code>token</code> reproduces the original text. The columns available are:</p>
+<ul>
+<li><strong>doc_id</strong>: A key that allows us to group tokens into documents and to link back into the original input table.</li>
+<li><strong>sid</strong>: Numeric identifier of the sentence number.</li>
+<li><strong>tid</strong>: Numeric identifier of the token within a sentence. The first three columns form a primary key for the table.</li>
+<li><strong>token</strong>: A character variable containing the detected token, which is either a word or a punctuation mark.</li>
+<li><strong>token_with_ws</strong>: The token with white space (spaces and new-line characters) added. This is useful if we wanted to re-create the original text from the token table.</li>
+<li><strong>lemma</strong>: A normalized version of the token. For example, it removes start-of-sentence capitalization, turns all nouns into their singular form, and converts verbs into their infinitive form.</li>
+<li><strong>upos</strong>: The universal part of speech code, which are parts of speech that can be defined in most spoken languages. These tend to correspond to the parts of speech taught in primary schools, such as “NOUN”, “ADJ” (adjective), and “ADV” (adverb).</li>
+<li><strong>tag</strong>: A fine-grained part of speech code that depends on the specific language (here, English) and models being used.</li>
+<li><strong>is_alpha</strong>, <strong>is_stop</strong>, <strong>is_punct</strong>: Boolean flags for alphabetic characters, stop words, and punctuation.</li>
+<li><strong>dep</strong>: The dependency relation label describing how this token relates grammatically to another token.</li>
+<li><strong>head_idx</strong>: The token index of the word in the sentence that this token is grammatically related to.</li>
+<li><strong>ent_type</strong>: The named entity type, if this token is part of a recognized entity.</li>
+</ul>
+<p>There are many analyses that can be performed on the extracted features that are present in the <code>anno</code> table. Fortunately, many of these can be performed by directly using Polars operations covered in the first five chapters of this text, without the need for any new text-specific functions. For example, we can find the most common nouns in the dataset by filtering on the universal part of speech and grouping by lemma with the code below.</p>
+<div id="4f44aefa" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.upos <span class="op">==</span> <span class="st">"NOUN"</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    .group_by(c.lemma)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    .agg(count <span class="op">=</span> pl.<span class="bu">len</span>())</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    .sort(c.count, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">10</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (10, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">lemma</th>
+<th data-quarto-table-cell-role="th">count</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>u32</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"work"</td>
+<td>1154</td>
+</tr>
+<tr class="even">
+<td>"year"</td>
+<td>1012</td>
+</tr>
+<tr class="odd">
+<td>"time"</td>
+<td>846</td>
+</tr>
+<tr class="even">
+<td>"poem"</td>
+<td>744</td>
+</tr>
+<tr class="odd">
+<td>"life"</td>
+<td>740</td>
+</tr>
+<tr class="even">
+<td>"book"</td>
+<td>591</td>
+</tr>
+<tr class="odd">
+<td>"death"</td>
+<td>540</td>
+</tr>
+<tr class="even">
+<td>"novel"</td>
+<td>527</td>
+</tr>
+<tr class="odd">
+<td>"poet"</td>
+<td>513</td>
+</tr>
+<tr class="even">
+<td>"family"</td>
+<td>467</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The most frequent nouns across the set of documents roughly fall into one of two categories. Those such as “year”, “life”, “death”, and “family” are nouns that we would frequently associate with biographical entries for nearly any group of people. Others, such as “poem”, “book”, “poet”, and the somewhat more generic “work”, capture the specific objects that authors would produce and therefore would be prominent elements of their respective Wikipedia pages. The fact that these two types of nouns show up at the top of the list helps to verify that both the dataset and the NLP pipeline are working as expected.</p>
+<p>We can use a similar technique to learn about the contents of each of the individual documents. Suppose we wanted to know which adjectives are most used on each page. This can be done by a sequence of Polars operations. First, we filter the data by the part of speech and group the rows of the dataset by the document id and lemma. Then, we count the number of rows for each unique combination of document and lemma and arrange the dataset in descending order of count. We can use the <code>head()</code> method on grouped data to take the most frequent adjectives within each document:</p>
+<div id="0a1f5f2d" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.upos <span class="op">==</span> <span class="st">"ADJ"</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    .group_by([c.doc_id, c.lemma])</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    .agg(count <span class="op">=</span> pl.<span class="bu">len</span>())</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    .sort([c.doc_id, c.count], descending<span class="op">=</span>[<span class="va">False</span>, <span class="va">True</span>])</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    .group_by(c.doc_id)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">8</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    .group_by(c.doc_id)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    .agg(top_adj <span class="op">=</span> c.lemma.sort().<span class="bu">str</span>.join(<span class="st">"; "</span>))</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (75, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">top_adj</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"George Eliot"</td>
+<td>"english; first; much; new; oth…</td>
+</tr>
+<tr class="even">
+<td>"Henry Vaughan"</td>
+<td>"first; most; other; own; relig…</td>
+</tr>
+<tr class="odd">
+<td>"Joseph Conrad"</td>
+<td>"british; first; french; litera…</td>
+</tr>
+<tr class="even">
+<td>"Walter Raleigh"</td>
+<td>"half; irish; late; many; relig…</td>
+</tr>
+<tr class="odd">
+<td>"Christina Rossetti"</td>
+<td>"devotional; early; female; fir…</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Katherine Philipps"</td>
+<td>"cavalier; female; french; lite…</td>
+</tr>
+<tr class="even">
+<td>"Samuel Johnson"</td>
+<td>"english; first; great; literar…</td>
+</tr>
+<tr class="odd">
+<td>"John Donne"</td>
+<td>"17th; catholic; early; english…</td>
+</tr>
+<tr class="even">
+<td>"Stephen Spender"</td>
+<td>"early; jewish; late; many; mar…</td>
+</tr>
+<tr class="odd">
+<td>"George Herbert"</td>
+<td>"english; many; musical; other;…</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The output shows many connections between adjectives and the authors. Here, the connections again fall roughly into two groups. Some of the adjectives are fairly generic—such as “more”, “other”, and “many”—and probably say more about the people writing the pages than the subjects of the pages themselves. Other adjectives provide more contextual information about each of the authors. For example, several selected adjectives are key descriptions of an author’s work, such as “Victorian” associated with certain authors and “Gothic” with others. While it is good to see expected relationships to demonstrate the data and techniques are functioning properly, it is also valuable when computational techniques highlight the unexpected.</p>
+</section>
+<section id="n-grams-and-collocations" class="level2" data-number="19.4">
+<h2 data-number="19.4" class="anchored" data-anchor-id="n-grams-and-collocations"><span class="header-section-number">19.4</span> N-grams and Collocations</h2>
+<p>So far we have analyzed individual words in isolation. But meaning often emerges from combinations of words. The phrase “New York” refers to a specific city, not something novel and a name. “Machine learning” describes a field of study, not appliances that acquire knowledge. “Poet laureate” is a title, not just any poet who happens to be a laureate. To capture these multi-word expressions, we turn to <em>n-grams</em>: contiguous sequences of n tokens.</p>
+<p>A unigram is a single token (what we have been working with). A bigram is a pair of adjacent tokens. A trigram is a sequence of three tokens. In general, an n-gram captures local word order, which is lost when we treat documents as unordered collections of words.</p>
+<p>Constructing n-grams requires us to look at tokens in context. Polars window functions allow us to access neighboring rows, which we can use to pair each token with the tokens that follow it. The key is to shift the token column to align adjacent words on the same row.</p>
+<div id="b28c4dd8" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>bigrams <span class="op">=</span> (</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.is_alpha)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        next_token <span class="op">=</span> c.lemma.shift(<span class="op">-</span><span class="dv">1</span>).over([c.doc_id, c.sid]),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        next_is_alpha <span class="op">=</span> c.is_alpha.shift(<span class="op">-</span><span class="dv">1</span>).over([c.doc_id, c.sid])</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.next_is_alpha <span class="op">==</span> <span class="va">True</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        bigram <span class="op">=</span> c.lemma <span class="op">+</span> <span class="st">" "</span> <span class="op">+</span> c.next_token</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>bigrams.select(c.doc_id, c.sid, c.tid, c.lemma, c.next_token, c.bigram)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (363_449, 6)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">sid</th>
+<th data-quarto-table-cell-role="th">tid</th>
+<th data-quarto-table-cell-role="th">lemma</th>
+<th data-quarto-table-cell-role="th">next_token</th>
+<th data-quarto-table-cell-role="th">bigram</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>i64</th>
+<th>i64</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>1</td>
+<td>1</td>
+<td>"Marie"</td>
+<td>"de"</td>
+<td>"Marie de"</td>
+</tr>
+<tr class="even">
+<td>"Marie de France"</td>
+<td>1</td>
+<td>2</td>
+<td>"de"</td>
+<td>"France"</td>
+<td>"de France"</td>
+</tr>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>1</td>
+<td>3</td>
+<td>"France"</td>
+<td>"be"</td>
+<td>"France be"</td>
+</tr>
+<tr class="even">
+<td>"Marie de France"</td>
+<td>1</td>
+<td>4</td>
+<td>"be"</td>
+<td>"a"</td>
+<td>"be a"</td>
+</tr>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>1</td>
+<td>5</td>
+<td>"a"</td>
+<td>"poet"</td>
+<td>"a poet"</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>242</td>
+<td>16</td>
+<td>"inspire"</td>
+<td>"many"</td>
+<td>"inspire many"</td>
+</tr>
+<tr class="even">
+<td>"Seamus Heaney"</td>
+<td>242</td>
+<td>17</td>
+<td>"many"</td>
+<td>"of"</td>
+<td>"many of"</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>242</td>
+<td>18</td>
+<td>"of"</td>
+<td>"his"</td>
+<td>"of his"</td>
+</tr>
+<tr class="even">
+<td>"Seamus Heaney"</td>
+<td>242</td>
+<td>19</td>
+<td>"his"</td>
+<td>"fine"</td>
+<td>"his fine"</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>242</td>
+<td>20</td>
+<td>"fine"</td>
+<td>"poem"</td>
+<td>"fine poem"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The <code>shift(-1)</code> operation moves each column up by one position within each document and sentence, so that each row contains both the current token and the following token. We filter to keep only cases where both tokens are alphabetic, excluding bigrams that span punctuation or sentence boundaries.</p>
+<p>Now we can count bigram frequencies just as we counted unigram frequencies:</p>
+<div id="742175dc" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    bigrams</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .group_by(c.bigram)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    .agg(count <span class="op">=</span> pl.<span class="bu">len</span>())</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    .sort(c.count, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">15</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (15, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">bigram</th>
+<th data-quarto-table-cell-role="th">count</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>u32</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"of the"</td>
+<td>3254</td>
+</tr>
+<tr class="even">
+<td>"in the"</td>
+<td>2374</td>
+</tr>
+<tr class="odd">
+<td>"to the"</td>
+<td>1138</td>
+</tr>
+<tr class="even">
+<td>"of his"</td>
+<td>1009</td>
+</tr>
+<tr class="odd">
+<td>"he be"</td>
+<td>963</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"on the"</td>
+<td>691</td>
+</tr>
+<tr class="even">
+<td>"it be"</td>
+<td>654</td>
+</tr>
+<tr class="odd">
+<td>"for the"</td>
+<td>647</td>
+</tr>
+<tr class="even">
+<td>"in his"</td>
+<td>628</td>
+</tr>
+<tr class="odd">
+<td>"be the"</td>
+<td>611</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The most frequent bigrams by raw counts largely consist of functional phrases that appear in many types of text. The phrase “of the” appears often simply because both words are common, not because they form a meaningful unit. To identify true collocations—word pairs that occur together more often than chance would predict—we use <em>pointwise mutual information</em> (PMI). PMI compares the observed frequency of a bigram to the frequency we would expect if the two words were independent:</p>
+<p><span class="math display">\[ \text{PMI}(w_1, w_2) = \log_2 \frac{P(w_1, w_2)}{P(w_1) \cdot P(w_2)} \]</span></p>
+<p>A high PMI indicates that the words co-occur much more frequently than their individual frequencies would suggest. A PMI of zero means the words are independent. Negative PMI (rare in practice for bigrams that actually occur) would indicate the words avoid each other.</p>
+<p>To compute this we need a few intermediate steps. First of all, we can count the number of times each word appears in all of the texts.</p>
+<div id="ab2c27e1" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>word_counts <span class="op">=</span> (</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.is_alpha)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    .group_by(c.lemma)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    .agg(word_count <span class="op">=</span> pl.<span class="bu">len</span>())</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>total_words <span class="op">=</span> anno.<span class="bu">filter</span>(c.is_alpha).height</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Then, we could the number of teachings each bigram occurs.</p>
+<div id="15f7b303" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>bigram_counts <span class="op">=</span> (</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    bigrams</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .group_by(c.bigram, c.lemma, c.next_token)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    .agg(bigram_count <span class="op">=</span> pl.<span class="bu">len</span>())</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>total_bigrams <span class="op">=</span> bigrams.height</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>And, finally, we can combine the data together to get the PMI scores for each bigram and sort to find those with the highest scores.</p>
+<div id="2df100f5" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    bigram_counts</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    .join(</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        word_counts.rename({<span class="st">"lemma"</span>: <span class="st">"w1"</span>, <span class="st">"word_count"</span>: <span class="st">"w1_count"</span>}),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        left_on<span class="op">=</span><span class="st">"lemma"</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        right_on<span class="op">=</span><span class="st">"w1"</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    .join(</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        word_counts.rename({<span class="st">"lemma"</span>: <span class="st">"w2"</span>, <span class="st">"word_count"</span>: <span class="st">"w2_count"</span>}),</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        left_on<span class="op">=</span><span class="st">"next_token"</span>,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>        right_on<span class="op">=</span><span class="st">"w2"</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>        p_bigram <span class="op">=</span> c.bigram_count <span class="op">/</span> total_bigrams,</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>        p_w1 <span class="op">=</span> c.w1_count <span class="op">/</span> total_words,</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>        p_w2 <span class="op">=</span> c.w2_count <span class="op">/</span> total_words</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>        pmi <span class="op">=</span> (c.p_bigram <span class="op">/</span> (c.p_w1 <span class="op">*</span> c.p_w2)).log() <span class="op">/</span> np.log(<span class="dv">2</span>)</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.bigram_count <span class="op">&gt;=</span> <span class="dv">5</span>)</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    .sort(c.pmi, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    .select(c.bigram, c.bigram_count, c.pmi)</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">15</span>)</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (15, 3)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">bigram</th>
+<th data-quarto-table-cell-role="th">bigram_count</th>
+<th data-quarto-table-cell-role="th">pmi</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>u32</th>
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Lang Syne"</td>
+<td>5</td>
+<td>16.27981</td>
+</tr>
+<tr class="even">
+<td>"El Dorado"</td>
+<td>5</td>
+<td>16.27981</td>
+</tr>
+<tr class="odd">
+<td>"Corpus Christi"</td>
+<td>5</td>
+<td>16.016776</td>
+</tr>
+<tr class="even">
+<td>"magnum opus"</td>
+<td>5</td>
+<td>16.016776</td>
+</tr>
+<tr class="odd">
+<td>"Auld Lang"</td>
+<td>5</td>
+<td>16.016776</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"gross indecency"</td>
+<td>5</td>
+<td>15.794384</td>
+</tr>
+<tr class="even">
+<td>"MolotovRibbentrop Pact"</td>
+<td>6</td>
+<td>15.794384</td>
+</tr>
+<tr class="odd">
+<td>"Encyclopædia Britannica"</td>
+<td>7</td>
+<td>15.794384</td>
+</tr>
+<tr class="even">
+<td>"Chatterleys Lover"</td>
+<td>7</td>
+<td>15.794384</td>
+</tr>
+<tr class="odd">
+<td>"Sweden Norway"</td>
+<td>5</td>
+<td>15.794384</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The high-PMI bigrams tell a different story than the high-frequency bigrams. These are phrases where the component words strongly predict each other: proper names, technical terms, and domain-specific expressions. Many of these would be good candidates for treating as single units in downstream analysis.</p>
+<p>We can extend the same logic to trigrams by shifting twice:</p>
+<div id="730d06f3" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.is_alpha)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>        next_token <span class="op">=</span> c.lemma.shift(<span class="op">-</span><span class="dv">1</span>).over([c.doc_id, c.sid]),</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        next_next_token <span class="op">=</span> c.lemma.shift(<span class="op">-</span><span class="dv">2</span>).over([c.doc_id, c.sid]),</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        next_is_alpha <span class="op">=</span> c.is_alpha.shift(<span class="op">-</span><span class="dv">1</span>).over([c.doc_id, c.sid]),</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        next_next_is_alpha <span class="op">=</span> c.is_alpha.shift(<span class="op">-</span><span class="dv">2</span>).over([c.doc_id, c.sid])</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>((c.next_is_alpha <span class="op">==</span> <span class="va">True</span>) <span class="op">&amp;</span> (c.next_next_is_alpha <span class="op">==</span> <span class="va">True</span>))</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>        trigram <span class="op">=</span> c.lemma <span class="op">+</span> <span class="st">" "</span> <span class="op">+</span> c.next_token <span class="op">+</span> <span class="st">" "</span> <span class="op">+</span> c.next_next_token</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    .group_by(c.trigram)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    .agg(count <span class="op">=</span> pl.<span class="bu">len</span>())</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    .sort(c.count, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">15</span>)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (15, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">trigram</th>
+<th data-quarto-table-cell-role="th">count</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>u32</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"one of the"</td>
+<td>217</td>
+</tr>
+<tr class="even">
+<td>"as well as"</td>
+<td>125</td>
+</tr>
+<tr class="odd">
+<td>"at the time"</td>
+<td>122</td>
+</tr>
+<tr class="even">
+<td>"the age of"</td>
+<td>120</td>
+</tr>
+<tr class="odd">
+<td>"be publish in"</td>
+<td>115</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"that he be"</td>
+<td>74</td>
+</tr>
+<tr class="even">
+<td>"a number of"</td>
+<td>74</td>
+</tr>
+<tr class="odd">
+<td>"to have be"</td>
+<td>64</td>
+</tr>
+<tr class="even">
+<td>"member of the"</td>
+<td>64</td>
+</tr>
+<tr class="odd">
+<td>"a series of"</td>
+<td>64</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Trigrams capture even longer expressions, but again we see the raw scores simply find combinations of frequent words. Extending the code for PMI would be required to get more useful information from this table.</p>
+</section>
+<section id="named-entity-recognition" class="level2" data-number="19.5">
+<h2 data-number="19.5" class="anchored" data-anchor-id="named-entity-recognition"><span class="header-section-number">19.5</span> Named Entity Recognition</h2>
+<p>Named entity recognition (NER) identifies and classifies proper nouns and other specific references in text. SpaCy’s NER model recognizes several entity types: people (PERSON), organizations (ORG), geopolitical entities like countries and cities (GPE), dates (DATE), works of art (WORK_OF_ART), and others. These annotations are stored in the <code>ent_type</code> column of our token table.</p>
+<div id="0499bacf" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.ent_type <span class="op">!=</span> <span class="st">""</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    .select(c.doc_id, c.sid, c.tid, c.token, c.ent_type)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (73_326, 5)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">sid</th>
+<th data-quarto-table-cell-role="th">tid</th>
+<th data-quarto-table-cell-role="th">token</th>
+<th data-quarto-table-cell-role="th">ent_type</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>i64</th>
+<th>i64</th>
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>1</td>
+<td>1</td>
+<td>"Marie"</td>
+<td>"PERSON"</td>
+</tr>
+<tr class="even">
+<td>"Marie de France"</td>
+<td>1</td>
+<td>2</td>
+<td>"de"</td>
+<td>"PERSON"</td>
+</tr>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>1</td>
+<td>3</td>
+<td>"France"</td>
+<td>"PERSON"</td>
+</tr>
+<tr class="even">
+<td>"Marie de France"</td>
+<td>1</td>
+<td>13</td>
+<td>"France"</td>
+<td>"GPE"</td>
+</tr>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>1</td>
+<td>17</td>
+<td>"England"</td>
+<td>"GPE"</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>240</td>
+<td>17</td>
+<td>"BBC"</td>
+<td>"ORG"</td>
+</tr>
+<tr class="even">
+<td>"Seamus Heaney"</td>
+<td>240</td>
+<td>18</td>
+<td>"Two"</td>
+<td>"CARDINAL"</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>241</td>
+<td>3</td>
+<td>"Marie"</td>
+<td>"PERSON"</td>
+</tr>
+<tr class="even">
+<td>"Seamus Heaney"</td>
+<td>242</td>
+<td>3</td>
+<td>"first"</td>
+<td>"ORDINAL"</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>242</td>
+<td>6</td>
+<td>"four"</td>
+<td>"CARDINAL"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Each token that is part of a named entity receives a type label. Multi-word entities like “United Kingdom” have the same label on each constituent token. To work with complete entities rather than individual tokens, we need to group consecutive tokens with the same entity type.</p>
+<p>We can identify entity boundaries by detecting where the entity type changes:</p>
+<div id="8951e524" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>entities <span class="op">=</span> (</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.ent_type <span class="op">!=</span> <span class="st">""</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        new_entity <span class="op">=</span> c.ent_iob <span class="op">==</span> <span class="st">"B"</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        entity_id <span class="op">=</span> c.new_entity.cum_sum().over([c.doc_id])</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    .group_by([c.doc_id, c.entity_id, c.ent_type])</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>        entity_text <span class="op">=</span> c.token.<span class="bu">str</span>.join(<span class="st">" "</span>),</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>entities.select(c.doc_id, c.ent_type, c.entity_text)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (42_261, 3)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">ent_type</th>
+<th data-quarto-table-cell-role="th">entity_text</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Robert Burns"</td>
+<td>"PERSON"</td>
+<td>"Scot"</td>
+</tr>
+<tr class="even">
+<td>"William Wordsworth"</td>
+<td>"PERSON"</td>
+<td>"Dorothy"</td>
+</tr>
+<tr class="odd">
+<td>"Matthew Arnold"</td>
+<td>"DATE"</td>
+<td>"the - century"</td>
+</tr>
+<tr class="even">
+<td>"Seamus Heaney"</td>
+<td>"ORDINAL"</td>
+<td>"third"</td>
+</tr>
+<tr class="odd">
+<td>"Ben Jonson"</td>
+<td>"PERSON"</td>
+<td>"Jonson"</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Joseph Conrad"</td>
+<td>"NORP"</td>
+<td>"Dutch"</td>
+</tr>
+<tr class="even">
+<td>"Jane Austen"</td>
+<td>"PERSON"</td>
+<td>"Kate Beckinsale"</td>
+</tr>
+<tr class="odd">
+<td>"Matthew Arnold"</td>
+<td>"CARDINAL"</td>
+<td>"two"</td>
+</tr>
+<tr class="even">
+<td>"Mary Wollstonecraft"</td>
+<td>"PERSON"</td>
+<td>"Robert Browning"</td>
+</tr>
+<tr class="odd">
+<td>"Percy Bysshe Shelley"</td>
+<td>"PERSON"</td>
+<td>"Thomas Medwin"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Now we can analyze entities at the appropriate level of granularity. For example, we can find the most frequently mentioned people across all documents:</p>
+<div id="a3c706d9" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    entities</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.ent_type <span class="op">==</span> <span class="st">"PERSON"</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    .group_by(c.entity_text)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    .agg(count <span class="op">=</span> pl.<span class="bu">len</span>())</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    .sort(c.count, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">15</span>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (15, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">entity_text</th>
+<th data-quarto-table-cell-role="th">count</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>u32</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Johnson"</td>
+<td>239</td>
+</tr>
+<tr class="even">
+<td>"Shakespeare"</td>
+<td>183</td>
+</tr>
+<tr class="odd">
+<td>"Dickens"</td>
+<td>166</td>
+</tr>
+<tr class="even">
+<td>"Shelley"</td>
+<td>137</td>
+</tr>
+<tr class="odd">
+<td>"Joyce"</td>
+<td>136</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Austen"</td>
+<td>81</td>
+</tr>
+<tr class="even">
+<td>"Mill"</td>
+<td>80</td>
+</tr>
+<tr class="odd">
+<td>"Marlowe"</td>
+<td>74</td>
+</tr>
+<tr class="even">
+<td>"Lawrence"</td>
+<td>72</td>
+</tr>
+<tr class="odd">
+<td>"Mary"</td>
+<td>70</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The most frequently mentioned people likely include both the subjects of the Wikipedia pages and other figures who appear across multiple biographies—editors, patrons, family members, or influential contemporaries.</p>
+<p>We can examine which entity types are most common overall:</p>
+<div id="7f26b2d4" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    entities</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    .group_by(c.ent_type)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    .agg(count <span class="op">=</span> pl.<span class="bu">len</span>())</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    .sort(c.count, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (18, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">ent_type</th>
+<th data-quarto-table-cell-role="th">count</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>u32</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"PERSON"</td>
+<td>13547</td>
+</tr>
+<tr class="even">
+<td>"ORG"</td>
+<td>7412</td>
+</tr>
+<tr class="odd">
+<td>"DATE"</td>
+<td>7054</td>
+</tr>
+<tr class="even">
+<td>"GPE"</td>
+<td>4547</td>
+</tr>
+<tr class="odd">
+<td>"NORP"</td>
+<td>2864</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"TIME"</td>
+<td>143</td>
+</tr>
+<tr class="even">
+<td>"LAW"</td>
+<td>77</td>
+</tr>
+<tr class="odd">
+<td>"QUANTITY"</td>
+<td>73</td>
+</tr>
+<tr class="even">
+<td>"MONEY"</td>
+<td>17</td>
+</tr>
+<tr class="odd">
+<td>"PERCENT"</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Biographical articles naturally contain many dates (birth, death, publication) and references to people and places. The distribution of entity types provides a high-level characterization of the content.</p>
+<p>Entity co-occurrence within documents can reveal relationships. Which people are mentioned together? Which places are associated with which organizations?</p>
+<div id="6dd8738a" class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Find all pairs of people mentioned in the same document</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>people <span class="op">=</span> (</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    entities</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.ent_type <span class="op">==</span> <span class="st">"PERSON"</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    .select(c.doc_id, person <span class="op">=</span> c.entity_text)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>person_pairs <span class="op">=</span> (</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    people</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    .join(people, on<span class="op">=</span><span class="st">"doc_id"</span>, suffix<span class="op">=</span><span class="st">"_2"</span>)</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.person <span class="op">&lt;</span> c.person_2)  <span class="co"># Avoid duplicates and self-pairs</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    .group_by([c.person, c.person_2])</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    .agg(co_occurrences <span class="op">=</span> pl.<span class="bu">len</span>())</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    .sort(c.co_occurrences, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">10</span>)</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>person_pairs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="19">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (10, 3)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">person</th>
+<th data-quarto-table-cell-role="th">person_2</th>
+<th data-quarto-table-cell-role="th">co_occurrences</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+<th>u32</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Mary"</td>
+<td>"Shelley"</td>
+<td>3762</td>
+</tr>
+<tr class="even">
+<td>"Shaw"</td>
+<td>"Shaws"</td>
+<td>3717</td>
+</tr>
+<tr class="odd">
+<td>"Shelley"</td>
+<td>"Shelleys"</td>
+<td>3509</td>
+</tr>
+<tr class="even">
+<td>"Johnson"</td>
+<td>"Shakespeare"</td>
+<td>3353</td>
+</tr>
+<tr class="odd">
+<td>"Austen"</td>
+<td>"Austens"</td>
+<td>2765</td>
+</tr>
+<tr class="even">
+<td>"Dickens"</td>
+<td>"Oliver Twist"</td>
+<td>2754</td>
+</tr>
+<tr class="odd">
+<td>"Jonson"</td>
+<td>"Shakespeare"</td>
+<td>2250</td>
+</tr>
+<tr class="even">
+<td>"Keats"</td>
+<td>"Keatss"</td>
+<td>2241</td>
+</tr>
+<tr class="odd">
+<td>"Vanessa"</td>
+<td>"Woolf"</td>
+<td>2112</td>
+</tr>
+<tr class="even">
+<td>"David Copperfield"</td>
+<td>"Dickens"</td>
+<td>2107</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Pairs of people who frequently appear together across documents may have historical connections: collaborators, rivals, members of the same literary movement, or subjects of comparative study.</p>
+</section>
+<section id="dependency-parsing" class="level2" data-number="19.6">
+<h2 data-number="19.6" class="anchored" data-anchor-id="dependency-parsing"><span class="header-section-number">19.6</span> Dependency Parsing</h2>
+<p>While named entities tell us <em>what</em> is mentioned, dependency parsing tells us <em>how</em> words relate grammatically. Each token in a sentence has a <em>head</em>—another token that it modifies or depends on—and a <em>dependency relation</em> describing the nature of that relationship. The root of the sentence is typically the main verb, and all other tokens connect to it through a tree structure.</p>
+<p>The dependency annotations are stored in the <code>dep</code> and <code>head_idx</code> columns. Common dependency relations include:</p>
+<ul>
+<li><strong>nsubj</strong>: Nominal subject (the doer of an action)</li>
+<li><strong>dobj</strong> / <strong>obj</strong>: Direct object (the receiver of an action)</li>
+<li><strong>amod</strong>: Adjectival modifier</li>
+<li><strong>prep</strong> / <strong>pobj</strong>: Prepositional phrases</li>
+<li><strong>compound</strong>: Compound words or phrases</li>
+<li><strong>ROOT</strong>: The root of the sentence</li>
+</ul>
+<p>Let’s look at a particular example from the Seamus Heaney article.</p>
+<div id="a126997f" class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.doc_id <span class="op">==</span> <span class="st">"Seamus Heaney"</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.sid <span class="op">==</span> <span class="dv">1</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    .select(c.tid, c.token, c.upos, c.dep, c.head_idx)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="20">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (12, 5)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">tid</th>
+<th data-quarto-table-cell-role="th">token</th>
+<th data-quarto-table-cell-role="th">upos</th>
+<th data-quarto-table-cell-role="th">dep</th>
+<th data-quarto-table-cell-role="th">head_idx</th>
+</tr>
+<tr class="even">
+<th>i64</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>i64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>"Seamus"</td>
+<td>"PROPN"</td>
+<td>"compound"</td>
+<td>4</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>"Justin"</td>
+<td>"PROPN"</td>
+<td>"compound"</td>
+<td>4</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>"Heaney"</td>
+<td>"PROPN"</td>
+<td>"compound"</td>
+<td>4</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>"MRIA"</td>
+<td>"PROPN"</td>
+<td>"nsubj"</td>
+<td>5</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>"was"</td>
+<td>"AUX"</td>
+<td>"ROOT"</td>
+<td>5</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>8</td>
+<td>"poet"</td>
+<td>"NOUN"</td>
+<td>"compound"</td>
+<td>9</td>
+</tr>
+<tr class="even">
+<td>9</td>
+<td>"playwright"</td>
+<td>"NOUN"</td>
+<td>"attr"</td>
+<td>5</td>
+</tr>
+<tr class="odd">
+<td>10</td>
+<td>"and"</td>
+<td>"CCONJ"</td>
+<td>"cc"</td>
+<td>9</td>
+</tr>
+<tr class="even">
+<td>11</td>
+<td>"translator"</td>
+<td>"NOUN"</td>
+<td>"conj"</td>
+<td>9</td>
+</tr>
+<tr class="odd">
+<td>12</td>
+<td>"."</td>
+<td>"PUNCT"</td>
+<td>"punct"</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>We can use dependency relations to extract specific grammatical patterns. For example, to find what subjects do what actions, we can look for subject-verb pairs.</p>
+<div id="7e0ec2b4" class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>verbs <span class="op">=</span> (</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.upos <span class="op">==</span> <span class="st">"VERB"</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    .select(</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>        c.doc_id, c.sid,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>        verb_idx <span class="op">=</span> c.tid,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>        verb <span class="op">=</span> c.lemma</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    anno</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.dep <span class="op">==</span> <span class="st">"nsubj"</span>)</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    .select(</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>        c.doc_id, c.sid, </span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>        subject <span class="op">=</span> c.lemma,</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>        verb_idx <span class="op">=</span> c.head_idx</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>    .join(verbs, on<span class="op">=</span>[c.doc_id, c.sid, c.verb_idx])</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>    .group_by([c.subject, c.verb])</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>    .agg(count <span class="op">=</span> pl.<span class="bu">len</span>())</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>    .sort(c.count, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">10</span>)</span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (10, 3)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">subject</th>
+<th data-quarto-table-cell-role="th">verb</th>
+<th data-quarto-table-cell-role="th">count</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+<th>u32</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"he"</td>
+<td>"write"</td>
+<td>273</td>
+</tr>
+<tr class="even">
+<td>"he"</td>
+<td>"have"</td>
+<td>131</td>
+</tr>
+<tr class="odd">
+<td>"he"</td>
+<td>"become"</td>
+<td>105</td>
+</tr>
+<tr class="even">
+<td>"she"</td>
+<td>"write"</td>
+<td>79</td>
+</tr>
+<tr class="odd">
+<td>"he"</td>
+<td>"make"</td>
+<td>61</td>
+</tr>
+<tr class="even">
+<td>"he"</td>
+<td>"meet"</td>
+<td>60</td>
+</tr>
+<tr class="odd">
+<td>"he"</td>
+<td>"begin"</td>
+<td>56</td>
+</tr>
+<tr class="even">
+<td>"he"</td>
+<td>"say"</td>
+<td>53</td>
+</tr>
+<tr class="odd">
+<td>"he"</td>
+<td>"return"</td>
+<td>52</td>
+</tr>
+<tr class="even">
+<td>"he"</td>
+<td>"leave"</td>
+<td>51</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>This reveals the typical actions associated with different subjects in our corpus. We might see that authors “write”, “publish”, and “die”, while works “appear”, “receive”, and “influence”.</p>
+<p>We can also extract adjective-noun pairs to see how different concepts are described:</p>
+<div id="f0f4e2b3" class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.dep <span class="op">==</span> <span class="st">"amod"</span>, c.is_alpha)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    .select(</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>        c.doc_id, c.sid,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>        adjective <span class="op">=</span> c.lemma,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>        noun_idx <span class="op">=</span> c.head_idx</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    .join(</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>        anno.<span class="bu">filter</span>(c.upos <span class="op">==</span> <span class="st">"NOUN"</span>).select(</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>            c.doc_id, c.sid, noun_idx <span class="op">=</span> c.tid, noun <span class="op">=</span> c.lemma,</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>        on<span class="op">=</span>[c.doc_id, c.sid, c.noun_idx]</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>    .group_by([c.adjective, c.noun])</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>    .agg(count <span class="op">=</span> pl.<span class="bu">len</span>())</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>    .sort(c.count, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">10</span>)</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="22">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (10, 3)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">adjective</th>
+<th data-quarto-table-cell-role="th">noun</th>
+<th data-quarto-table-cell-role="th">count</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+<th>u32</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"short"</td>
+<td>"story"</td>
+<td>60</td>
+</tr>
+<tr class="even">
+<td>"next"</td>
+<td>"year"</td>
+<td>50</td>
+</tr>
+<tr class="odd">
+<td>"same"</td>
+<td>"time"</td>
+<td>44</td>
+</tr>
+<tr class="even">
+<td>"early"</td>
+<td>"work"</td>
+<td>44</td>
+</tr>
+<tr class="odd">
+<td>"same"</td>
+<td>"year"</td>
+<td>42</td>
+</tr>
+<tr class="even">
+<td>"close"</td>
+<td>"friend"</td>
+<td>41</td>
+</tr>
+<tr class="odd">
+<td>"english"</td>
+<td>"poet"</td>
+<td>38</td>
+</tr>
+<tr class="even">
+<td>"major"</td>
+<td>"work"</td>
+<td>33</td>
+</tr>
+<tr class="odd">
+<td>"literary"</td>
+<td>"critic"</td>
+<td>32</td>
+</tr>
+<tr class="even">
+<td>"young"</td>
+<td>"man"</td>
+<td>32</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The adjective-noun combinations reveal the conceptual vocabulary of the corpus: what kinds of things exist in this textual world, and how are they characterized?</p>
+</section>
+<section id="keyword-in-context-kwic" class="level2" data-number="19.7">
+<h2 data-number="19.7" class="anchored" data-anchor-id="keyword-in-context-kwic"><span class="header-section-number">19.7</span> Keyword in Context (KWIC)</h2>
+<p>Sometimes we want to see how a specific word is used across the corpus. A <em>concordance</em> or <em>keyword in context</em> (KWIC) display shows each occurrence of a target word along with the words that surround it. This technique, which predates computers, remains invaluable for understanding how language is actually used.</p>
+<p>To build a KWIC display, we need to extract a window of tokens around each occurrence of our keyword. This logic is implemented in the <code>DSText.kwic</code> method.</p>
+<div id="e4d1bd05" class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>kwic_results <span class="op">=</span> DSText.kwic(anno, <span class="st">"poetry"</span>, max_num<span class="op">=</span><span class="dv">15</span>, window<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>kwic_results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Marie de France:101                             exhibit a form of lyrical [poetry] that influenced the way that            
+Marie de France:101                     influenced the way that narrative [poetry] was subsequently composed adding another
+Geoffrey Chaucer:2                    alternatively the father of English [poetry] .                                       
+Geoffrey Chaucer:45                    introduced him to medieval Italian [poetry] the forms and stories of                
+Geoffrey Chaucer:110                         nettle in Chaucers garden of [poetry] .                                       
+Geoffrey Chaucer:118                                                  The [poetry] of Chaucer along with other             
+Geoffrey Chaucer:147                         the enduring interest in his [poetry] prior to the arrival of                 
+John Gower:55                                                      Gowers [poetry] has had a mixed critical                
+John Gower:56                                    as the father of English [poetry] .                                       
+Thomas More:22                                   flute and viol and wrote [poetry] .                                       
+Edmund Spenser:6                         despite their differing views on [poetry] .                                       
+Edmund Spenser:22                              place at court through his [poetry] but his next significant publication    
+Edmund Spenser:38                                 many pens and pieces of [poetry] into his grave with many                
+Edmund Spenser:41                              one hundred pounds for his [poetry] .                                       
+Edmund Spenser:84                            scholars have noted that his [poetry] does not rehash tradition but           </code></pre>
+</div>
+</div>
+<p>The KWIC display reveals patterns that aggregate statistics miss. We can see the actual phrases in which a word appears, the grammatical constructions it participates in, and the semantic contexts that surround it. Is “poetry” typically the subject of a sentence or the object? What verbs and adjectives accompany it?</p>
+</section>
+<section id="complexity-metrics" class="level2" data-number="19.8">
+<h2 data-number="19.8" class="anchored" data-anchor-id="complexity-metrics"><span class="header-section-number">19.8</span> Complexity Metrics</h2>
+<p>Beyond analyzing content, we can characterize the <em>style</em> of texts using quantitative measures of readability and complexity. These metrics, originally developed to assess the difficulty of reading materials for educational purposes, provide useful descriptive statistics for comparing texts.</p>
+<p>For example, sentence length is one of the simplest style measures. Longer sentences tend to be more complex and harder to read.</p>
+<div id="95f97d63" class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    .group_by([c.doc_id, c.sid])</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>        n_tokens <span class="op">=</span> pl.<span class="bu">len</span>(),</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>        n_words <span class="op">=</span> c.is_alpha.<span class="bu">sum</span>()</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    .group_by(c.doc_id)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>        mean_sentence_length <span class="op">=</span> c.n_words.mean(),</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>        max_sentence_length <span class="op">=</span> c.n_words.<span class="bu">max</span>(),</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>        n_sentences <span class="op">=</span> pl.<span class="bu">len</span>()</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>    .sort(c.mean_sentence_length, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">10</span>)</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="24">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (10, 4)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">mean_sentence_length</th>
+<th data-quarto-table-cell-role="th">max_sentence_length</th>
+<th data-quarto-table-cell-role="th">n_sentences</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>f64</th>
+<th>u32</th>
+<th>u32</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Thomas Malory"</td>
+<td>28.231214</td>
+<td>83</td>
+<td>173</td>
+</tr>
+<tr class="even">
+<td>"Mary Wollstonecraft"</td>
+<td>25.902878</td>
+<td>76</td>
+<td>278</td>
+</tr>
+<tr class="odd">
+<td>"Samuel Taylor Coleridge"</td>
+<td>25.831858</td>
+<td>102</td>
+<td>226</td>
+</tr>
+<tr class="even">
+<td>"W. H. Auden"</td>
+<td>25.502222</td>
+<td>91</td>
+<td>225</td>
+</tr>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>25.481132</td>
+<td>71</td>
+<td>106</td>
+</tr>
+<tr class="even">
+<td>"John Stuart Mill"</td>
+<td>25.358065</td>
+<td>118</td>
+<td>310</td>
+</tr>
+<tr class="odd">
+<td>"Ben Jonson"</td>
+<td>25.204724</td>
+<td>82</td>
+<td>254</td>
+</tr>
+<tr class="even">
+<td>"Katherine Philipps"</td>
+<td>25.137931</td>
+<td>68</td>
+<td>58</td>
+</tr>
+<tr class="odd">
+<td>"Christopher Marlowe"</td>
+<td>25.019802</td>
+<td>150</td>
+<td>202</td>
+</tr>
+<tr class="even">
+<td>"Geoffrey Chaucer"</td>
+<td>25.018182</td>
+<td>73</td>
+<td>220</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Type-token ratio (TTR) measures vocabulary richness: the number of unique words (types) divided by the total number of words (tokens). A higher TTR indicates more varied vocabulary.</p>
+<div id="642b3833" class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.is_alpha)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    .group_by(c.doc_id)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>        n_tokens <span class="op">=</span> pl.<span class="bu">len</span>(),</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>        n_types <span class="op">=</span> c.lemma.n_unique()</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>        ttr <span class="op">=</span> c.n_types <span class="op">/</span> c.n_tokens</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    .sort(c.ttr, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">10</span>)</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="25">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (10, 4)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">n_tokens</th>
+<th data-quarto-table-cell-role="th">n_types</th>
+<th data-quarto-table-cell-role="th">ttr</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>u32</th>
+<th>u32</th>
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Rex Warner"</td>
+<td>726</td>
+<td>371</td>
+<td>0.511019</td>
+</tr>
+<tr class="even">
+<td>"Felicia Hemans"</td>
+<td>1473</td>
+<td>691</td>
+<td>0.469111</td>
+</tr>
+<tr class="odd">
+<td>"William Langland"</td>
+<td>908</td>
+<td>407</td>
+<td>0.448238</td>
+</tr>
+<tr class="even">
+<td>"Cecil Day-Lewis"</td>
+<td>1294</td>
+<td>559</td>
+<td>0.431994</td>
+</tr>
+<tr class="odd">
+<td>"Edward Upward"</td>
+<td>1065</td>
+<td>458</td>
+<td>0.430047</td>
+</tr>
+<tr class="even">
+<td>"John Gower"</td>
+<td>1439</td>
+<td>606</td>
+<td>0.421126</td>
+</tr>
+<tr class="odd">
+<td>"Stephen Spender"</td>
+<td>1798</td>
+<td>756</td>
+<td>0.420467</td>
+</tr>
+<tr class="even">
+<td>"Christina Rossetti"</td>
+<td>1909</td>
+<td>779</td>
+<td>0.408067</td>
+</tr>
+<tr class="odd">
+<td>"Philip Sidney"</td>
+<td>1542</td>
+<td>629</td>
+<td>0.407912</td>
+</tr>
+<tr class="even">
+<td>"Katherine Philipps"</td>
+<td>1458</td>
+<td>585</td>
+<td>0.401235</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>TTR is sensitive to document length: longer documents naturally have lower TTR because common words get repeated. For fair comparison across documents of different lengths, we can compute TTR on a fixed-size sample of tokens.</p>
+<p>Average word length correlates with vocabulary sophistication. Documents using more polysyllabic, Latinate vocabulary will have higher average word lengths.</p>
+<div id="94ca9eff" class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.is_alpha)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>        word_length <span class="op">=</span> c.token.<span class="bu">str</span>.len_chars()</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    .group_by(c.doc_id)</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>        mean_word_length <span class="op">=</span> c.word_length.mean()</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>    .sort(c.mean_word_length, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">10</span>)</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="26">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (10, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">mean_word_length</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Mary Wollstonecraft"</td>
+<td>5.123455</td>
+</tr>
+<tr class="even">
+<td>"John Milton"</td>
+<td>5.099143</td>
+</tr>
+<tr class="odd">
+<td>"William Shakespeare"</td>
+<td>5.086957</td>
+</tr>
+<tr class="even">
+<td>"Rex Warner"</td>
+<td>5.081267</td>
+</tr>
+<tr class="odd">
+<td>"Percy Bysshe Shelley"</td>
+<td>5.07918</td>
+</tr>
+<tr class="even">
+<td>"John Locke"</td>
+<td>5.051898</td>
+</tr>
+<tr class="odd">
+<td>"Ann Radcliffe"</td>
+<td>5.04314</td>
+</tr>
+<tr class="even">
+<td>"Christopher Marlowe"</td>
+<td>5.034824</td>
+</tr>
+<tr class="odd">
+<td>"Jane Austen"</td>
+<td>5.021875</td>
+</tr>
+<tr class="even">
+<td>"William Langland"</td>
+<td>5.020925</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Finally, function word ratio measures the proportion of grammatical words (articles, prepositions, pronouns) versus content words (nouns, verbs, adjectives). Different genres and styles have characteristic function word profiles.</p>
+<div id="f0918e75" class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>content_pos <span class="op">=</span> [<span class="st">"NOUN"</span>, <span class="st">"VERB"</span>, <span class="st">"ADJ"</span>, <span class="st">"ADV"</span>]</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    anno</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.is_alpha)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>        is_content <span class="op">=</span> c.upos.is_in(content_pos)</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>    .group_by(c.doc_id)</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>        n_words <span class="op">=</span> pl.<span class="bu">len</span>(),</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>        n_content <span class="op">=</span> c.is_content.<span class="bu">sum</span>()</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>        content_ratio <span class="op">=</span> c.n_content <span class="op">/</span> c.n_words</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>    .sort(c.content_ratio, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">10</span>)</span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="27">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (10, 4)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">n_words</th>
+<th data-quarto-table-cell-role="th">n_content</th>
+<th data-quarto-table-cell-role="th">content_ratio</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>u32</th>
+<th>u32</th>
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Margaret Cavendish"</td>
+<td>4737</td>
+<td>2213</td>
+<td>0.467173</td>
+</tr>
+<tr class="even">
+<td>"John Stuart Mill"</td>
+<td>7861</td>
+<td>3664</td>
+<td>0.466098</td>
+</tr>
+<tr class="odd">
+<td>"Charlotte Smith"</td>
+<td>3543</td>
+<td>1568</td>
+<td>0.442563</td>
+</tr>
+<tr class="even">
+<td>"Joseph Conrad"</td>
+<td>12546</td>
+<td>5539</td>
+<td>0.441495</td>
+</tr>
+<tr class="odd">
+<td>"John Locke"</td>
+<td>5241</td>
+<td>2300</td>
+<td>0.438848</td>
+</tr>
+<tr class="even">
+<td>"William Shakespeare"</td>
+<td>6532</td>
+<td>2812</td>
+<td>0.430496</td>
+</tr>
+<tr class="odd">
+<td>"Jane Austen"</td>
+<td>8137</td>
+<td>3494</td>
+<td>0.429397</td>
+</tr>
+<tr class="even">
+<td>"Alexander Pope"</td>
+<td>3256</td>
+<td>1397</td>
+<td>0.429054</td>
+</tr>
+<tr class="odd">
+<td>"Mary Wollstonecraft"</td>
+<td>7201</td>
+<td>3068</td>
+<td>0.426052</td>
+</tr>
+<tr class="even">
+<td>"George Bernard Shaw"</td>
+<td>11544</td>
+<td>4896</td>
+<td>0.424116</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="tf-idf" class="level2" data-number="19.9">
+<h2 data-number="19.9" class="anchored" data-anchor-id="tf-idf"><span class="header-section-number">19.9</span> TF-IDF</h2>
+<p>In the previous sections, we saw that counting the number of times each token or lemma occurs in a document is a useful way of quickly summarizing the content of a document. This approach can be improved by using a scaled version of the count metric. The issue with raw counts is that they tend to highlight very common words such as “the”, “have”, and “her”. These can be somewhat avoided by removing a pre-compiled set of known common words—often called <em>stopwords</em>—or by doing part of speech filtering. These coarse approaches, however, mostly just move the issue down to a slightly less common set of words that also do not necessarily summarize the contents of each document very well. For example, “publisher” is a frequently used term in many of the documents in this collection due to the subject matter, but that does not mean that it is particularly informative since it occurs in almost every page.</p>
+<p>A common alternative technique is to combine information about the frequency of a word within a document with the frequency of the term across the entire collection. We return here to the importance of how we define a document, which will shape our analysis. Metrics of this form are known as <em>term frequency–inverse document frequency scores</em> (TF-IDF). A common version of TF-IDF computes a score for every combination of term and document by multiplying the term frequency by the logarithm of the inverse document frequency. The logarithm is a function that is used to make sure that counts do not grow too fast. For example, a count of about 1000 is only approximately twice as big on the logarithmic scale as a count of 25, in comparison to being 40 times larger on a linear scale. Mathematically, we define this TF-IDF function using the following formula, where <em>tf</em> gives the term frequency and <em>df</em> gives the document frequency:</p>
+<p><span class="math display">\[ \text{tfidf} = \text{tf} \times \log\left(\frac{N + 1}{\text{df} + 1}\right) + 1 \]</span></p>
+<p>Here, <em>N</em> is the total number of documents. This score gives a measurement of how important a term is in describing a document in the context of the other documents. If we select words with the highest TF-IDF score for each document, these should give a good measurement of what terms best describe each document uniquely from the rest of the collection. Note that while the scaling functions given above are popular choices, they are not universal. Other papers and software may make different choices with moderate effects on the output results.</p>
+<div id="e0c4e984" class="cell" data-execution_count="28">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>tfidf <span class="op">=</span> DSText.compute_tfidf(anno, min_df<span class="op">=</span><span class="fl">0.1</span>, max_df<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>tfidf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="28">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (41_040, 7)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">lemma</th>
+<th data-quarto-table-cell-role="th">tf</th>
+<th data-quarto-table-cell-role="th">tf_norm</th>
+<th data-quarto-table-cell-role="th">df_docs</th>
+<th data-quarto-table-cell-role="th">idf</th>
+<th data-quarto-table-cell-role="th">tfidf</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+<th>u32</th>
+<th>f64</th>
+<th>u32</th>
+<th>f64</th>
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"William Blake"</td>
+<td>"black"</td>
+<td>4</td>
+<td>0.000519</td>
+<td>16</td>
+<td>2.49752</td>
+<td>0.001296</td>
+</tr>
+<tr class="even">
+<td>"Lord Byron"</td>
+<td>"burial"</td>
+<td>1</td>
+<td>0.000105</td>
+<td>10</td>
+<td>2.932838</td>
+<td>0.000308</td>
+</tr>
+<tr class="odd">
+<td>"John Keats"</td>
+<td>"increasingly"</td>
+<td>3</td>
+<td>0.00046</td>
+<td>28</td>
+<td>1.963438</td>
+<td>0.000903</td>
+</tr>
+<tr class="even">
+<td>"George Orwell"</td>
+<td>"operate"</td>
+<td>1</td>
+<td>0.000061</td>
+<td>8</td>
+<td>3.133509</td>
+<td>0.000192</td>
+</tr>
+<tr class="odd">
+<td>"Thomas More"</td>
+<td>"criticism"</td>
+<td>5</td>
+<td>0.000613</td>
+<td>30</td>
+<td>1.896746</td>
+<td>0.001163</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Percy Bysshe Shelley"</td>
+<td>"reduce"</td>
+<td>1</td>
+<td>0.000147</td>
+<td>12</td>
+<td>2.765784</td>
+<td>0.000408</td>
+</tr>
+<tr class="even">
+<td>"Jonathan Swift"</td>
+<td>"clergy"</td>
+<td>1</td>
+<td>0.000231</td>
+<td>10</td>
+<td>2.932838</td>
+<td>0.000678</td>
+</tr>
+<tr class="odd">
+<td>"Walter Raleigh"</td>
+<td>"top"</td>
+<td>1</td>
+<td>0.000229</td>
+<td>16</td>
+<td>2.49752</td>
+<td>0.000571</td>
+</tr>
+<tr class="even">
+<td>"Joseph Conrad"</td>
+<td>"heavily"</td>
+<td>1</td>
+<td>0.00008</td>
+<td>17</td>
+<td>2.440362</td>
+<td>0.000195</td>
+</tr>
+<tr class="odd">
+<td>"Charlotte Smith"</td>
+<td>"anything"</td>
+<td>1</td>
+<td>0.000282</td>
+<td>25</td>
+<td>2.072637</td>
+<td>0.000585</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Then we can combine the top terms from</p>
+<div id="de9105c9" class="cell" data-execution_count="29">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    tfidf</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    .sort([c.doc_id, c.tfidf], descending<span class="op">=</span>[<span class="va">False</span>, <span class="va">True</span>])</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    .group_by(c.doc_id)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">10</span>)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    .group_by(c.doc_id)</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    .agg(top_lemmas <span class="op">=</span> c.lemma.<span class="bu">str</span>.join(<span class="st">"; "</span>))</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="29">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (75, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">top_lemmas</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Samuel Pepys"</td>
+<td>"diary; fire; detailed; Fire; S…</td>
+</tr>
+<tr class="even">
+<td>"D. H. Lawrence"</td>
+<td>"Lawrence; Love; Women; Italy; …</td>
+</tr>
+<tr class="odd">
+<td>"A. A. Milne"</td>
+<td>"Christopher; Forest; output; c…</td>
+</tr>
+<tr class="even">
+<td>"Ann Radcliffe"</td>
+<td>"Ann; supernatural; Catholicism…</td>
+</tr>
+<tr class="odd">
+<td>"John Gower"</td>
+<td>"Chaucer; IV; pound; Kent; pred…</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"William Shakespeare"</td>
+<td>"Shakespeare; Shakespeares; tra…</td>
+</tr>
+<tr class="even">
+<td>"Christopher Isherwood"</td>
+<td>"Berlin; Auden; war; fight; art…</td>
+</tr>
+<tr class="odd">
+<td>"W. H. Auden"</td>
+<td>"Auden; partly; York; summer; l…</td>
+</tr>
+<tr class="even">
+<td>"Oscar Wilde"</td>
+<td>"Douglas; Oscar; trial; prison;…</td>
+</tr>
+<tr class="odd">
+<td>"Elizabeth Barrett Browning"</td>
+<td>"Browning; Leigh; herself; End;…</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The top TF-IDF terms for each document tend to be proper nouns and domain-specific vocabulary that distinguish one article from another. Compare these to the simple frequency counts from earlier: TF-IDF successfully downweights generic terms like “year” and “work” that appear across all biographies.</p>
+</section>
+<section id="sparse-encoding" class="level2" data-number="19.10">
+<h2 data-number="19.10" class="anchored" data-anchor-id="sparse-encoding"><span class="header-section-number">19.10</span> Sparse Encoding</h2>
+<p>The analyses so far have kept our data in <em>long</em> format: one row per token or one row per document-term combination. For many applications, it is useful to reshape the data into a <em>document-term matrix</em> (DTM), where each row represents a document, each column represents a term, and each cell contains a count or weight. This transformation converts each document into a numerical vector, enabling us to apply the full toolkit of machine learning and dimensionality reduction techniques.</p>
+<p>When we construct a DTM using TF-IDF weights, each document becomes a vector in a very high-dimensional space. If our vocabulary contains 10,000 unique terms, then each document is represented as a point in 10,000-dimensional space. The coordinate along each dimension indicates the TF-IDF weight for that term in that document. Crucially, most of these coordinates are zero: any given document uses only a small fraction of the total vocabulary. A vector where most entries are zero is called a <em>sparse</em> vector, and this representation is therefore known as a <em>sparse embedding</em>.</p>
+<p>Mathematically, we can represent document <span class="math inline">\(d\)</span> as a vector <span class="math inline">\(\mathbf{x}_d \in \mathbb{R}^V\)</span> where <span class="math inline">\(V\)</span> is the vocabulary size:</p>
+<p><span class="math display">\[
+\mathbf{x}_d = \begin{bmatrix} \text{tfidf}(t_1, d) \\ \text{tfidf}(t_2, d) \\ \vdots \\ \text{tfidf}(t_V, d) \end{bmatrix}
+\]</span></p>
+<p>For a vocabulary of 10,000 terms, this vector has 10,000 entries, but a typical document might have non-zero values for only a few hundred of them.</p>
+<p>This sparse approach contrasts sharply with the <em>dense embeddings</em> introduced in <a href="13_deeplearning.html" class="quarto-xref"><span>Chapter 13</span></a>. Dense embeddings, produced by neural network models, represent each document as a vector in a much lower-dimensional space—typically 384 to 1024 dimensions—where every coordinate carries meaningful information. Rather than having thousands of interpretable dimensions (one per word), dense embeddings compress semantic meaning into a few hundred opaque dimensions learned during training.</p>
+<p>There are several key differences between these approaches. A sparse TF-IDF vector might have <span class="math inline">\(V = 10{,}000\)</span> dimensions with only 200 non-zero entries. A dense embedding has perhaps <span class="math inline">\(d = 384\)</span> dimensions, all non-zero. We can express the sparsity ratio as <span class="math inline">\(\frac{\text{non-zero entries}}{V}\)</span>, which is typically below 5% for text data.</p>
+<p>Also, each dimension of a sparse vector corresponds to a specific word, so we can inspect a document’s representation directly: a high value in the “algorithm” dimension means the document discusses algorithms. Dense embeddings offer no such transparency. Dimension 147 of a dense vector has no human-interpretable meaning; the representation is distributed across all dimensions in ways learned by the neural network. Furthermore, sparse vectors treat each word independently. The terms “car” and “automobile” occupy different dimensions with no built-in notion that they are synonyms. Dense embeddings, trained on massive text corpora, learn that semantically similar words should produce similar vectors. Two documents discussing the same topic in different vocabulary will have similar dense embeddings but potentially very different sparse vectors.</p>
+<p>Finally, sparse vectors are cheap to compute—just count words and apply the TF-IDF formula—but expensive to store naively and limited in semantic power. Dense embeddings require a neural network forward pass, which is more computationally intensive, but the resulting vectors are compact and capture deeper meaning.</p>
+<p>Despite these limitations, sparse embeddings remain valuable for many tasks. They require no pre-trained models, work immediately on any language or domain, and produce interpretable results. For exploratory analysis and visualization, sparse methods often provide sufficient structure to reveal patterns in the data.</p>
+<p>The code below constructs a sparse document-term matrix from our annotated text, then applies UMAP to project these high-dimensional sparse vectors down to two dimensions for visualization. Documents that use similar vocabulary will cluster together in the resulting plot.</p>
+<div id="bb8020e0" class="cell" data-execution_count="30">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>        DSSklearnText.umap,</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>        doc_id<span class="op">=</span>c.doc_id,</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>        term_id<span class="op">=</span>c.lemma,</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>        n_components<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>        min_df<span class="op">=</span><span class="fl">0.01</span>,</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>        max_df<span class="op">=</span><span class="fl">0.5</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    .predict(full<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"dr0"</span>, <span class="st">"dr1"</span>))</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_text(aes(label <span class="op">=</span> <span class="st">"doc_id"</span>), size<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="30">
+<div>
+<figure class="figure">
+<p><a href="19_textual_data_files/figure-html/cell-31-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="19_textual_data_files/figure-html/cell-31-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The <code>min_df</code> and <code>max_df</code> parameters filter the vocabulary: terms appearing in fewer than 1% of documents or more than 50% of documents are excluded. This removes both rare terms (which add noise) and ubiquitous terms (which add no discriminative power), focusing the representation on the most informative middle-frequency vocabulary.</p>
+</section>
+<section id="across-languages" class="level2" data-number="19.11">
+<h2 data-number="19.11" class="anchored" data-anchor-id="across-languages"><span class="header-section-number">19.11</span> Across Languages</h2>
+<p>One of the reasons that we enjoy using the content of Wikipedia pages as example datasets for textual analysis is that it is possible to get the page text in a large number of different languages. One of the most interesting aspects of textual analysis is that we can apply our techniques to study how differences across languages and cultures affect the way that knowledge is created and distributed.</p>
+<p>Let’s see how our text analysis pipeline can be modified to work with Wikipedia pages from the French version of the site. SpaCy provides models for many different languages:</p>
+<div id="5efa948a" class="cell" data-execution_count="31">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>nlp_fr <span class="op">=</span> spacy.load(<span class="st">"fr_core_news_sm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>And now, we can annotate the text as follows</p>
+<div id="a495da10" class="cell" data-execution_count="32">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>anno_fr <span class="op">=</span> DSText.process(docs_fr, nlp_fr)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>anno_fr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="32">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (203_785, 15)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">sid</th>
+<th data-quarto-table-cell-role="th">tid</th>
+<th data-quarto-table-cell-role="th">token</th>
+<th data-quarto-table-cell-role="th">token_with_ws</th>
+<th data-quarto-table-cell-role="th">lemma</th>
+<th data-quarto-table-cell-role="th">upos</th>
+<th data-quarto-table-cell-role="th">tag</th>
+<th data-quarto-table-cell-role="th">is_alpha</th>
+<th data-quarto-table-cell-role="th">is_stop</th>
+<th data-quarto-table-cell-role="th">is_punct</th>
+<th data-quarto-table-cell-role="th">dep</th>
+<th data-quarto-table-cell-role="th">head_idx</th>
+<th data-quarto-table-cell-role="th">ent_type</th>
+<th data-quarto-table-cell-role="th">ent_iob</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>i64</th>
+<th>i64</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>bool</th>
+<th>bool</th>
+<th>bool</th>
+<th>str</th>
+<th>i64</th>
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>1</td>
+<td>1</td>
+<td>"Marie"</td>
+<td>"Marie "</td>
+<td>"marie"</td>
+<td>"NOUN"</td>
+<td>"NOUN"</td>
+<td>true</td>
+<td>false</td>
+<td>false</td>
+<td>"nsubj"</td>
+<td>6</td>
+<td>"PER"</td>
+<td>"B"</td>
+</tr>
+<tr class="even">
+<td>"Marie de France"</td>
+<td>1</td>
+<td>2</td>
+<td>"de"</td>
+<td>"de "</td>
+<td>"de"</td>
+<td>"ADP"</td>
+<td>"ADP"</td>
+<td>true</td>
+<td>true</td>
+<td>false</td>
+<td>"case"</td>
+<td>3</td>
+<td>"PER"</td>
+<td>"I"</td>
+</tr>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>1</td>
+<td>3</td>
+<td>"France"</td>
+<td>"France "</td>
+<td>"France"</td>
+<td>"PROPN"</td>
+<td>"PROPN"</td>
+<td>true</td>
+<td>false</td>
+<td>false</td>
+<td>"nmod"</td>
+<td>1</td>
+<td>"PER"</td>
+<td>"I"</td>
+</tr>
+<tr class="even">
+<td>"Marie de France"</td>
+<td>1</td>
+<td>4</td>
+<td>"est"</td>
+<td>"est "</td>
+<td>"être"</td>
+<td>"AUX"</td>
+<td>"AUX"</td>
+<td>true</td>
+<td>true</td>
+<td>false</td>
+<td>"cop"</td>
+<td>6</td>
+<td>""</td>
+<td>"O"</td>
+</tr>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>1</td>
+<td>5</td>
+<td>"une"</td>
+<td>"une "</td>
+<td>"un"</td>
+<td>"DET"</td>
+<td>"DET"</td>
+<td>true</td>
+<td>true</td>
+<td>false</td>
+<td>"det"</td>
+<td>6</td>
+<td>""</td>
+<td>"O"</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>78</td>
+<td>5</td>
+<td>"multitude"</td>
+<td>"multitude "</td>
+<td>"multitude"</td>
+<td>"NOUN"</td>
+<td>"NOUN"</td>
+<td>true</td>
+<td>false</td>
+<td>false</td>
+<td>"obj"</td>
+<td>3</td>
+<td>""</td>
+<td>"O"</td>
+</tr>
+<tr class="even">
+<td>"Seamus Heaney"</td>
+<td>78</td>
+<td>6</td>
+<td>"de"</td>
+<td>"de "</td>
+<td>"de"</td>
+<td>"ADP"</td>
+<td>"ADP"</td>
+<td>true</td>
+<td>true</td>
+<td>false</td>
+<td>"case"</td>
+<td>7</td>
+<td>""</td>
+<td>"O"</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>78</td>
+<td>7</td>
+<td>"doctorats"</td>
+<td>"doctorats "</td>
+<td>"doctorat"</td>
+<td>"NOUN"</td>
+<td>"NOUN"</td>
+<td>true</td>
+<td>false</td>
+<td>false</td>
+<td>"nmod"</td>
+<td>5</td>
+<td>""</td>
+<td>"O"</td>
+</tr>
+<tr class="even">
+<td>"Seamus Heaney"</td>
+<td>78</td>
+<td>8</td>
+<td>"honoris"</td>
+<td>"honoris "</td>
+<td>"honoris"</td>
+<td>"VERB"</td>
+<td>"VERB"</td>
+<td>true</td>
+<td>false</td>
+<td>false</td>
+<td>"acl"</td>
+<td>7</td>
+<td>""</td>
+<td>"O"</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>78</td>
+<td>9</td>
+<td>"causa"</td>
+<td>"causa"</td>
+<td>"causa"</td>
+<td>"NOUN"</td>
+<td>"NOUN"</td>
+<td>true</td>
+<td>false</td>
+<td>false</td>
+<td>"obj"</td>
+<td>3</td>
+<td>""</td>
+<td>"O"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>French and English have different grammatical structures that will be reflected in part-of-speech frequencies. French uses more determiners (articles), while English may use more auxiliary verbs. These differences are linguistic rather than content-based, but they affect how we should interpret comparative analyses.</p>
+<p>Cross-linguistic analysis opens up fascinating questions about how knowledge is organized and transmitted across cultures. The same historical figure may be framed differently depending on the national perspective of the Wikipedia editors. Events that are central to one country’s narrative may be peripheral to another’s. Textual analysis provides the tools to investigate these questions systematically.</p>
+</section>
+<section id="references" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/taylor-arnold\.github\.io\/fds-py");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./18_network_data.html" class="pagination-link" aria-label="Network Data">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Network Data</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./20_image_data.html" class="pagination-link" aria-label="Image Data">
+        <span class="nav-page-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Image Data</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Taylor Arnold</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>A <a href="https://distantviewing.org/">Distant Viewing Lab</a> project</p>
+</div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>

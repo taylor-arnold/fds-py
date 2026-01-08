@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <author>
+    <name>Charlotte Brontë</name>
+    <life>
+      <item name="born">21 April 1816</item>
+      <item name="died">31 March 1855</item>
+    </life>
+    <ageatdeath>38</ageatdeath>
+    <professions>
+      <profession>novelist</profession>
+      <profession>poet</profession>
+      <profession>governess</profession>
+    </professions>
+  </author>
+  <author>
+    <name>Virginia Woolf</name>
+    <life>
+      <item name="born">25 January 1882</item>
+      <item name="died">28 March 1941</item>
+    </life>
+    <ageatdeath>59</ageatdeath>
+    <professions>
+      <profession>novelist</profession>
+      <profession>essayist</profession>
+      <profession>critic</profession>
+    </professions>
+  </author>
+</root>

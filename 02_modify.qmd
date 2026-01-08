@@ -1,0 +1,347 @@
+# EDA I: Organizing Data {#sec-organize}
+
+```{python}
+#| include: false
+import warnings
+warnings.filterwarnings('ignore')
+```
+
+::: {.callout-tip collapse="true"}
+## Practice Notebooks
+
+- Notebook02a [[Colab↗](https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook02a.ipynb?hl=en)]
+- Notebook02b [[Colab↗](https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook02b.ipynb?hl=en)]
+- Notebook02c [[Colab↗](https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook02c.ipynb?hl=en)]
+- Notebook02d [[Colab↗](https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook02d.ipynb?hl=en)]
+
+:::
+
+## Setup
+
+We will begin this and every subsequent chapter by listing the core modules and datasets that must be loaded before getting started. Datasets and sources that require new functions will be loaded within the body of the text.
+
+```{python}
+#| output: false
+import numpy as np
+import polars as pl
+
+from funs import *
+from plotnine import *
+from polars import col as c
+theme_set(theme_minimal())
+
+country = pl.read_csv("data/countries.csv")
+```
+
+## Introduction
+
+We will use a variety of methods to modify our datasets. All data operations shown in this chapter come from the Polars library—the same one we used to read our data. These operations take a DataFrame as input and produce a modified DataFrame as output. This consistency makes it easy to chain operations and build complex data transformations step by step. The operations we learn in this chapter are fundamental building blocks for data analysis; while they may seem simple individually, they become powerful when combined.
+
+## Sorting Rows
+
+Organizing data in a meaningful order is often crucial for understanding patterns and trends. We'll use the `.sort()` method to reorder the dataset by arranging rows according to one or more columns. This is particularly useful for identifying extreme values, understanding distributions, or preparing data for specific types of analysis. Let's look at an example of sorting the countries dataset by population, then break down how it works.
+
+```{python}
+(
+    country
+    .sort(c.pop)
+)
+```
+
+There are several important things to note in this code. First, the code is wrapped in a pair of parentheses, each on its own line, and all other lines are indented by four spaces. Second, we place the dataset on its own line and then call the `sort` method on the following line. Third, we use the `c.` prefix followed by the column name to refer to a column. Finally, the results are printed by default, but the original dataset is not modified. After running this code, the `country` column still has its original order. All of these features are shared across the entire set of DataFrame methods.
+
+::: {.callout-note collapse="true"}
+## Selecting columns
+
+The standard way to specify columns in the functions in this chapter is the `c.` format. You can also specify a column using `c("<str>")`, where `<str>` is the column name. This is useful when the column name contains spaces or special characters and cannot be represented using dot notation. Some functions, such as `sort`, also allow specifying the column name directly in quotes without referencing `c`. We will avoid this in our code, but you may encounter it in other sources.
+:::
+
+You can reverse the sorting order of `sort` by setting its `descending` parameter to `True`.
+
+```{python}
+(
+    country
+    .sort(c.pop, descending=True)
+)
+```
+
+Now the countries with the highest population burden appear first. This descending order is often useful when we want to focus on the most extreme cases or identify outliers in our data. For example, the code below sorts by region (alphabetical order) and then, within each region, by population.
+
+```{python}
+(
+    country
+    .sort(c.region, c.pop)
+)
+```
+
+Finally, store a copy of the dataset in a named variable using the following code:
+
+```{python}
+country_saved = (
+    country
+    .sort(c.region, c.pop)
+)
+```
+
+After running the code, `country_saved` contains the reordered dataset, while `country` still contains the original data. The same format can be used to save the results from the other methods described in the sections below.
+
+## Selecting Columns
+
+In some cases—particularly when a dataset grows large—you may want to select or reorder its columns. Use the `.select` method with the same `c.` notation to specify the columns to include.
+
+```{python}
+(
+    country
+    .select(c.iso, c.lat, c.lon)
+)
+```
+
+Selecting columns is something we will do frequently in this text to clarify which parts of the dataset we want you to examine. It is less important for most data science pipelines, but it is particularly useful when performing more complex transformations, such as those in @sec-restructure.
+
+There is a similar function, `.drop`, which lets us select columns to remove from the data. Dropping columns is useful when a dataset has many columns and you want to remove only a few.
+
+## Selecting Rows
+
+Often, we want to take a subset of rows from a dataset for a particular analysis or visualization. There are several functions for doing this, depending on the selection criteria. The `.head()` method, for example, returns a specified number of rows from the top of the dataset. The example below selects the first four rows.
+
+```{python}
+(
+    country
+    .head(n=4)
+)
+```
+
+The method `.tail(n=<int>)` works the same way, except that it selects rows starting from the bottom of the table. The methods `.drop_nulls()` and `.drop_nans()` take no arguments and return only rows that contain no missing or invalid data values, respectively.
+
+The `.sample` method randomly selects rows. You can specify the number of rows with `n=<int>` or a fraction with `fraction=<float>`. Below is an example that takes a random 20% sample of the dataset.
+
+```{python}
+(
+    country
+    .sample(fraction=0.2)
+)
+```
+
+We can select rows that meet a condition defined by the dataset's variables using the `.filter()` method. Similar to the `sort()` method, we use the syntax `c.` followed by variable names to define relationships between variables. Below is code that selects only the rows where the Human Development Index (HDI) is greater than 0.9.
+
+```{python}
+(
+    country
+    .filter(c.hdi > 0.9)
+)
+```
+
+We can also filter categorical variables using equality comparisons. To prevent the page from becoming too cluttered, we will avoid printing this and some other results in future examples.
+
+```{python}
+#| eval: false
+(
+    country
+    .filter(c.region == "Europe")
+)
+```
+
+This selects all countries in Europe. Note that we use the double-equals operator (`==`) to test equality; a single equals sign (`=`) is used only for assignment. The resulting dataset contains only rows where `region == "Europe"`.
+
+Often, we want to apply multiple conditions simultaneously. We can combine conditions using the `&` (and) and `|` (or) operators. When using these operators, wrap each condition in parentheses:
+
+```{python}
+#| eval: false
+(
+    country
+    .filter((c.region == "Europe") & (c.hdi > 0.9))
+)
+```
+
+Sometimes we want to know whether a value belongs to a larger set. We can do this with the `.is_in` method, as shown in the following code. Note that the collection of elements passed to `.is_in` must be enclosed in square brackets. A detailed explanation of the object being created is provided in @sec-programming.
+
+```{python}
+#| eval: true
+(
+    country
+    .filter(c.region.is_in(["Europe", "Africa"]))
+)
+```
+
+These operators, including `!=` (not equal) and `>=` (greater than or equal to), allow us to select rows based on nearly any relationship in the dataset required for our analysis.
+
+## Grouping Data
+
+There is a special method called `.group_by(...)` that allows you to group a dataset by one or more variables using a syntax similar to `.sort(...)`. When used in a method chain, the next method is applied separately to each group of rows that share the same value(s) for the grouping variable(s). For example, the following code selects the first country from each region in the dataset.
+
+```{python}
+(
+    country
+    .group_by(c.region)
+    .head(n=1)
+)
+```
+
+This can be useful for various types of analysis. For example, we can determine the largest countries by population in each region using the following code:
+
+
+```{python}
+(
+    country
+    .sort(c.pop, descending=True)
+    .group_by(c.region)
+    .head(n=1)
+)
+```
+
+The following sections describe additional methods that can operate on grouped datasets.
+
+## Adding Columns
+
+Creating or modifying columns in a dataset is a fundamental operation in data analysis. Analysts often need to compute new variables from existing data, create indicator (dummy) variables, or transform variables for analysis.
+
+The basic pattern for adding a new column is to use the `.with_columns()` method. In the method call, specify the values you want to create or modify and define them in terms of existing columns. For example, the following multiplies the `population` column (values in millions) by 1,000 to obtain the population in thousands.
+
+```{python}
+(
+    country
+    .with_columns(population_1k = c.pop * 1000)
+)
+```
+
+Common mathematical transformations of variables can be accessed by using a `.` after the variable name, followed by a transformation function such as `sqrt()` or `log10()`. The following example demonstrates the method: take the square root and the sine of `population`, and save each as a new column.
+
+```{python}
+#| eval: false
+(
+    country
+    .with_columns(
+      pop_sqrt = c.pop.sqrt(),
+      pop_sin = c.pop.sin()
+    )
+)
+```
+
+Note the format of the code above. When a column definition is long (or when defining multiple columns at once), put each definition on its own line and indent it by four spaces.
+
+::: {.callout-note collapse="true"}
+## Alias method
+
+Polars includes a method called `.alias` that can be used within `.with_columns` to create or overwrite a column in a dataset. It was originally the standard technique, but it has largely been replaced by the equals-sign method, which many people, including me, find more intuitive. It's useful to understand only because you'll often see it in the Polars documentation.
+:::
+
+## Aggregation
+
+Although examining individual rows can be informative, we often need summary statistics to understand the overall patterns in our data. Polars provides powerful aggregation tools that let us compute statistics across rows within specific groups. The `.agg()` method (short for "aggregate") is the primary tool for computing summary statistics. It allows us to specify exactly which statistics to compute and for which columns.
+
+```{python}
+(
+    country
+    .group_by(c.region)
+    .agg(
+      hdi_avg = c.hdi.mean()
+    )
+)
+```
+
+In this example, we compute the average HDI across countries within each region. The syntax uses `c.` followed by the column name, then the aggregation function with parentheses. Note that only the grouping variable(s) and the columns created by the `.agg()` function appear in the result.
+
+We can compute multiple statistics at once by including additional items in our aggregation. It is often useful to include the special function `pl.len()`, which counts the number of rows in each group.
+
+```{python}
+(
+    country
+    .group_by(c.region)
+    .agg(
+        hdi_avg = c.hdi.mean(),
+        hdi_median = c.hdi.median(),
+        count = pl.len()
+    )
+)
+```
+
+This operation computes the average density and the number of regions in each division of the United States. The result is a new DataFrame where each row represents a division and each column shows one of the computed statistics. This grouped analysis is essential for understanding how variables vary across categories in our data.
+
+::: {.callout-note collapse="true"}
+## Aggregating the entire DataFrame
+
+In some cases, we may want to perform one or more aggregation functions on an entire DataFrame. In Polars, it is not possible to apply the `.agg` method without first grouping the data (this is different from R or Pandas). Instead, use `.select` and the same syntax as `.agg` inside the function call. While using the column-selector function to perform aggregation may seem unusual, it makes sense given how Polars optimizes chains of data processing. The specific reason, however, is well beyond the scope of this text.
+:::
+
+Polars provides a wide range of aggregation functions that can be used with the `.agg()` method. Here are some of the most commonly used functions:
+
+- `.mean()`, `.median()`, `.min()`, `.max()`, `.sum()`, `.quantile(<f64>)`
+- `.first()`, `.last()` - `.any()`, `.all()`
+- `.n_unique()`, `.count()`, `.len()`
+- `pl.corr(..., ...)` (correlation)
+- `pl.concat_str(...)`
+
+These cover most use cases in our analyses.
+
+::: {.callout-note collapse="true"}
+## Counting observations
+
+There are three ways to count the number of observations in a group. We can use the `.len()` method applied to any column (it doesn't matter which) to get the total number of rows, or use `.count()` on a column to get the number of non-missing values in that column. The special function `pl.len()` returns the same result as applying `.len()` to any column, but makes it clear that the result does not depend on which column we choose. For this reason, I prefer `pl.len()` unless I specifically want the number of non-missing values. There is also `.n_unique()` to find the number of unique non-missing values in a column.
+:::
+
+## Pipes
+
+The syntax of chaining methods is very powerful. It makes our code more readable, avoids errors from naming intermediate values, and allows Polars to create internally optimized functions that chain the sequence of methods in the most efficient way. One possible roadblock to method chaining is that we only have access to methods built into Polars. To overcome this, Polars allows us to call an arbitrary function with the DataFrame as its first argument using the `.pipe` method. `.pipe` takes the function to apply as its first argument; additional arguments are passed on to the function.
+
+As a simple example, we can apply the built-in Python function `type` to a DataFrame using the `.pipe` method to verify the object's type. The output shows the full Python description of the DataFrame.
+
+```{python}
+(
+    country
+    .pipe(type)
+)
+```
+
+This will be particularly helpful in @sec-graphics, where we will use the `.pipe` method to pass a `DataFrame` to the `ggplot` function to create a data visualization directly within a chain of methods.
+
+## Further Functions
+
+Let's finish with a few additional functions that are useful inside the `with_columns` method. We can create new columns that depend on conditions in our existing data using the special function `pl.when`. The code below shows its use in creating a variable equal to 1 for countries in the Northern Hemisphere and 0 for those in the Southern Hemisphere.
+
+```{python}
+#| eval: false
+(
+    country
+    .with_columns(
+        is_north = pl.when(c.lat >= 0).then(1).otherwise(0)
+    )
+)
+```
+
+We can also access the next or previous values of a column using `shift(<i64>)`, where `<i64>` specifies the number of rows to shift: positive values access rows above, and negative values access rows below. For example, the code below shows the percentage by which each country is larger than the next-smallest country in the dataset.
+
+```{python}
+#| eval: false
+(
+    country
+    .sort(c.pop, descending=True)
+    .with_columns(
+        perc_larger = c.pop / c.pop.shift(-1) * 100
+    )
+)
+```
+
+The `.with_columns` method can compute values within a group, returning aggregations repeated for each row. However, it does not work with the `group_by()` function. Instead, use the `.over()` method on a specific column to indicate the grouping. For example, here we compute the percentage that each country occupies within its region.
+
+```{python}
+#| eval: true
+(
+    country
+    .with_columns(
+        pop_region = c.pop / c.pop.over("region").sum() * 100
+    )
+    .sort(c.pop_region, descending=True)
+)
+```
+
+The `.over()` and `.shift()` methods can also be used within `.filter()`.
+
+## R's dplyr and Python Pandas
+
+If you're familiar with `dplyr` in R or `pandas` in Python, the code in this chapter should feel familiar. Specific function names differ, and each library has its own quirks. Ultimately, the important thing is to understand how to compose the methods above to transform data flexibly into the format you need for a particular application.
+
+If you're coming from dplyr, the main differences are prefixing column names with `c.`, using methods instead of pipes (the same idea, different syntax), and using methods in place of aggregate functions. Some methods are renamed—for example, `agg` replaces `summarize` and `sort` replaces `arrange`—but they otherwise behave similarly.
+
+Transitioning from Pandas requires a few more changes, but most are designed to make the code simpler and more consistent. We no longer have an index column that needs to be reset after every aggregation. Nor do we have aggregation functions wrapped in complex tuples or the `eval` and `query` methods buried inside an extra layer of quotes.
+
+As with Pandas and dplyr, Polars also provides functions for pivots and table joins. We will see those in @sec-restructure. Although some arguments have different names across the three libraries, the differences in these transformations are relatively minor.

@@ -1,0 +1,1611 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Taylor Arnold">
+
+<title>8&nbsp; Data Formats – Foundations of Data Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./09_requests.html" rel="next">
+<link href="./07_strings.html" rel="prev">
+<link href="./img/owl_explore.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-25064e4154141e7ea34817c6f1220590.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06_program.html">Part II: Programming</a></li><li class="breadcrumb-item"><a href="./08_dataformats.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Data Formats</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Foundations of Data Science</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/taylor-arnold/fds-py" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part I: Core</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_modify.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">EDA I: Organizing Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">EDA II: Visualizing Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_combine.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">EDA III: Restructuring Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_collect.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">EDA IV: Collecting Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part II: Programming</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_program.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Programming</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_strings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Strings</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_dataformats.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Data Formats</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_requests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Requests</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part III: Models</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Inference</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_supervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Supervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_unsupervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Unsupervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13_deeplearning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Deep Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_cnnwordvec.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">CNNs and Word2Vec</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15_transferlearn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Transfer Learning</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part IV: Applications</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16_spatial_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Spatial Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17_temporal_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Temporal Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18_network_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Network Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19_textual_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Textual Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20_image_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Image Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part V: Notes</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./21_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Notes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./22_datasets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Datasets</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup"><span class="header-section-number">8.1</span> Setup</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction"><span class="header-section-number">8.2</span> Introduction</a></li>
+  <li><a href="#json" id="toc-json" class="nav-link" data-scroll-target="#json"><span class="header-section-number">8.3</span> JSON</a></li>
+  <li><a href="#xml-and-html" id="toc-xml-and-html" class="nav-link" data-scroll-target="#xml-and-html"><span class="header-section-number">8.4</span> XML and HTML</a></li>
+  <li><a href="#duckdb" id="toc-duckdb" class="nav-link" data-scroll-target="#duckdb"><span class="header-section-number">8.5</span> DuckDB</a></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions"><span class="header-section-number">8.6</span> Conclusions</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06_program.html">Part II: Programming</a></li><li class="breadcrumb-item"><a href="./08_dataformats.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Data Formats</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-dataformats" class="quarto-section-identifier"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Data Formats</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Practice Notebooks
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>Notebook08a [<a href="https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook08a.ipynb?hl=en">Colab↗</a>]</li>
+<li>Notebook08b [<a href="https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook08b.ipynb?hl=en">Colab↗</a>]</li>
+</ul>
+</div>
+</div>
+</div>
+<section id="setup" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">8.1</span> Setup</h2>
+<p>Load all of the modules and datasets needed for the chapter. In addition to the standard modules, here we also use duckdb to work with databases, json to parse JSON data, and lxml to parse XML and HTML.</p>
+<div id="66ee3255" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funs <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plotnine <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polars <span class="im">import</span> col <span class="im">as</span> c</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>theme_set(theme_minimal())</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> duckdb</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> lxml <span class="im">import</span> etree, html</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="introduction" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="introduction"><span class="header-section-number">8.2</span> Introduction</h2>
+<p>Throughout this text, we have primarily worked with tabular data stored in CSV files. As we have seen, this format is surprisingly flexible while also keeping the data organized in a way that is optimized for using the grammar of graphics and data manipulation verbs to perform exploratory data analysis. Getting data organized for analysis often takes significant time. In fact, preparing data frequently takes more time than the analysis itself. Whether we are creating our own datasets or converting between formats, collecting and organizing data is a time-consuming yet essential task in data science.</p>
+<p>There are many other formats available for storing tabular datasets. We mentioned the use of the Excel format in <a href="05_collect.html" class="quarto-xref"><span>Chapter 5</span></a> as a useful option for data entry. Later, we will use the special GeoJSON format for storing tabular data along with geospatial information in <a href="16_spatial_data.html" class="quarto-xref"><span>Chapter 16</span></a> and the Parquet format for storing embeddings in <a href="15_transferlearn.html" class="quarto-xref"><span>Chapter 15</span></a>. For most other common tabular data formats, there is likely to be at least one Python function or package that can read—and in most cases write—data stored in that format. Even within Polars, we can load many variations, such as tables that use other delimiters or fixed-width columns.</p>
+<p>In some cases, data will be available in a format that is not initially organized into the kinds of tables we introduced in <a href="01_intro.html" class="quarto-xref"><span>Chapter 1</span></a> or that requires intentional manipulation before we can access it in a tabular format. Some common types of non-tabular data that we may encounter include raw text, JSON (JavaScript Object Notation), XML (Extensible Markup Language), and HTML (HyperText Markup Language). All of these can be loaded into Python using built-in functions and packages specifically designed to parse them. The challenge, however, is that when read into Python these formats will be in the form of dictionaries, lists, or other custom objects. Parsing these formats into a DataFrame requires writing custom code that takes into account the specific information stored in the data. Often this requires using new functions or query languages, such as regular expressions or XPath queries, to facilitate the conversion process.</p>
+<p>In addition to file formats, this chapter also introduces databases. Databases are specialized software systems designed to efficiently store, organize, and retrieve large amounts of structured data. While CSV files work well for small to medium datasets that fit comfortably in memory, databases become essential when working with larger datasets, when multiple users need to access the same data simultaneously, or when data changes frequently. Understanding how to interact with databases is a valuable skill that bridges the gap between exploratory analysis and production data systems.</p>
+<p>In this chapter, we introduce these common formats and show examples of how they can be used to represent different kinds of information. Along the way, we demonstrate specific functions for parsing data stored in these file types.</p>
+</section>
+<section id="json" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="json"><span class="header-section-number">8.3</span> JSON</h2>
+<p>JavaScript Object Notation, usually abbreviated as JSON, is a popular open-standard data format. It was originally designed for the JavaScript language but is now supported in virtually every modern programming language. The format of JSON closely resembles native data structures found in Python, making it particularly natural to work with. In part because of the importance of JavaScript as a core programming language in modern web browsers, JSON has become one of the most popular formats for data storage and transfer. This is particularly true for data distributed over web-based APIs, as we will see in <a href="09_requests.html" class="quarto-xref"><span>Chapter 9</span></a>.</p>
+<p>As with CSV, JSON data is stored in a plaintext format. This means we can open the file in any text editor and see the data in a human-readable format. This transparency is one of JSON’s key advantages: we can inspect the data structure directly without needing specialized software. We created a small example of a JSON file displaying information about two of the authors in our Wikipedia dataset:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"data"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"Charlotte Brontë"</span><span class="fu">,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"age_at_death"</span><span class="fu">:</span> <span class="dv">38</span><span class="fu">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"date"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"born"</span><span class="fu">:</span> <span class="st">"21 April 1816"</span><span class="fu">,</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"died"</span><span class="fu">:</span> <span class="st">"31 March 1855"</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">},</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"profession"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">"novelist"</span><span class="ot">,</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"poet"</span><span class="ot">,</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"governess"</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"Virginia Woolf"</span><span class="fu">,</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"age_at_death"</span><span class="fu">:</span> <span class="dv">59</span><span class="fu">,</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"date"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"born"</span><span class="fu">:</span> <span class="st">"25 January 1882"</span><span class="fu">,</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"died"</span><span class="fu">:</span> <span class="st">"28 March 1941"</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>      <span class="fu">},</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"profession"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        <span class="st">"novelist"</span><span class="ot">,</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>        <span class="st">"essayist"</span><span class="ot">,</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        <span class="st">"critic"</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Data stored in the JSON format is highly structured. In some ways, the format is more strict than CSV files because it enforces a consistent syntax and is relatively easy to parse programmatically. Looking at the example above, we see many of the basic element types of JSON data. In fact, there are only six core data types available:</p>
+<ol type="1">
+<li>an empty value called <code>null</code></li>
+<li>a number (either integer or floating-point)</li>
+<li>a string (enclosed in double quotes)</li>
+<li>a Boolean value equal to <code>true</code> or <code>false</code></li>
+<li>an object of named value pairs, with names equal to strings and values equal to any other data type (similar to a Python dictionary)</li>
+<li>an ordered array of objects coming from any other type (similar to a Python list)</li>
+</ol>
+<p>Objects are defined by curly braces and arrays are defined with square brackets. The reason that JSON can become complex even with these limited types is that, as in the example above, it is possible to create deeply nested structures using the object and array types. A JSON array can contain objects, which themselves contain arrays of more objects, and so on indefinitely. This flexibility makes JSON excellent for representing hierarchical data but can make converting it to a flat tabular format challenging.</p>
+<p>To read a JSON object into Python, we can use the built-in <code>json</code> module. This module is part of Python’s standard library, so no additional installation is required. Below, we load a version of the example dataset presented above.</p>
+<div id="4194dd67" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>obj_json <span class="op">=</span> json.loads(Path(<span class="st">"examples/author.json"</span>).read_text())</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(obj_json)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>dict</code></pre>
+</div>
+</div>
+<p>The output object <code>obj_json</code> is a Python dictionary. In general, Python turns JSON arrays into lists and objects into dictionaries. Numbers, strings, and Boolean objects become the corresponding Python types, and <code>null</code> becomes Python’s <code>None</code>. This mapping between JSON and Python types is intuitive and makes working with JSON data feel natural.</p>
+<p>To create a structured dataset from the output, we can use standard Python dictionary and list operations. Here, we extract the author names using a list comprehension.</p>
+<div id="3edb551e" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>[author[<span class="st">'name'</span>] <span class="cf">for</span> author <span class="kw">in</span> obj_json[<span class="st">'data'</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>['Charlotte Brontë', 'Virginia Woolf']</code></pre>
+</div>
+</div>
+<p>This approach of navigating through nested dictionaries and lists is the fundamental technique for working with JSON data. Each level of nesting requires an additional key lookup (for dictionaries) or index access (for lists). In the example above, <code>obj_json['data']</code> returns the list of author objects, and then we iterate through each author to extract the <code>'name'</code> field.</p>
+<p>We can use a for-loop over the JSON data to construct a DataFrame object containing all of the author metadata in a tabular form. The key insight here is that we need to decide which pieces of information belong in our output table and how to handle nested structures.</p>
+<div id="fd2f5e36" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>meta <span class="op">=</span> []</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> author <span class="kw">in</span> obj_json[<span class="st">'data'</span>]:</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    meta.append({</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">'name'</span>: author[<span class="st">'name'</span>],</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">'age_at_death'</span>: author[<span class="st">'age_at_death'</span>],</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">'born'</span>: author[<span class="st">'date'</span>][<span class="st">'born'</span>],</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">'died'</span>: author[<span class="st">'date'</span>][<span class="st">'died'</span>]</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>meta <span class="op">=</span> pl.DataFrame(meta)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>meta</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (2, 4)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">age_at_death</th>
+<th data-quarto-table-cell-role="th">born</th>
+<th data-quarto-table-cell-role="th">died</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>i64</th>
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Charlotte Brontë"</td>
+<td>38</td>
+<td>"21 April 1816"</td>
+<td>"31 March 1855"</td>
+</tr>
+<tr class="even">
+<td>"Virginia Woolf"</td>
+<td>59</td>
+<td>"25 January 1882"</td>
+<td>"28 March 1941"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Notice how we “flattened” the nested <code>date</code> object by extracting its <code>born</code> and <code>died</code> fields as separate columns in our output. This is a common pattern when converting JSON to tabular format: nested objects often become multiple columns rather than a single complex column.</p>
+<p>The JSON object also associates each author with a set of professions. JSON naturally handles such nested structures, where a single entity has multiple related values. However, this can be difficult to represent in a simple rectangular table. To create a dataset mapping each author to all of their professions, we need to create multiple rows for authors with multiple professions.</p>
+<div id="e8bc76d6" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>prof <span class="op">=</span> []</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> author <span class="kw">in</span> obj_json[<span class="st">'data'</span>]:</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    name <span class="op">=</span> author[<span class="st">'name'</span>]</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> profession <span class="kw">in</span> author[<span class="st">'profession'</span>]:</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        prof.append({</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>            <span class="st">'name'</span>: name,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">'profession'</span>: profession</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>prof <span class="op">=</span> pl.DataFrame(prof)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>prof</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (6, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">profession</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Charlotte Brontë"</td>
+<td>"novelist"</td>
+</tr>
+<tr class="even">
+<td>"Charlotte Brontë"</td>
+<td>"poet"</td>
+</tr>
+<tr class="odd">
+<td>"Charlotte Brontë"</td>
+<td>"governess"</td>
+</tr>
+<tr class="even">
+<td>"Virginia Woolf"</td>
+<td>"novelist"</td>
+</tr>
+<tr class="odd">
+<td>"Virginia Woolf"</td>
+<td>"essayist"</td>
+</tr>
+<tr class="even">
+<td>"Virginia Woolf"</td>
+<td>"critic"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>This result illustrates a fundamental tension between JSON’s hierarchical structure and tabular data’s rectangular structure. In JSON, Charlotte Brontë appears once with an array of three professions. In our tabular format, she appears in three separate rows, once for each profession. Neither representation is inherently better; they simply serve different purposes. The tabular format makes it easy to filter, group, and join on profession, which would be awkward with nested arrays.</p>
+<p>It is often the case that one JSON file needs to be turned into multiple tabular datasets. In our example, we created two separate tables: one with author metadata and one with author-profession pairs. These tables could be linked together using the author’s name as a key, following the relational concepts we learned in <a href="04_combine.html" class="quarto-xref"><span>Chapter 4</span></a>. Deciding what tables to build and how to link them together is the core task of turning JSON data into tabular data. The difficulty of this varies greatly depending on the level of nesting in the JSON data as well as the consistency from record to record. Real-world JSON data can be messy, with some records missing fields that others have, or with different records having different structures entirely. Robust code for parsing JSON often needs to handle these inconsistencies gracefully.</p>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Working with large JSON files
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>For very large JSON files that don’t fit comfortably in memory, you may want to consider streaming parsers that can process the file incrementally. The <code>ijson</code> package provides this functionality for Python. Additionally, some JSON files store one JSON object per line (a format called JSON Lines or NDJSON), which can be processed line by line without loading the entire file.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="xml-and-html" class="level2" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="xml-and-html"><span class="header-section-number">8.4</span> XML and HTML</h2>
+<p><em>Extensible Markup Language</em> (XML) is another popular format for transferring and storing data. Like JSON, the format is quite flexible and typically results in nested, tree-like structures that require some work to turn into a rectangular data format. However, XML has a different philosophy than JSON. Much of the formal standards for XML are concerned with describing how groups can produce specific “extensible” dialects of XML that have consistent names and structures to describe particular kinds of data. Popular examples include XML-RDF (Resource Description Framework) for describing linked open data, XML-TEI (Text Encoding Initiative) for providing markup to textual data, and numerous domain-specific formats in fields ranging from finance to biology.</p>
+<p>The XML format organizes data inside of hierarchically nested tags. Each tag has a name enclosed in angle brackets, and tags come in pairs: an opening tag like <code>&lt;author&gt;</code> and a closing tag like <code>&lt;/author&gt;</code>. Everything between the opening and closing tags is the content of that element. Tags can also have attributes, which are name-value pairs that appear inside the opening tag. Below is an example of how the data from the previous JSON example could have been stored in an XML dataset.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode xml code-with-copy"><code class="sourceCode xml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">&lt;?xml</span><span class="ot"> version=</span><span class="st">"1.0"</span><span class="ot"> encoding=</span><span class="st">"UTF-8"</span><span class="fu">?&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">root</span>&gt;</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  &lt;<span class="kw">author</span>&gt;</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">name</span>&gt;Charlotte Brontë&lt;/<span class="kw">name</span>&gt;</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">life</span>&gt;</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>      &lt;<span class="kw">item</span><span class="ot"> name=</span><span class="st">"born"</span>&gt;21 April 1816&lt;/<span class="kw">item</span>&gt;</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>      &lt;<span class="kw">item</span><span class="ot"> name=</span><span class="st">"died"</span>&gt;31 March 1855&lt;/<span class="kw">item</span>&gt;</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    &lt;/<span class="kw">life</span>&gt;</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">ageatdeath</span>&gt;38&lt;/<span class="kw">ageatdeath</span>&gt;</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">professions</span>&gt;</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>      &lt;<span class="kw">profession</span>&gt;novelist&lt;/<span class="kw">profession</span>&gt;</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>      &lt;<span class="kw">profession</span>&gt;poet&lt;/<span class="kw">profession</span>&gt;</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>      &lt;<span class="kw">profession</span>&gt;governess&lt;/<span class="kw">profession</span>&gt;</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    &lt;/<span class="kw">professions</span>&gt;</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  &lt;/<span class="kw">author</span>&gt;</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  &lt;<span class="kw">author</span>&gt;</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">name</span>&gt;Virginia Woolf&lt;/<span class="kw">name</span>&gt;</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">life</span>&gt;</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>      &lt;<span class="kw">item</span><span class="ot"> name=</span><span class="st">"born"</span>&gt;25 January 1882&lt;/<span class="kw">item</span>&gt;</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>      &lt;<span class="kw">item</span><span class="ot"> name=</span><span class="st">"died"</span>&gt;28 March 1941&lt;/<span class="kw">item</span>&gt;</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    &lt;/<span class="kw">life</span>&gt;</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">ageatdeath</span>&gt;59&lt;/<span class="kw">ageatdeath</span>&gt;</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">professions</span>&gt;</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>      &lt;<span class="kw">profession</span>&gt;novelist&lt;/<span class="kw">profession</span>&gt;</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>      &lt;<span class="kw">profession</span>&gt;essayist&lt;/<span class="kw">profession</span>&gt;</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>      &lt;<span class="kw">profession</span>&gt;critic&lt;/<span class="kw">profession</span>&gt;</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>    &lt;/<span class="kw">professions</span>&gt;</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>  &lt;/<span class="kw">author</span>&gt;</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">root</span>&gt;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Comparing this to the JSON version, we can see several differences. Information can be stored either as text content within tags (like the author’s name inside <code>&lt;n&gt;...&lt;/n&gt;</code>) or as attributes (like <code>name="born"</code> in the <code>&lt;item&gt;</code> tag). XML tends to be more verbose than JSON because of all the repeated tag names, but it offers more flexibility in how data can be structured and annotated.</p>
+<p>Python provides several ways to parse XML. One of the most powerful is the <code>lxml</code> library, which provides both speed and a comprehensive feature set. Here is the code to get started loading our example data into Python.</p>
+<div id="20d64771" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>xml_path <span class="op">=</span> Path(<span class="st">"examples/author.xml"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>tree <span class="op">=</span> etree.parse(<span class="bu">str</span>(xml_path))</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>root <span class="op">=</span> tree.getroot()</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>root</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>&lt;Element root at 0x16811b080&gt;</code></pre>
+</div>
+</div>
+<p>The <code>tree</code> object represents the entire XML document, while <code>root</code> is the top-level element (the <code>&lt;root&gt;</code> tag in our example). Unlike JSON, which loads directly into Python dictionaries and lists, XML loads into specialized element objects that we need to navigate using XML-specific methods.</p>
+<p>To work with the data, we will use a special query language called XPath. XPath allows us to locate elements within an XML document by specifying their position in the document’s tree structure, their tag names, their attributes, or combinations of these criteria. You can think of XPath as similar to regular expressions but designed for navigating XML structures rather than matching text patterns. For example, we can use the expression <code>/root/author</code> to get all of the tags <code>&lt;author&gt;</code> that are directly contained within the tag <code>&lt;root&gt;</code>.</p>
+<div id="c48031fb" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>author_nodes <span class="op">=</span> root.xpath(<span class="st">"/root/author"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>author_nodes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>[&lt;Element author at 0x168377280&gt;, &lt;Element author at 0x168376400&gt;]</code></pre>
+</div>
+</div>
+<p>The XPath expression <code>/root/author</code> means “starting from the root of the document, find the <code>root</code> element, then find all <code>author</code> elements directly inside it.” The result is a list of element objects, one for each author in our data. The leading slash indicates we’re starting from the absolute top of the document, while the forward slashes separate each level of the hierarchy.</p>
+<p>Now, to build a DataFrame of the author-level metadata, we need to cycle through each of the author nodes. For each author node, we use further XPath expressions to extract all of the author-level information.</p>
+<div id="6af7afe5" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>author_df <span class="op">=</span> []</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, author <span class="kw">in</span> <span class="bu">enumerate</span>(author_nodes, start<span class="op">=</span><span class="dv">1</span>):</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    author_df.append(</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>            <span class="st">"author_id"</span>: i,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">"name"</span>: author.xpath(<span class="st">"name"</span>)[<span class="dv">0</span>].text,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"born"</span>: author.xpath(<span class="st">"life/item[@name='born']"</span>)[<span class="dv">0</span>].text,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>            <span class="st">"died"</span>: author.xpath(<span class="st">"life/item[@name='died']"</span>)[<span class="dv">0</span>].text,</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>            <span class="st">"age_at_death"</span>: <span class="bu">int</span>(author.xpath(<span class="st">"ageatdeath"</span>)[<span class="dv">0</span>].text),</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>author_df <span class="op">=</span> pl.DataFrame(author_df)</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>author_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (2, 5)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">author_id</th>
+<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">born</th>
+<th data-quarto-table-cell-role="th">died</th>
+<th data-quarto-table-cell-role="th">age_at_death</th>
+</tr>
+<tr class="even">
+<th>i64</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>i64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>"Charlotte Brontë"</td>
+<td>"21 April 1816"</td>
+<td>"31 March 1855"</td>
+<td>38</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>"Virginia Woolf"</td>
+<td>"25 January 1882"</td>
+<td>"28 March 1941"</td>
+<td>59</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Notice several important details in this code. First, when we use XPath from an element (like <code>author.xpath("n")</code>), the path is relative to that element rather than starting from the document root. Second, the expression <code>[@name='born']</code> is an XPath predicate that filters elements based on their attributes—it selects only <code>&lt;item&gt;</code> elements where the <code>name</code> attribute equals <code>"born"</code>. Third, the <code>.text</code> property of an element gives us the text content between the opening and closing tags.</p>
+<p>We can use a similar approach to parse the professions, creating a separate table that we could later join with the author metadata.</p>
+<div id="406ba842" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>profession_df <span class="op">=</span> []</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, author <span class="kw">in</span> <span class="bu">enumerate</span>(author_nodes, start<span class="op">=</span><span class="dv">1</span>):</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> p <span class="kw">in</span> author.xpath(<span class="st">"professions/profession"</span>):</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        profession_df.append({</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>            <span class="st">"author_id"</span>: i,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">"profession"</span>: p.text,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>profession_df <span class="op">=</span> pl.DataFrame(profession_df)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>profession_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (6, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">author_id</th>
+<th data-quarto-table-cell-role="th">profession</th>
+</tr>
+<tr class="even">
+<th>i64</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>"novelist"</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>"poet"</td>
+</tr>
+<tr class="odd">
+<td>1</td>
+<td>"governess"</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>"novelist"</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>"essayist"</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>"critic"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The path <code>professions/profession</code> navigates from each author element into the <code>&lt;professions&gt;</code> container and then selects all <code>&lt;profession&gt;</code> elements within it. This pattern of iterating through parent elements and then through their children is common when converting hierarchical XML into flat tables.</p>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+XPath expressions
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>XPath is a rich query language with many features beyond what we’ve shown here. Some useful expressions include <code>//</code> (find elements anywhere in the document, not just at a specific path), <code>*</code> (match any element name), <code>[position()]</code> (select elements by their position), and various functions for string manipulation and numeric comparisons. For complex XML documents, investing time in learning XPath can significantly simplify your parsing code.</p>
+</div>
+</div>
+</div>
+<p>HTML, short for HyperText Markup Language, is a closely related format to XML that is primarily intended to be displayed in a web browser. While HTML’s primary purpose is not to store arbitrary data, we often need to extract data from HTML documents. This is particularly common when we want to collect data from websites that don’t offer a structured API. The process of extracting data from web pages is sometimes called “web scraping.”</p>
+<p>We can parse HTML using the same <code>lxml</code> library, but with its HTML-specific module instead of the XML parser. Here is a simple example:</p>
+<div id="b97a7b4c" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>html_content <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;html&gt;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;body&gt;</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;table&gt;</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="st">      &lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;Born&lt;/th&gt;&lt;/tr&gt;</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="st">      &lt;tr&gt;&lt;td&gt;Charlotte Brontë&lt;/td&gt;&lt;td&gt;1816&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="st">      &lt;tr&gt;&lt;td&gt;Virginia Woolf&lt;/td&gt;&lt;td&gt;1882&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;/table&gt;</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;/body&gt;</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;/html&gt;</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>doc <span class="op">=</span> html.fromstring(html_content)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>rows <span class="op">=</span> doc.xpath(<span class="st">"//tr"</span>)</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> rows:</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    cells <span class="op">=</span> row.xpath(<span class="st">"td/text() | th/text()"</span>)</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(cells)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>['Name', 'Born']
+['Charlotte Brontë', '1816']
+['Virginia Woolf', '1882']</code></pre>
+</div>
+</div>
+<p>HTML often has additional whitespace within its tags, and real-world web pages frequently have messy, inconsistent structure. When extracting data from HTML, it can be helpful to use the <code>.text_content()</code> method of elements instead of the <code>.text</code> property. The <code>.text_content()</code> method concatenates all text within an element, including text in nested child elements, while <code>.text</code> only returns the text directly inside the element before any child elements.</p>
+</section>
+<section id="duckdb" class="level2" data-number="8.5">
+<h2 data-number="8.5" class="anchored" data-anchor-id="duckdb"><span class="header-section-number">8.5</span> DuckDB</h2>
+<p>Databases are specialized software systems designed to store, organize, and retrieve structured data. They offer significant advantages over simple file-based storage: they can efficiently handle datasets too large to fit in memory, they support concurrent access by multiple users, they enforce data integrity constraints, and they provide powerful query capabilities. If you find yourself working in a corporate environment with larger, complex datasets that change frequently, it is almost certainly the case that you will use a database to fetch data and perform initial processing before pulling subsets into Python for detailed analysis and visualization. Even for local work, if you are dealing with datasets that are difficult to load into memory all at once, a database can provide an efficient solution.</p>
+<p>Most databases have well-maintained Python modules for interacting with them. In this section, we illustrate the process of using DuckDB, a modern database implementation that is particularly well-suited for analytical workloads. DuckDB is designed to be embedded directly within applications and requires no external setup—it can be managed entirely from within Python. This makes it an excellent choice for data science work where you want the power of a database without the complexity of setting up and maintaining a separate database server. Other database systems like PostgreSQL, MySQL, or SQLite function similarly but require more involved setup steps. That’s not necessarily a problem if you’re accessing a database maintained by an IT team, but for local analytical work, DuckDB is an excellent choice.</p>
+<p>To start, we will create a local DuckDB database, which is nothing more than a highly optimized file stored on our machine. We will be working with the <code>countries.csv</code> dataset and will begin by creating a DuckDB connection to a new file called <code>countries.duckdb</code>.</p>
+<div id="b8932656" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>con <span class="op">=</span> duckdb.<span class="ex">connect</span>(<span class="st">"examples/countries.duckdb"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The <code>con</code> object represents our connection to the database. All subsequent operations will go through this connection object.</p>
+<p>Interacting with databases typically involves using a specialized language called SQL (Structured Query Language). SQL is used both to define the structure of data (creating tables, defining relationships) and to query and manipulate data that is already stored. Many of SQL’s query operations mirror the Polars data manipulation commands we learned in <a href="02_modify.html" class="quarto-xref"><span>Chapter 2</span></a> and <a href="04_combine.html" class="quarto-xref"><span>Chapter 4</span></a>. If you understand filtering, selecting, grouping, and joining in Polars, you already understand the core concepts of SQL—only the syntax differs.</p>
+<p>We will not provide a complete introduction to SQL here, but we will highlight the key commands that you are most likely to encounter. First, to load a dataset from a CSV file into the database, we use the following command:</p>
+<div id="5624337e" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>con.execute(<span class="ss">f"""</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="ss">    CREATE TABLE IF NOT EXISTS country AS</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="ss">    SELECT *</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="ss">    FROM read_csv_auto('data/countries.csv')</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>&lt;_duckdb.DuckDBPyConnection at 0x15b326970&gt;</code></pre>
+</div>
+</div>
+<p>Let’s break down this SQL statement. <code>CREATE TABLE IF NOT EXISTS country</code> tells the database to create a new table called <code>country</code>, but only if a table with that name doesn’t already exist. The <code>AS SELECT * FROM read_csv_auto('data/countries.csv')</code> part says to populate this table by reading all columns (<code>*</code>) from our CSV file. DuckDB’s <code>read_csv_auto</code> function automatically detects column types and handles common CSV formatting issues.</p>
+<p>This loading step only needs to be done once. Once the data is in the database, it persists across Python sessions (unlike DataFrames in memory, which disappear when you close Python). We can then query the data using <code>SELECT</code> statements.</p>
+<div id="c99a7b7f" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> con.execute(<span class="st">"""</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="st">    SELECT iso, full_name, region, hdi, gdp</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="st">    FROM country</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="st">    ORDER BY hdi DESC</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="st">    LIMIT 10</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>).pl()</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (10, 5)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">iso</th>
+<th data-quarto-table-cell-role="th">full_name</th>
+<th data-quarto-table-cell-role="th">region</th>
+<th data-quarto-table-cell-role="th">hdi</th>
+<th data-quarto-table-cell-role="th">gdp</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>f64</th>
+<th>i64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"ISL"</td>
+<td>"Iceland"</td>
+<td>"Europe"</td>
+<td>0.972</td>
+<td>67444</td>
+</tr>
+<tr class="even">
+<td>"CHE"</td>
+<td>"Switzerland"</td>
+<td>"Europe"</td>
+<td>0.97</td>
+<td>84311</td>
+</tr>
+<tr class="odd">
+<td>"NOR"</td>
+<td>"Norway"</td>
+<td>"Europe"</td>
+<td>0.97</td>
+<td>94896</td>
+</tr>
+<tr class="even">
+<td>"DNK"</td>
+<td>"Denmark"</td>
+<td>"Europe"</td>
+<td>0.962</td>
+<td>77337</td>
+</tr>
+<tr class="odd">
+<td>"DEU"</td>
+<td>"Germany"</td>
+<td>"Europe"</td>
+<td>0.959</td>
+<td>64355</td>
+</tr>
+<tr class="even">
+<td>"SWE"</td>
+<td>"Sweden"</td>
+<td>"Europe"</td>
+<td>0.959</td>
+<td>65597</td>
+</tr>
+<tr class="odd">
+<td>"AUS"</td>
+<td>"Australia"</td>
+<td>"Oceania"</td>
+<td>0.958</td>
+<td>61943</td>
+</tr>
+<tr class="even">
+<td>"NLD"</td>
+<td>"Netherlands, Kingdom of the"</td>
+<td>"Europe"</td>
+<td>0.955</td>
+<td>73384</td>
+</tr>
+<tr class="odd">
+<td>"BEL"</td>
+<td>"Belgium"</td>
+<td>"Europe"</td>
+<td>0.951</td>
+<td>65096</td>
+</tr>
+<tr class="even">
+<td>"IRL"</td>
+<td>"Ireland"</td>
+<td>"Europe"</td>
+<td>0.949</td>
+<td>119406</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>This query selects five specific columns from our <code>country</code> table, sorts the results by <code>hdi</code> in descending order, and returns only the top 10 rows. The <code>.pl()</code> method at the end converts the result into a Polars DataFrame, allowing us to continue working with the data using all the Polars methods we’ve learned. Notice how the SQL keywords (<code>SELECT</code>, <code>FROM</code>, <code>ORDER BY</code>, <code>LIMIT</code>) directly correspond to Polars operations (<code>.select()</code>, reading from a table, <code>.sort()</code>, <code>.head()</code>).</p>
+<p>Often we use a database because the data is too large to fit easily in Python memory in its full form. We can limit the number of rows that we read in using a <code>WHERE</code> clause, which is similar to a filter in Polars. This allows us to extract just the subset of data we need for a particular analysis.</p>
+<div id="82fc286f" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> con.execute(<span class="st">"""</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="st">    SELECT iso, full_name, lexp, gdp</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="st">    FROM country</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="st">    WHERE region = 'Americas'</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="st">      AND lexp &gt;= 75</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="st">      AND gdp &gt;= 20000</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="st">    ORDER BY gdp DESC</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>).pl()</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (8, 4)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">iso</th>
+<th data-quarto-table-cell-role="th">full_name</th>
+<th data-quarto-table-cell-role="th">lexp</th>
+<th data-quarto-table-cell-role="th">gdp</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+<th>f64</th>
+<th>i64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"USA"</td>
+<td>"United States of America"</td>
+<td>79.83</td>
+<td>78389</td>
+</tr>
+<tr class="even">
+<td>"CAN"</td>
+<td>"Canada"</td>
+<td>83.15</td>
+<td>58422</td>
+</tr>
+<tr class="odd">
+<td>"PAN"</td>
+<td>"Panama"</td>
+<td>81.17</td>
+<td>38412</td>
+</tr>
+<tr class="even">
+<td>"URY"</td>
+<td>"Uruguay"</td>
+<td>78.5</td>
+<td>33758</td>
+</tr>
+<tr class="odd">
+<td>"CHL"</td>
+<td>"Chile"</td>
+<td>81.39</td>
+<td>31425</td>
+</tr>
+<tr class="even">
+<td>"CRI"</td>
+<td>"Costa Rica"</td>
+<td>81.33</td>
+<td>28390</td>
+</tr>
+<tr class="odd">
+<td>"MEX"</td>
+<td>"Mexico"</td>
+<td>76.88</td>
+<td>22375</td>
+</tr>
+<tr class="even">
+<td>"BRA"</td>
+<td>"Brazil"</td>
+<td>77.09</td>
+<td>20500</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The <code>WHERE</code> clause supports multiple conditions combined with <code>AND</code> or <code>OR</code>, along with comparison operators like <code>=</code>, <code>&gt;=</code>, <code>&lt;</code>, and <code>!=</code>. This query finds countries in the Americas with high life expectancy and GDP.</p>
+<p>We can also perform aggregation directly inside the database using <code>GROUP BY</code>:</p>
+<div id="78af76cf" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> con.execute(<span class="st">"""</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="st">    SELECT</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="st">        region,</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="st">        COUNT(*) AS n_countries</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="st">    FROM country</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="st">    GROUP BY region</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="st">    ORDER BY n_countries DESC</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>).pl()</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">region</th>
+<th data-quarto-table-cell-role="th">n_countries</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>i64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Asia"</td>
+<td>39</td>
+</tr>
+<tr class="even">
+<td>"Europe"</td>
+<td>38</td>
+</tr>
+<tr class="odd">
+<td>"Africa"</td>
+<td>37</td>
+</tr>
+<tr class="even">
+<td>"Americas"</td>
+<td>19</td>
+</tr>
+<tr class="odd">
+<td>"Oceania"</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>This query counts the number of countries in each region, exactly like we would do with <code>.group_by()</code> and <code>.agg()</code> in Polars. The <code>AS n_countries</code> part gives a name to the computed column, just like providing a column name in a Polars aggregation.</p>
+<p>All of this computation happens in DuckDB before sending the data back to Python, making it efficient for larger datasets. The database engine is optimized for these operations and can often process queries faster than equivalent Python code, especially for large datasets that benefit from disk-based processing.</p>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+SQL and Polars
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>If you’re curious about the relationship between SQL and Polars, you might be interested to know that DuckDB and Polars share many design principles. Both use columnar data storage and lazy evaluation for query optimization. In fact, Polars can execute SQL queries directly on DataFrames using <code>.sql()</code>, and DuckDB can read Polars DataFrames directly without conversion. For data scientists, learning both SQL and Polars is valuable: SQL is essential for working with traditional databases and is widely used in industry, while Polars provides a more Pythonic interface that integrates naturally with the broader Python ecosystem for analysis and visualization.</p>
+</div>
+</div>
+</div>
+<p>SQL provides a somewhat limited set of operations compared to Python’s full expressiveness. More involved modeling, visualization, and complex data transformations typically occur directly in Python after fetching the relevant data from the database. Combining the two tools provides a powerful workflow: use SQL and databases for storage and initial filtering of large datasets, then use Python for detailed analysis and visualization. Understanding how to move between these two worlds is an essential skill for working with data at scale.</p>
+</section>
+<section id="conclusions" class="level2" data-number="8.6">
+<h2 data-number="8.6" class="anchored" data-anchor-id="conclusions"><span class="header-section-number">8.6</span> Conclusions</h2>
+<p>In this chapter, we explored several common data formats beyond the CSV files that have been our primary focus throughout this text. JSON provides a flexible, hierarchical format that maps naturally to Python’s dictionaries and lists, making it popular for web APIs and configuration files. XML offers similar hierarchical capabilities with a more verbose syntax and powerful querying through XPath. Both formats require us to think carefully about how to flatten nested structures into rectangular tables suitable for analysis.</p>
+<p>We also introduced DuckDB as a representative database system, demonstrating how SQL queries can filter, select, and aggregate data before bringing it into Python. Databases become essential when working with datasets too large for memory or when data needs to be shared and updated by multiple users.</p>
+<p>The common theme across all these formats is the need to transform data into a structure amenable to analysis. Whether parsing JSON objects, navigating XML trees with XPath, or writing SQL queries, the goal remains the same: extract the information we need and organize it into the tabular format that enables the exploratory data analysis techniques we’ve developed throughout this book. Mastering these transformations expands the range of data sources we can work with and prepares us for the diverse data landscape we’ll encounter in practice.</p>
+</section>
+<section id="references" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/taylor-arnold\.github\.io\/fds-py");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./07_strings.html" class="pagination-link" aria-label="Strings">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Strings</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./09_requests.html" class="pagination-link" aria-label="Requests">
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Requests</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Taylor Arnold</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>A <a href="https://distantviewing.org/">Distant Viewing Lab</a> project</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

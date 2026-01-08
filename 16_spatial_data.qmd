@@ -1,0 +1,253 @@
+# Spatial Data {#sec-spatial}
+
+```{python}
+#| include: false
+import warnings
+warnings.filterwarnings('ignore')
+```
+
+::: {.callout-tip collapse="true"}
+## Practice Notebooks
+
+- Notebook16a [[Colab↗](https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook16a.ipynb?hl=en)]
+- Notebook16b [[Colab↗](https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook16b.ipynb?hl=en)]
+
+:::
+
+## Setup
+
+Load all of the modules and datasets needed for the chapter.
+
+```{python}
+#| output: false
+import numpy as np
+import polars as pl
+
+from funs import *
+from plotnine import *
+from polars import col as c
+theme_set(theme_minimal())
+
+metro = pl.read_csv("data/acs_cbsa.csv")
+```
+
+## Introduction
+
+Every piece of data we have worked with so far in this book has existed in an abstract space defined only by the relationships between variables. A country's GDP, a patient's blood pressure, or a product's sales figures are all numbers that live in a purely numerical realm. But much of the world's most valuable data is inherently tied to physical locations on Earth. Where did this crime occur? Which neighborhoods have the highest rates of asthma? How far is the nearest hospital from each school? These questions require a fundamentally different approach to data analysis, one that treats location not as just another variable but as a geometric object with shape, area, and spatial relationships to other objects.
+
+Spatial data analysis bridges the gap between traditional tabular data and the physical world. At its core, spatial data associates each observation with a *geometry*: a mathematical representation of a location or region on Earth's surface. A geometry might be as simple as a single point (the location of a coffee shop) or as complex as a polygon with thousands of vertices (the boundary of a congressional district). The key insight is that once we have geometries, we can ask questions that would be impossible with ordinary data: Which points fall inside which polygons? Which polygons share a border? What is the nearest neighbor to each observation?
+
+In this chapter, we introduce tools for working with spatial data in Python. Because the Polars library we have used throughout this book does not natively support spatial operations, we provide a wrapper class called `DSGeo` that allows us to leverage the powerful [GeoPandas](https://geopandas.org/) library while keeping our data in Polars DataFrames. This approach gives us the best of both worlds: the speed and ergonomics of Polars for standard data manipulation, combined with the mature spatial functionality of GeoPandas when we need it.
+
+## Spatial Points
+
+The simplest type of spatial data consists of points: individual locations specified by their coordinates. Points are used to represent discrete features like cities, sensor stations, retail locations, or any other phenomenon that can be meaningfully reduced to a single location. Each point is defined by two numbers: a longitude (the east-west position) and a latitude (the north-south position).
+
+We begin with a dataset containing information about metropolitan statistical areas (MSAs) in the United States. Each row represents a single metro region, with columns for population, economic indicators, and geographic coordinates.
+
+```{python}
+metro
+```
+
+Because longitude and latitude are just numbers, we can create a basic visualization using plotnine without any special spatial tools. The longitude values go on the x-axis and latitude values on the y-axis.
+
+```{python}
+(
+    metro
+    .pipe(ggplot, aes("lon", "lat"))
+    + geom_point()
+)
+```
+
+This scatter plot is functional but has several limitations. The most obvious is that it treats longitude and latitude as if they were ordinary Cartesian coordinates, when in fact they represent positions on a curved surface. The distortion is particularly noticeable at higher latitudes, where equal increments in longitude correspond to shorter physical distances. Additionally, we have no context for these points: no coastlines, state boundaries, or other geographic features to help orient the viewer.
+
+To unlock more sophisticated spatial functionality, we need to convert our latitude and longitude columns into proper geometric objects. The `DSGeo.from_latlon()` method creates a new column called `geometry` that stores each point as a binary blob in a standardized format. This format encodes not just the coordinates but also metadata about the coordinate reference system.
+
+```{python}
+metro = DSGeo.from_latlon(metro)
+metro
+```
+
+The DataFrame now contains a `geometry` column that appears as a series of binary values. While these values are not human-readable, they can be manipulated by specialized spatial functions that understand their internal structure.
+
+## Coordinate Systems (CRS)
+
+One of the most important concepts in spatial data analysis is the *coordinate reference system* (CRS), sometimes called a *spatial reference system*. A CRS defines how coordinates map to actual locations on Earth. This might seem straightforward, but Earth's surface is curved while maps are flat. Any attempt to represent the globe on a two-dimensional surface requires making trade-offs: you can preserve shapes or areas or distances, but never all three simultaneously.
+
+The most common CRS for storing geographic data is WGS 84 (World Geodetic System 1984), which uses latitude and longitude measured in degrees. This is the system used by GPS devices and most web mapping services. When we created our geometry column above, the coordinates were assumed to be in WGS 84. However, for visualization and certain calculations, we often want to *project* our data into a different CRS that is optimized for a particular region or purpose.
+
+Each CRS is identified by a numeric code in the EPSG (European Petroleum Survey Group) registry. For example:
+
+- **EPSG:4326** is WGS 84, the standard latitude/longitude system
+- **EPSG:5069** is NAD83 Conus Albers, an equal-area projection suitable for the contiguous United States
+- **EPSG:3857** is Web Mercator, used by Google Maps and other web mapping services
+- **EPSG:32618** is UTM Zone 18N, appropriate for the US East Coast
+- **EPSG:2154** is the official projection for Metropolitan France (including Corsica), mandated by French law
+- **EPSG:7791** is Italy's modern national reference system and the most accurate for Italian data
+
+To find the appropriate EPSG code for a specific region or purpose, you can search the [EPSG.io](https://epsg.io/) website or consult the [Spatial Reference](https://spatialreference.org/) database. These resources allow you to look up projections by name, region, or properties (such as whether they preserve area or shape).
+
+When we plot our metro data with a specific CRS, the coordinates are transformed to reflect the chosen projection. The Albers Equal Area projection (EPSG:5069) is designed to minimize distortion for the contiguous United States, making it a good choice for visualizing data across the country.
+
+```{python}
+DSGeo.plot(metro, crs=5069)
+```
+
+Notice how the shape of the point cloud now more closely resembles the familiar outline of the continental United States. Alaska and Hawaii, if present in the data, would appear distorted under this projection because it is optimized for the lower 48 states.
+
+::: {.callout-note collapse="true"}
+## Why projections matter
+
+The choice of projection can have significant implications for analysis. Consider calculating the distance between two cities. In WGS 84 coordinates, the distance between two points depends on their latitude: one degree of longitude represents about 111 kilometers at the equator but only about 85 kilometers at 40° latitude (roughly the latitude of New York). If you compute distances using raw latitude/longitude values as if they were Cartesian coordinates, your results will be systematically wrong.
+
+Similarly, if you want to calculate the area of a state or country, you need to use an *equal-area* projection. Using a projection that distorts areas (like Web Mercator) will give you incorrect results. This is why Greenland appears larger than Africa on many web maps, even though Africa is actually 14 times larger.
+:::
+
+## Interactive Visualization
+
+Static maps are useful for publications and reports, but interactive maps allow for exploration and discovery. The `DSGeo.explore()` function creates an interactive map powered by the [Folium](https://python-visualization.github.io/folium/) library, which in turn uses [Leaflet.js](https://leafletjs.com/). Users can zoom, pan, and click on features to see their attributes.
+
+```{python}
+DSGeo.explore(metro, tooltip=[c.name])
+```
+
+The `tooltip` parameter specifies which columns should be displayed when the user hovers over a point. Try zooming in on different regions and clicking on individual metro areas to see their names. The base map provides geographic context that was missing from our static scatter plot.
+
+## Spatial Polygons
+
+While points are useful for representing discrete locations, many spatial phenomena are better represented as *polygons*: closed shapes that define the boundaries of regions. States, countries, zip codes, census tracts, and watersheds are all naturally represented as polygons. Each polygon is defined by a series of coordinate pairs that trace its boundary.
+
+Spatial data is commonly stored in specialized file formats that can encode complex geometries along with their attributes. The [GeoJSON](https://geojson.org/) format is particularly popular for web applications because it is based on JSON (JavaScript Object Notation) and can be read by virtually any programming language. GeoJSON files have a standardized structure where each row in the equivalent table is called a *feature*, and all features are collected into a *FeatureCollection*. The official specification is maintained by the Internet Engineering Task Force as [RFC 7946](https://datatracker.ietf.org/doc/html/rfc7946).
+
+Other common spatial formats include Shapefiles (a legacy format still widely used), GeoPackage (a modern SQLite-based format), and various database formats like PostGIS. Our `DSGeo.read_file()` function can read most of these formats.
+
+```{python}
+state = DSGeo.read_file("data/acs_state.geojson")
+state
+```
+
+The `geometry` column now contains polygon geometries rather than points. Each polygon is defined by many coordinate pairs (sometimes thousands for states with complex coastlines), but they are all stored efficiently in the binary geometry format.
+
+Unlike point data, polygon data cannot be meaningfully visualized with a simple scatter plot. We need specialized functions that understand how to draw shapes from their vertex coordinates. The effect of projection is also much more noticeable with polygons than with points.
+
+```{python}
+DSGeo.plot(state, crs=5069)
+```
+
+Compare this to what the same data would look like in unprojected coordinates. The familiar shapes of states would be distorted, particularly in the northern regions where lines of longitude converge. The Albers projection stretches and compresses the coordinates to create a more faithful representation of the true shapes and relative sizes of states.
+
+Interactive maps work with polygons just as they do with points. Users can hover over states to see their names and other attributes.
+
+```{python}
+DSGeo.explore(state, tooltip=[c.name])
+```
+
+::: {.callout-note collapse="true"}
+## Other geometry types
+
+Points and polygons are the most common geometry types, but GeoJSON and other spatial formats support several others:
+
+- **LineString**: A sequence of connected points forming a path, useful for roads, rivers, or flight routes
+- **MultiPoint**: A collection of points treated as a single feature
+- **MultiLineString**: Multiple disconnected line segments treated as a single feature
+- **MultiPolygon**: Multiple disconnected polygons treated as a single feature (useful for states with islands, like Hawaii)
+- **GeometryCollection**: A heterogeneous collection containing any mix of the above types
+
+Most of the techniques in this chapter apply to all geometry types, though some operations (like calculating area) only make sense for polygons.
+:::
+
+## Polygon Metrics
+
+Once we have polygon geometries, we can compute various geometric properties. Two particularly useful properties are the *centroid* (the geometric center of a polygon) and the *area* (the amount of surface enclosed by the polygon's boundary).
+
+The centroid of a polygon is itself a point geometry. Adding centroids to our state data gives us a representative point location for each state, which can be useful for labeling maps or for spatial operations that require point geometries.
+
+```{python}
+state = DSGeo.add_centroid(state)
+state
+```
+
+The `centroid` column contains point geometries representing the center of each state. For roughly rectangular states like Colorado, the centroid falls near the geographic center. For states with irregular shapes or multiple disconnected parts, the centroid might fall outside the state's actual boundary.
+
+Calculating area requires a projection that preserves area relationships. If we compute areas in unprojected WGS 84 coordinates, the results would be meaningless numbers that do not correspond to actual square kilometers or square miles. By specifying a CRS, we ensure that the calculated areas reflect true surface measurements.
+
+```{python}
+state = DSGeo.add_area(state, crs=5069)
+state.sort(c.area).select(c.name, c.area)
+```
+
+The results show area in square meters (the default unit for most projected coordinate systems). Dividing by 1,000,000 would give square kilometers. As expected, Alaska is the largest state by far, followed by Texas and California.
+
+## Choropleth Maps
+
+A *choropleth map* colors geographic regions according to the value of a variable. This type of visualization is extremely common for showing how quantities vary across space: election results by county, income levels by census tract, or disease rates by state. The `column` parameter tells the explore function which variable to use for coloring.
+
+```{python}
+DSGeo.explore(state, column=c.area, tooltip=[c.name])
+```
+
+The resulting map shows each state colored according to its area, with a legend indicating how colors correspond to values. Larger states appear darker (or whatever color scheme is in use), making spatial patterns immediately visible.
+
+Choropleth maps are powerful but can be misleading. Because larger regions occupy more visual space, they can dominate the viewer's attention even if they contain fewer people or are otherwise less important. For this reason, choropleth maps are best suited for variables that are naturally area-based (like population density) rather than absolute counts (like total population).
+
+## Spatial Joins
+
+In @sec-restructure, we learned how to join two tables based on a shared key column. Spatial joins extend this concept by joining tables based on their geometric relationships. Instead of matching rows where a key value is equal, we match rows where geometries intersect, touch, contain, or are within some distance of each other.
+
+The most common spatial join matches points to the polygons that contain them. Given our metro areas (points) and states (polygons), we can determine which state contains each metro area by checking which state polygon each metro point falls inside.
+
+```{python}
+DSGeo.sjoin(metro, state)
+```
+
+The result contains all columns from both DataFrames, with each metro area matched to the state it falls within. Metro areas that span state boundaries will be assigned to whichever state contains their center point (the coordinate we used when creating the point geometry). Notice that the geometry in the output is the point geometry from the first (left) DataFrame.
+
+We can also reverse the order of the join to get state geometry in the result. When we put the states first, the output contains polygon geometries, with each state matched to the metro areas it contains.
+
+```{python}
+DSGeo.sjoin(state, metro)
+```
+
+This produces more rows than we have states because each state can contain multiple metro areas. The logic is analogous to a one-to-many relational join: the state geometry is duplicated for each metro area it contains.
+
+Spatial joins can use various *predicates* (spatial relationships) beyond simple containment. The `predicate` parameter specifies which relationship to test. For example, we can find which states share a border with which other states using the `touches` predicate.
+
+```{python}
+DSGeo.sjoin(state, state, predicate="touches")
+```
+
+This self-join matches each state to every other state that shares at least one point on its boundary. The result shows all pairs of neighboring states. Notice that each border appears twice: California touches Oregon, and Oregon touches California. If you only want each pair once, you would need to filter or deduplicate the results.
+
+Other useful predicates include:
+
+- **intersects**: Geometries share any space (including boundaries)
+- **contains**: The first geometry completely encloses the second
+- **within**: The first geometry is completely enclosed by the second
+- **crosses**: Geometries share some but not all interior points
+- **overlaps**: Geometries share some space but neither contains the other
+
+## Nearest Neighbor Joins
+
+Sometimes we want to match features not based on overlap or containment but based on proximity. The `sjoin_nearest` function finds, for each feature in the first DataFrame, the closest feature in the second DataFrame. This is useful for questions like "What is the nearest hospital to each school?" or "Which weather station is closest to each measurement location?"
+
+```{python}
+DSGeo.sjoin_nearest(metro, metro, exclusive=True)
+```
+
+Here we join the metro dataset to itself to find each metro area's nearest neighbor. The `exclusive=True` parameter prevents each metro area from matching with itself (which would always be distance zero). The result shows pairs of metro areas that are nearest neighbors, along with the distance between them.
+
+Nearest neighbor joins are computationally expensive because they potentially require comparing every feature in the first DataFrame to every feature in the second. For large datasets, this can be slow. Spatial libraries use sophisticated indexing structures (like R-trees) to speed up these queries, but they still scale less favorably than simple predicate-based joins.
+
+## Best Practices
+
+Working with spatial data introduces several potential sources of error that do not arise with ordinary tabular data.
+
+**CRS mismatches**: If two datasets use different coordinate reference systems, spatial operations will give incorrect results. Points might appear to be in the wrong location, or spatial joins might fail to find matches. Always verify that your datasets are in compatible CRSs before performing spatial operations, and transform them to a common CRS if necessary.
+
+**Unprojected coordinates for calculations**: Never calculate distances or areas using raw latitude/longitude coordinates as if they were Cartesian. The errors can be substantial, especially for features that span large areas or are located far from the equator. Always project your data to an appropriate CRS first.
+
+**Polygon validity**: Complex polygons can sometimes become geometrically invalid due to self-intersections or other topological errors. Many spatial functions will fail or give incorrect results on invalid geometries. If you encounter strange errors, check whether your geometries are valid and repair them if necessary.
+
+**Boundary effects**: Features that span boundaries between regions can cause problems for spatial joins. A metro area that straddles a state line might be assigned to one state or the other depending on where its center point falls. Be aware of these edge cases and handle them appropriately for your analysis.
+
+## References {-}

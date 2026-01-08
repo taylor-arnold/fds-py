@@ -1,0 +1,358 @@
+# Requests {#sec-requests}
+
+```{python}
+#| include: false
+import warnings
+warnings.filterwarnings("ignore")
+```
+
+::: {.callout-tip collapse="true"}
+## Practice Notebooks
+
+- Notebook09a [[Colab↗](https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook09a.ipynb?hl=en)]
+- Notebook09b [[Colab↗](https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook09b.ipynb?hl=en)]
+
+:::
+
+## Setup
+
+Load all of the modules and datasets needed for the chapter. We will also use requests and the requests-cache modules to make API requests and lxml to parse the results.
+
+```{python}
+#| output: false
+import numpy as np
+import polars as pl
+
+from funs import *
+from plotnine import *
+from polars import col as c
+theme_set(theme_minimal())
+
+from lxml import html
+import requests
+import requests_cache
+```
+
+## Introduction
+
+Throughout this book, we have worked with datasets that were either bundled with our code or available as downloadable files. In practice, however, much of the data we need as data scientists lives on remote servers, updated continuously or made available only through programmatic interfaces. Weather forecasts, stock prices, social media posts, and government statistics are just a few examples of data that change too frequently—or are too large—to distribute as static files.
+
+This chapter introduces techniques for fetching data directly from the internet using Python. We will explore three increasingly sophisticated approaches. First, we will learn how to call web-based APIs (Application Programming Interfaces), which provide structured access to data from services like Wikipedia, weather providers, and financial databases. Second, we will see how to extract information directly from web pages—a technique called web scraping—when no formal API exists. Third, we will examine how to query structured knowledge bases using SPARQL, a powerful query language for linked data. Along the way, we will also see how to call local services running on our own machine, opening up possibilities for integrating large language models and other resource-intensive tools into our data pipelines.
+
+These techniques expand what we can analyze far beyond pre-packaged datasets. By the end of this chapter, you will be able to gather real-time data from across the internet and integrate it seamlessly into your Polars workflows.
+
+## APIs and HTTP Requests
+
+An *application programming interface* (API) is a generic term for a specific interface that two computers can communicate across. While APIs can take many forms, the most common type for data access communicates over the internet using the Hypertext Transfer Protocol (HTTP). HTTP is the foundational protocol of the World Wide Web—it defines how your web browser requests pages from servers and how those servers respond. When you visit a website, your browser sends an HTTP request and receives an HTTP response containing the page content. APIs work the same way, except instead of returning human-readable web pages, they return structured data (usually in JSON format) designed for programs to consume.
+
+HTTP defines several *methods* that describe what kind of action a request is performing. The most common are GET (retrieve data), POST (send data to create something new), PUT (update existing data), and DELETE (remove data). For data retrieval, we almost always use GET requests. The server responds with a *status code* indicating whether the request succeeded: 200 means success, 404 means the requested resource wasn't found, 500 means the server encountered an error, and so on. Understanding these basics helps when debugging why a request might fail.
+
+There are many APIs available online for accessing a variety of different types of data. Some require setting up an account and obtaining an API key—a unique identifier that authenticates your requests. Some APIs require payment for each request, while others offer free access or a free tier for occasional users. Most frequently, APIs provide access to data that changes frequently, such as news stories, weather forecasts, or stock prices. Increasingly, though, even static datasets are being put behind API access rather than allowing straightforward downloads. Fortunately, Python's `requests` library makes it relatively easy to make and parse API calls. For more details on the `requests` library, see its excellent documentation at [https://requests.readthedocs.io/](https://requests.readthedocs.io/).
+
+We will demonstrate API calls using the MediaWiki API that powers Wikipedia. This API is particularly nice for learning because it is freely available and requires no signup or authentication. Anyone can call the API directly and retrieve data related to Wikipedia and other Wikimedia projects. For comprehensive documentation on this API, see [https://www.mediawiki.org/wiki/API:Main_page](https://www.mediawiki.org/wiki/API:Main_page).
+
+Before we get started, let's build a local cache that stores the results of our API calls. This is important for two reasons. First, it avoids overwhelming the server with repeated requests for the same data—a courtesy that many APIs require and all appreciate. Second, it speeds up our code during development, since cached responses return instantly without network latency.
+
+```{python}
+session = requests_cache.CachedSession(
+    cache_name="examples/requests_cache",
+    backend="sqlite",
+    allowable_methods=('GET', 'HEAD', 'POST'),
+    expire_after=None
+)
+```
+
+The `requests_cache` library creates a drop-in replacement for the standard `requests` session. Behind the scenes, it stores responses in a SQLite database file. Setting `expire_after=None` means cached responses never expire—useful for historical data that won't change, though you might want a shorter expiration for frequently updated data.
+
+To make an API call, we need three things: a base URL pointing to the API endpoint, parameters specifying what data we want, and headers identifying who we are. The parameters are specific to each API—you'll need to consult the documentation to learn what options are available. The `User-Agent` header is a polite way to identify your application; many APIs require it, and it helps server administrators contact you if your requests cause problems.
+
+```{python}
+base_url = "https://en.wikipedia.org/w/api.php"
+params = {
+    'action': 'query',
+    'format': 'json',
+    'prop': 'pageviews',
+    'titles': 'Emily Brontë'
+}
+
+headers = {
+    "User-Agent": "DataScienceBook/1.0 (tarnold2@richmond.edu)"
+}
+
+response = session.get(base_url, params=params, headers=headers)
+```
+
+In this example, we're asking the MediaWiki API for pageview statistics about the Wikipedia article on Emily Brontë. The `action` parameter tells the API we want to query for information, `format` specifies we want the response in JSON, `prop` indicates we want pageview data, and `titles` names the specific article.
+
+We can check the response code to verify the request succeeded. A status code of 200 indicates success.
+
+```{python}
+response.status_code
+```
+
+The data returned from this API, as with most web-based APIs, is in JSON format. We can access and parse it with a simple method attached to the response object.
+
+```{python}
+data = response.json()
+```
+
+Now we are back in a situation similar to what we encountered in @sec-dataformats: we need to parse the JSON data into one or more tabular data structures. JSON from APIs is often deeply nested, requiring us to navigate through multiple levels to reach the data we want. Let's extract the pageview data into a Polars DataFrame.
+
+```{python}
+pages = data['query']['pages']
+page_id = list(pages.keys())[0]
+pageviews = pages[page_id].get('pageviews', {})
+
+pageview_data = []
+for date, views in pageviews.items():
+    pageview_data.append({
+        'date': date,
+        'views': views,
+        'doc_id': 'Emily Brontë'
+    })
+
+page_views_df = pl.DataFrame(pageview_data)
+page_views_df
+```
+
+The structure of API responses varies widely between services. Some APIs return flat, table-like data that converts easily to DataFrames. Others, like this one, nest data several levels deep. The key skill is learning to explore the JSON structure (often by printing intermediate results or consulting the API documentation) and then writing code to extract exactly what you need. With practice, you'll develop an intuition for common patterns.
+
+## Web Scraping
+
+Sometimes the data we need isn't available through a formal API—it exists only on web pages designed for human readers. *Web scraping* is the technique of programmatically extracting data from HTML pages. While APIs provide structured data explicitly intended for programs, web scraping requires us to parse the visual structure of a page and extract the relevant pieces.
+
+The `requests` module can fetch any URL, not just API endpoints. When we request a regular web page, we get back HTML—the markup language that defines the structure of web pages. We can then parse this HTML to extract the data we want.
+
+For this example, we'll grab headlines from CNN Lite, a simplified version of the CNN website that's particularly easy to parse. CNN Lite presents news headlines as a simple list without the complex JavaScript and advertisements of the main site.
+
+```{python}
+url = "https://lite.cnn.com/"
+headers = {
+    "User-Agent": "DataScienceBook/1.0 (tarnold2@richmond.edu)"
+}
+
+response = session.get(url, headers=headers)
+html_text = response.text
+```
+
+At this point, the response is just a long string containing raw HTML markup. To extract meaningful data, we need to parse this HTML and navigate its structure. We use the `lxml` library's HTML parser, which we introduced in @sec-dataformats.
+
+```{python}
+tree = html.fromstring(html_text)
+stories = tree.xpath("//li/a")
+stories_df = pl.DataFrame({
+  "headline": [x.text_content().strip() for x in stories],
+  "link": [x.get('href') for x in stories]
+})
+stories_df
+```
+
+The XPath expression `//li/a` finds all anchor (`<a>`) tags that are direct children of list item (`<li>`) tags anywhere in the document. For each matching element, we extract the text content (the headline) and the `href` attribute (the link URL). This pattern—fetch HTML, parse it, extract elements matching a pattern—is the core workflow for web scraping.
+
+A few words of caution about web scraping. First, websites change their structure frequently, which can break your scraping code without warning. Second, some websites prohibit scraping in their terms of service. Third, scraping too aggressively can overload servers—always use caching and rate limiting. Finally, always respect the `robots.txt` file that websites use to indicate which pages should not be accessed by automated tools. For more on the `lxml` library and XPath expressions, see [https://lxml.de/](https://lxml.de/).
+
+## Calling Local Services
+
+So far, we've focused on remote services accessed over the internet. But the same HTTP-based techniques work for services running locally on your own machine. This opens up powerful possibilities, particularly for integrating large language models (LLMs) into your data pipelines.
+
+Tools like [LM Studio](https://lmstudio.ai/) allow you to run powerful language models locally without needing to set up complex Python environments or manage GPU configurations directly. LM Studio provides a simple graphical interface for downloading and running models, and it exposes them through an API that follows the OpenAI standard—meaning any code written for OpenAI's API will work with local models too.
+
+Why would you want to run models locally rather than using a cloud service? Privacy is one reason: your data never leaves your machine. Cost is another: after the initial setup, local inference is free. And for educational purposes, running models locally helps demystify how these systems work.
+
+Let's use a locally-running model to classify the news headlines we scraped earlier. The code below assumes you have LM Studio running with a model loaded and serving on the default port. If you don't have LM Studio set up, you can skip this section—the concepts transfer directly to cloud-based APIs like OpenAI's.
+
+```{python}
+BASE_URL = "http://127.0.0.1:1234/v1"
+MODEL = "openai/gpt-oss-20b"
+
+headline = "Senate passes bipartisan bill to reform aviation safety rules"
+
+system_prompt = (
+    "You are a strict news desk classifier. "
+    "Return exactly one label from this set:\n"
+    'sports, local politics, national politics, world politics, science, law, economics, culture, other.\n'
+    "Return only the label, with no punctuation or extra words."
+)
+
+payload = {
+    "model": MODEL,
+    "messages": [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": f"Headline: {headline}\nLabel:"},
+    ],
+    "temperature": 0
+}
+
+headers = {
+    "Content-Type": "application/json",
+    # Some servers accept/ignore this; it doesn't hurt to include.
+    "Authorization": "Bearer lm-studio"
+}
+
+resp = session.post(
+  f"{BASE_URL}/chat/completions", json=payload, headers=headers, timeout=60
+)
+resp.raise_for_status()
+
+data = resp.json()
+label = data["choices"][0]["message"]["content"].strip()
+label
+```
+
+This code sends a POST request to the local LM Studio server. The payload follows the OpenAI chat completions format: a system message that sets the model's behavior, followed by a user message containing the headline to classify. Setting `temperature` to 0 makes the model's output deterministic, which is important for reproducible classification.
+
+Because our `requests_cache` session intercepts all HTTP requests, even POST requests to local endpoints are cached automatically. This means if you run the same classification twice, the second call returns instantly from the cache rather than invoking the model again.
+
+Now let's classify all of the headlines from our scraped dataset. We'll loop through each headline, send it to the model, and collect the results.
+
+```{python}
+categories = []
+
+for headline in stories_df["headline"]:
+    payload = {
+        "model": MODEL,
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": f"Headline: {headline}\nLabel:"},
+        ],
+        "temperature": 0,
+    }
+
+    resp = session.post(
+        f"{BASE_URL}/chat/completions",
+        json=payload,
+        headers=headers,
+        timeout=60,
+    )
+    resp.raise_for_status()
+
+    category = resp.json()["choices"][0]["message"]["content"].strip()
+    categories.append(category)
+```
+
+With our classifications complete, we can add them back into the DataFrame using `with_columns`.
+
+```{python}
+stories_df = stories_df.with_columns(
+    pl.Series("category", categories)
+)
+```
+
+Now we can analyze the distribution of news categories. What topics dominate today's news cycle?
+
+```{python}
+(
+    stories_df
+    .group_by(c.category)
+    .agg(
+        n = pl.len()
+    )
+    .sort(c.n)
+)
+```
+
+With just a few lines of code, we've built a pipeline that scrapes current news headlines from the web and classifies them using a large language model—all without manually downloading data or labeling anything by hand. This illustrates the power of combining web requests with modern machine learning tools.
+
+## SPARQL and Wikidata
+
+So far we've fetched data from APIs that return JSON and from web pages that return HTML. A third approach uses *SPARQL* (pronounced "sparkle"), a query language designed specifically for querying knowledge graphs. If you're familiar with SQL for relational databases, SPARQL serves a similar purpose for a different type of data structure.
+
+Traditional relational databases store data in tables with rows and columns. Knowledge graphs instead store data as a network of interconnected facts, where each fact is represented as a *triple*: a subject, a predicate, and an object. For example, the fact "Paris is the capital of France" would be stored as:
+
+- Subject: Paris
+- Predicate: is capital of
+- Object: France
+
+This triple structure—also called RDF (Resource Description Framework)—allows knowledge graphs to represent complex, interconnected information flexibly. You can add new types of relationships without modifying a schema, and you can easily traverse connections between entities.
+
+*Wikidata* is one of the largest freely available knowledge graphs, containing structured data about millions of entities—people, places, organizations, concepts, and more. It powers the information boxes you see on Wikipedia and is freely queryable through the Wikidata Query Service. For an introduction to Wikidata and its data model, see [https://www.wikidata.org/wiki/Wikidata:Introduction](https://www.wikidata.org/wiki/Wikidata:Introduction).
+
+```{python}
+SPARQL_ENDPOINT = "https://query.wikidata.org/sparql"
+```
+
+SPARQL will feel somewhat familiar to the SQL queries we saw in @sec-dataformats, though with important differences. A SPARQL query typically contains the following components. PREFIX declarations define shortcuts for the long URIs (Uniform Resource Identifiers) used to identify entities and properties. Wikidata's query service provides default prefixes, so we often don't need to declare them explicitly. The SELECT clause specifies which variables to return, similar to SQL. Variables in SPARQL are prefixed with a question mark, like `?country` or `?population`. The WHERE block contains triple patterns that describe what we're looking for. Each pattern has the form `subject predicate object`, where any component can be a variable. The query engine finds all combinations of values that make the patterns true. Optional clauses handle missing data gracefully—if an entity lacks a particular property, it won't be excluded from results (similar to a LEFT JOIN in SQL). FILTER, ORDER BY, and LIMIT clauses work much like their SQL counterparts.
+
+In Wikidata specifically, you'll encounter these patterns frequently:
+
+- `wd:Q...` refers to items (entities), where Q followed by a number is the unique identifier. For example, `wd:Q6256` represents the concept "country."
+- `wdt:P...` refers to "truthy" properties—the current, most authoritative value. For example, `wdt:P36` means "capital."
+- The `SERVICE wikibase:label` clause automatically retrieves human-readable labels for entities in your preferred language.
+
+For a comprehensive tutorial on SPARQL and Wikidata, see [https://www.wikidata.org/wiki/Wikidata:SPARQL_tutorial](https://www.wikidata.org/wiki/Wikidata:SPARQL_tutorial).
+
+Let's write a query that retrieves all countries along with their capitals and populations. We'll break down each component.
+
+```{python}
+query = """
+SELECT ?country ?countryLabel ?capitalLabel ?population WHERE {
+  ?country wdt:P31 wd:Q6256.
+  OPTIONAL { ?country wdt:P36 ?capital. }
+  OPTIONAL { ?country wdt:P1082 ?population. }
+
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+ORDER BY ?countryLabel
+LIMIT 500
+"""
+```
+
+Let's trace through what this query does. The line `?country wdt:P31 wd:Q6256` finds all entities where property P31 ("instance of") equals Q6256 ("country"). In plain English: "find all things that are instances of the concept 'country'."
+
+The OPTIONAL blocks retrieve each country's capital (P36) and population (P1082). Using OPTIONAL means countries missing this data will still appear in results with null values, rather than being excluded entirely. The SERVICE clause is Wikidata-specific magic that automatically looks up human-readable labels. Without it, we'd get only the Q-numbers and P-numbers, not the actual names. Finally, we order alphabetically by country name and limit to 500 results.
+
+To execute the query, we send an HTTP GET request to the Wikidata endpoint. We specify that we want results in JSON format.
+
+```{python}
+headers = {
+    "Accept": "application/sparql+json",
+    "User-Agent": "DataScienceBook/1.0 (tarnold2@richmond.edu)"
+}
+
+resp = session.get(
+    SPARQL_ENDPOINT,
+    params={"query": query, "format": "json"},
+    headers=headers,
+    timeout=30,
+)
+resp.raise_for_status()
+print(resp.headers["Content-Type"])
+```
+
+The response comes back as JSON with a specific structure for SPARQL results. We need to parse this into a format suitable for creating a DataFrame.
+
+```{python}
+data = resp.json()
+vars_ = data["head"]["vars"]
+rows = []
+
+for binding in data["results"]["bindings"]:
+    row = {}
+    for var in vars_:
+        if var in binding:
+            row[var] = binding[var]["value"]
+        else:
+            row[var] = None
+    rows.append(row)
+
+df = pl.DataFrame(rows).with_columns(population = c.population.cast(pl.Int64))
+df
+```
+
+The SPARQL result format includes a `head` section listing the variable names and a `results` section containing the actual data. Each "binding" is a dictionary mapping variable names to their values. We iterate through the bindings, extract the values, and construct a list of dictionaries that Polars can convert directly into a DataFrame. Note that we cast the population column to `Int64` after creating the DataFrame. SPARQL returns all values as strings, so numeric columns need explicit type conversion.
+
+This query demonstrates just a fraction of SPARQL's power. You can write queries that traverse multiple relationships (find all cities in countries with population over 100 million), aggregate data (count how many Nobel laureates each country has produced), or find paths through the knowledge graph (how is person A related to person B?). The Wikidata Query Service even includes a visual query builder at [https://query.wikidata.org/](https://query.wikidata.org/) to help you explore and construct queries.
+
+## Conclusions
+
+This chapter introduced three powerful techniques for gathering data from the internet: calling web APIs, scraping HTML pages, and querying knowledge graphs with SPARQL. Each approach has its place in a data scientist's toolkit.
+
+APIs are the preferred approach when available. They provide structured data explicitly designed for programmatic access, with documented formats and (usually) stable interfaces. Many organizations now offer APIs for their data, from social media platforms to government agencies to scientific databases.
+
+Web scraping fills the gap when no API exists. It's more fragile than API access—websites change their HTML structure without warning—but it opens up vast amounts of information that would otherwise require manual collection. Use scraping responsibly: cache your requests, rate-limit your access, and respect sites' terms of service.
+
+SPARQL and knowledge graphs represent a different paradigm entirely. Rather than thinking in tables, you think in relationships and connections. Wikidata's comprehensive knowledge base, freely available and constantly updated by a global community, makes it an invaluable resource for augmenting your datasets with contextual information.
+
+We also saw how HTTP-based communication extends beyond remote servers to local services. Running large language models locally through tools like LM Studio gives you privacy, cost savings, and educational insight into how these systems work—all while using the same requests-based code patterns you'd use for cloud APIs.
+
+As you work on your own projects, you'll likely combine these techniques. You might scrape a list of company names from a web page, look up additional information about each company from Wikidata, call an API for their stock prices, and use a local language model to summarize the results. The common thread is HTTP: a simple, universal protocol that lets your Python code communicate with services anywhere—whether across the internet or running on your own machine.

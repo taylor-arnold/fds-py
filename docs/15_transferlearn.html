@@ -1,0 +1,1795 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Taylor Arnold">
+
+<title>15&nbsp; Transfer Learning – Foundations of Data Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./16_spatial_data.html" rel="next">
+<link href="./14_cnnwordvec.html" rel="prev">
+<link href="./img/owl_explore.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-25064e4154141e7ea34817c6f1220590.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./10_inference.html">Part III: Models</a></li><li class="breadcrumb-item"><a href="./15_transferlearn.html"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Transfer Learning</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Foundations of Data Science</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/taylor-arnold/fds-py" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part I: Core</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_modify.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">EDA I: Organizing Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">EDA II: Visualizing Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_combine.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">EDA III: Restructuring Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_collect.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">EDA IV: Collecting Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part II: Programming</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_program.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Programming</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_strings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Strings</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_dataformats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Data Formats</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_requests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Requests</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part III: Models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Inference</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_supervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Supervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_unsupervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Unsupervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13_deeplearning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Deep Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_cnnwordvec.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">CNNs and Word2Vec</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15_transferlearn.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Transfer Learning</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part IV: Applications</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16_spatial_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Spatial Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17_temporal_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Temporal Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18_network_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Network Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19_textual_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Textual Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20_image_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Image Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part V: Notes</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./21_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Notes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./22_datasets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Datasets</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup"><span class="header-section-number">15.1</span> Setup</a></li>
+  <li><a href="#transfer-learning" id="toc-transfer-learning" class="nav-link" data-scroll-target="#transfer-learning"><span class="header-section-number">15.2</span> Transfer Learning</a></li>
+  <li><a href="#image-embedding" id="toc-image-embedding" class="nav-link" data-scroll-target="#image-embedding"><span class="header-section-number">15.3</span> Image Embedding</a></li>
+  <li><a href="#zero-shot-learning" id="toc-zero-shot-learning" class="nav-link" data-scroll-target="#zero-shot-learning"><span class="header-section-number">15.4</span> Zero-shot Learning</a></li>
+  <li><a href="#text-embedding" id="toc-text-embedding" class="nav-link" data-scroll-target="#text-embedding"><span class="header-section-number">15.5</span> Text Embedding</a></li>
+  <li><a href="#calling-an-api" id="toc-calling-an-api" class="nav-link" data-scroll-target="#calling-an-api"><span class="header-section-number">15.6</span> Calling an API</a></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions"><span class="header-section-number">15.7</span> Conclusions</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./10_inference.html">Part III: Models</a></li><li class="breadcrumb-item"><a href="./15_transferlearn.html"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Transfer Learning</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-transfer" class="quarto-section-identifier"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Transfer Learning</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Practice Notebooks
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>Notebook15a [<a href="https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook15a.ipynb?hl=en">Colab↗</a>]</li>
+<li>Notebook15b [<a href="https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook15b.ipynb?hl=en">Colab↗</a>]</li>
+</ul>
+</div>
+</div>
+</div>
+<section id="setup" class="level2" data-number="15.1">
+<h2 data-number="15.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">15.1</span> Setup</h2>
+<p>Load all of the modules and datasets needed for the chapter. We load the openai module to make requests to the OpenAI API in order to work with state-of-the-art transformer models.</p>
+<div id="17d10d2c" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funs <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plotnine <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polars <span class="im">import</span> col <span class="im">as</span> c</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>theme_set(theme_minimal())</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openai <span class="im">import</span> OpenAI</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>birds <span class="op">=</span> pl.read_parquet(<span class="st">"data/birds10.parquet"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="transfer-learning" class="level2" data-number="15.2">
+<h2 data-number="15.2" class="anchored" data-anchor-id="transfer-learning"><span class="header-section-number">15.2</span> Transfer Learning</h2>
+<p>In the previous chapter, we saw how to train neural networks from scratch to recognize patterns in image data. While this approach works well for standardized datasets like MNIST, it has significant limitations when applied to real-world problems. Training a deep neural network requires enormous amounts of labeled data, substantial computational resources, and considerable expertise in tuning hyperparameters. For many practical applications, we simply do not have access to millions of labeled training examples, nor do we have weeks of GPU time to dedicate to training.</p>
+<p>Transfer learning offers an elegant solution to this problem. The core insight is that the internal representations learned by a neural network trained on one task often capture general features that are useful for many other tasks. Consider a model trained to classify millions of images into thousands of categories. The early layers of such a model learn to detect basic visual features like edges, textures, and shapes. The middle layers combine these into more complex patterns like eyes, wheels, or leaves. Only the final layers specialize to the specific categories in the original training data. If we want to build a classifier for a new set of categories, we can reuse all but the final layers, benefiting from the rich visual representations the model has already learned.</p>
+<p>This approach has become the dominant paradigm in modern machine learning. Rather than training models from scratch, practitioners typically start with a pre-trained model and adapt it to their specific task. This dramatically reduces the amount of data and computation required, often by orders of magnitude. A model that would require millions of training examples when built from scratch might achieve excellent performance with just hundreds or thousands of examples when using transfer learning. The technique is so powerful that it accounts for the vast majority of deep learning applications in production today.</p>
+<p>In this chapter, we will explore several forms of transfer learning. We begin with the traditional approach of extracting embeddings from a pre-trained image model and using them as features for a downstream classifier. We then examine zero-shot learning, a more recent development that allows classification without any task-specific training. Finally, we apply these same ideas to text data and briefly discuss how to integrate external AI services through APIs.</p>
+</section>
+<section id="image-embedding" class="level2" data-number="15.3">
+<h2 data-number="15.3" class="anchored" data-anchor-id="image-embedding"><span class="header-section-number">15.3</span> Image Embedding</h2>
+<p>For this chapter we will use a new dataset of images of different bird species. The predictive model that we want to build should learn how to take an image of a bird and identify which of the ten species in our data the bird comes from. This is a more challenging task than MNIST digit recognition for several reasons: the images are larger and more complex, the subjects appear at different scales and orientations, and the differences between species can be subtle.</p>
+<div id="7fc06cb7" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>birds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (1_555, 5)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">label</th>
+<th data-quarto-table-cell-role="th">filepath</th>
+<th data-quarto-table-cell-role="th">index</th>
+<th data-quarto-table-cell-role="th">vit</th>
+<th data-quarto-table-cell-role="th">siglip</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>list[f64]</th>
+<th>list[f64]</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"canary"</td>
+<td>"media/birds10/00000.png"</td>
+<td>"test"</td>
+<td>[0.017947, -0.0305, … 0.003526]</td>
+<td>[-0.00611, -0.042975, … -0.031687]</td>
+</tr>
+<tr class="even">
+<td>"canary"</td>
+<td>"media/birds10/00001.png"</td>
+<td>"train"</td>
+<td>[0.024804, -0.045255, … -0.007233]</td>
+<td>[-0.033767, -0.011978, … -0.020352]</td>
+</tr>
+<tr class="odd">
+<td>"canary"</td>
+<td>"media/birds10/00002.png"</td>
+<td>"train"</td>
+<td>[0.050587, -0.024486, … 0.029895]</td>
+<td>[-0.033664, -0.008117, … -0.01725]</td>
+</tr>
+<tr class="even">
+<td>"canary"</td>
+<td>"media/birds10/00003.png"</td>
+<td>"train"</td>
+<td>[0.047036, -0.038993, … -0.008446]</td>
+<td>[-0.010029, -0.018192, … -0.009869]</td>
+</tr>
+<tr class="odd">
+<td>"canary"</td>
+<td>"media/birds10/00004.png"</td>
+<td>"train"</td>
+<td>[0.036349, -0.02734, … -0.018185]</td>
+<td>[-0.027327, 0.003568, … -0.033407]</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"swallow"</td>
+<td>"media/birds10/01550.png"</td>
+<td>"train"</td>
+<td>[-0.022461, -0.025098, … -0.061945]</td>
+<td>[-0.022029, -0.008476, … -0.003879]</td>
+</tr>
+<tr class="even">
+<td>"swallow"</td>
+<td>"media/birds10/01551.png"</td>
+<td>"train"</td>
+<td>[-0.000212, -0.003448, … -0.058042]</td>
+<td>[-0.02476, -0.016369, … 0.003875]</td>
+</tr>
+<tr class="odd">
+<td>"swallow"</td>
+<td>"media/birds10/01552.png"</td>
+<td>"train"</td>
+<td>[-0.012531, -0.006788, … -0.047077]</td>
+<td>[-0.022153, 0.00765, … -0.011152]</td>
+</tr>
+<tr class="even">
+<td>"swallow"</td>
+<td>"media/birds10/01553.png"</td>
+<td>"test"</td>
+<td>[-0.007587, -0.053535, … -0.046395]</td>
+<td>[-0.005022, 0.00878, … -0.017564]</td>
+</tr>
+<tr class="odd">
+<td>"swallow"</td>
+<td>"media/birds10/01554.png"</td>
+<td>"train"</td>
+<td>[-0.01325, -0.032453, … -0.050751]</td>
+<td>[-0.015117, -0.00685, … -0.029756]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Before we get started with the model, let’s see one example of each of the classes from this dataset. Examining the data visually helps us understand what the model needs to learn and gives us intuition about which categories might be easy or difficult to distinguish.</p>
+<div id="27c12027" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>DSImage.plot_image_grid(birds.group_by(<span class="st">'label'</span>).first(), ncol<span class="op">=</span><span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="15_transferlearn_files/figure-html/cell-5-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="15_transferlearn_files/figure-html/cell-5-output-1.png" class="img-fluid figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>If we were to approach this problem using the techniques from <a href="13_deeplearning.html" class="quarto-xref"><span>Chapter 13</span></a>, we would need to design a neural network architecture, choose appropriate hyperparameters, and train the model on our relatively small dataset. This would likely require extensive experimentation and might still produce mediocre results due to the limited training data available. Instead, we will use transfer learning to leverage the knowledge encoded in a model that has already been trained on millions of images.</p>
+<p>Here, we will use the internal representations of a powerful, pre-built deep learning model as a jumping-off point for our own model. The final predictions from the existing model would not be very helpful because they predict categories that are not the same as ours. But, the internal representations of images are sufficiently generic and meaningful to be a good starting point for our models. This approach is called transfer learning. It accounts, in one form or another, for the vast majority of use-cases of deep learning because the best models require very large amounts of training data and compute time.</p>
+<p>Python is the de facto language for machine learning, deep learning, and AI research. It is one of the key reasons we are using it in this revised text. As a result, there are fantastic ready-to-use libraries to build, run, and load deep learning models. We have wrapped up one of these models in the function called <code>ViTEmbedder</code> (the code to create it uses <strong>pytorch</strong> and is given in full in the notebooks). It implements Google’s <a href="https://huggingface.co/google/vit-base-patch16-224">Vision Transformer (ViT) model</a>, which was trained on a dataset of 14 million images with a total of 21,843 classes. We will use the values in the internal representation of the final model that come right before the predictions of the classes in the original. Here is all we need to load (and, if not already grabbed, download) the model:</p>
+<div id="6fefeba1" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>vit <span class="op">=</span> ViTEmbedder()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The Vision Transformer model works by dividing an image into a grid of patches, treating each patch as a token similar to how language models treat words. These patches are then processed through multiple transformer layers that allow the model to learn relationships between different parts of the image. The result is a rich representation that captures both local details and global structure.</p>
+<p>Calling the model on an image path returns a sequence of 768 numbers. These numbers, called an embedding, form a compact representation of the image’s content. Two images that are visually similar will have embeddings that are close together in this 768-dimensional space, while dissimilar images will have embeddings that are far apart. We can see an example on the first few bird images:</p>
+<div id="dc6d61f1" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    birds</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">5</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        vit <span class="op">=</span> c.filepath.map_elements(</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>            vit, return_dtype<span class="op">=</span>pl.List(pl.Float32)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 5)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">label</th>
+<th data-quarto-table-cell-role="th">filepath</th>
+<th data-quarto-table-cell-role="th">index</th>
+<th data-quarto-table-cell-role="th">vit</th>
+<th data-quarto-table-cell-role="th">siglip</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>list[f32]</th>
+<th>list[f64]</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"canary"</td>
+<td>"media/birds10/00000.png"</td>
+<td>"test"</td>
+<td>[0.017947, -0.0305, … 0.003526]</td>
+<td>[-0.00611, -0.042975, … -0.031687]</td>
+</tr>
+<tr class="even">
+<td>"canary"</td>
+<td>"media/birds10/00001.png"</td>
+<td>"train"</td>
+<td>[0.024804, -0.045255, … -0.007233]</td>
+<td>[-0.033767, -0.011978, … -0.020352]</td>
+</tr>
+<tr class="odd">
+<td>"canary"</td>
+<td>"media/birds10/00002.png"</td>
+<td>"train"</td>
+<td>[0.050587, -0.024486, … 0.029895]</td>
+<td>[-0.033664, -0.008117, … -0.01725]</td>
+</tr>
+<tr class="even">
+<td>"canary"</td>
+<td>"media/birds10/00003.png"</td>
+<td>"train"</td>
+<td>[0.047036, -0.038993, … -0.008446]</td>
+<td>[-0.010029, -0.018192, … -0.009869]</td>
+</tr>
+<tr class="odd">
+<td>"canary"</td>
+<td>"media/birds10/00004.png"</td>
+<td>"train"</td>
+<td>[0.036349, -0.02734, … -0.018185]</td>
+<td>[-0.027327, 0.003568, … -0.033407]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Computing embeddings for all images in the dataset takes some time, so we have precomputed these values and stored them in a Parquet file. Parquet is a columnar storage format that is particularly well-suited for analytical workloads. Unlike CSV files, Parquet preserves data types exactly, handles nested structures like lists efficiently, and compresses data effectively. This makes it an excellent choice for storing embeddings, which are arrays of floating-point numbers that would be awkward to represent in CSV format. Reading the precomputed embeddings is straightforward:</p>
+<div id="33039443" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>birds <span class="op">=</span> pl.read_parquet(<span class="st">"data/birds10.parquet"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>birds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (1_555, 5)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">label</th>
+<th data-quarto-table-cell-role="th">filepath</th>
+<th data-quarto-table-cell-role="th">index</th>
+<th data-quarto-table-cell-role="th">vit</th>
+<th data-quarto-table-cell-role="th">siglip</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>list[f64]</th>
+<th>list[f64]</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"canary"</td>
+<td>"media/birds10/00000.png"</td>
+<td>"test"</td>
+<td>[0.017947, -0.0305, … 0.003526]</td>
+<td>[-0.00611, -0.042975, … -0.031687]</td>
+</tr>
+<tr class="even">
+<td>"canary"</td>
+<td>"media/birds10/00001.png"</td>
+<td>"train"</td>
+<td>[0.024804, -0.045255, … -0.007233]</td>
+<td>[-0.033767, -0.011978, … -0.020352]</td>
+</tr>
+<tr class="odd">
+<td>"canary"</td>
+<td>"media/birds10/00002.png"</td>
+<td>"train"</td>
+<td>[0.050587, -0.024486, … 0.029895]</td>
+<td>[-0.033664, -0.008117, … -0.01725]</td>
+</tr>
+<tr class="even">
+<td>"canary"</td>
+<td>"media/birds10/00003.png"</td>
+<td>"train"</td>
+<td>[0.047036, -0.038993, … -0.008446]</td>
+<td>[-0.010029, -0.018192, … -0.009869]</td>
+</tr>
+<tr class="odd">
+<td>"canary"</td>
+<td>"media/birds10/00004.png"</td>
+<td>"train"</td>
+<td>[0.036349, -0.02734, … -0.018185]</td>
+<td>[-0.027327, 0.003568, … -0.033407]</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"swallow"</td>
+<td>"media/birds10/01550.png"</td>
+<td>"train"</td>
+<td>[-0.022461, -0.025098, … -0.061945]</td>
+<td>[-0.022029, -0.008476, … -0.003879]</td>
+</tr>
+<tr class="even">
+<td>"swallow"</td>
+<td>"media/birds10/01551.png"</td>
+<td>"train"</td>
+<td>[-0.000212, -0.003448, … -0.058042]</td>
+<td>[-0.02476, -0.016369, … 0.003875]</td>
+</tr>
+<tr class="odd">
+<td>"swallow"</td>
+<td>"media/birds10/01552.png"</td>
+<td>"train"</td>
+<td>[-0.012531, -0.006788, … -0.047077]</td>
+<td>[-0.022153, 0.00765, … -0.011152]</td>
+</tr>
+<tr class="even">
+<td>"swallow"</td>
+<td>"media/birds10/01553.png"</td>
+<td>"test"</td>
+<td>[-0.007587, -0.053535, … -0.046395]</td>
+<td>[-0.005022, 0.00878, … -0.017564]</td>
+</tr>
+<tr class="odd">
+<td>"swallow"</td>
+<td>"media/birds10/01554.png"</td>
+<td>"train"</td>
+<td>[-0.01325, -0.032453, … -0.050751]</td>
+<td>[-0.015117, -0.00685, … -0.029756]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Notice that the dataset now includes a <code>vit</code> column containing the 768-dimensional embedding for each image. With these embeddings in hand, we can now train a classifier using the techniques from earlier chapters. The key insight is that we are not training a deep neural network from scratch. Instead, we are using logistic regression on the embedding features, which is computationally cheap and requires far less data than end-to-end deep learning.</p>
+<div id="c0e30c9c" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> (</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    birds</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        DSSklearn.logistic_regression_cv,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        target<span class="op">=</span>c.label,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        features<span class="op">=</span>[c.vit],</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        stratify<span class="op">=</span>c.label,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        l1_ratios<span class="op">=</span>[<span class="dv">0</span>],</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        solver<span class="op">=</span><span class="st">"saga"</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The results are impressive given how little effort we put into the modeling process. We simply extracted pre-trained embeddings and applied logistic regression with cross-validation to select the regularization strength.</p>
+<div id="abed9a18" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>model.score()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>{'train': 1.0, 'test': 1.0}</code></pre>
+</div>
+</div>
+<p>The confusion matrix shows us which species are most often confused with each other. This can provide insight into the structure of the problem and potentially guide data collection if we wanted to improve performance further. In this case we see that the model does not make a single error on our dataset!</p>
+<div id="e6db0126" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>model.confusion_matrix()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="15_transferlearn_files/figure-html/cell-11-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="15_transferlearn_files/figure-html/cell-11-output-1.png" class="img-fluid figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>To better understand what the model has learned, we can examine the images that the model is most confident about. These are the examples where the predicted probability for the correct class is highest. Looking at these high-confidence predictions helps verify that the model is attending to meaningful features of the birds rather than artifacts of the images.</p>
+<div id="aaa2cf71" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    birds</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        model.predict_proba()</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.index <span class="op">==</span> <span class="st">"test"</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    .sort(c.prob_pred_, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    .group_by(c.label)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>        filepath <span class="op">=</span> c.filepath.first()</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    .pipe(DSImage.plot_image_grid, ncol<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="15_transferlearn_files/figure-html/cell-12-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="15_transferlearn_files/figure-html/cell-12-output-1.png" class="img-fluid figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Beyond classification, embeddings can also be visualized to understand the structure of our data. Dimensionality reduction techniques like UMAP (Uniform Manifold Approximation and Projection) can project the 768-dimensional embeddings down to two dimensions while preserving the relative distances between points. This allows us to see how the different bird species cluster in the embedding space.</p>
+<div id="8a4b9b50" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    birds</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        DSSklearn.umap,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        features<span class="op">=</span>[c.vit]</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    .predict(full<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"dr0"</span>, <span class="st">"dr1"</span>))</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point(aes(color<span class="op">=</span><span class="st">"label"</span>))</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<div>
+<figure class="figure">
+<p><a href="15_transferlearn_files/figure-html/cell-13-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="15_transferlearn_files/figure-html/cell-13-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Notice that the UMAP projection does an incredibly good job of separating the categories. Images of the same species cluster tightly together, while different species form distinct groups. This visualization confirms that the ViT embeddings capture meaningful information about bird species, information that was never explicitly part of the original model’s training objective but emerged naturally from learning to classify images more generally.</p>
+</section>
+<section id="zero-shot-learning" class="level2" data-number="15.4">
+<h2 data-number="15.4" class="anchored" data-anchor-id="zero-shot-learning"><span class="header-section-number">15.4</span> Zero-shot Learning</h2>
+<p>Let’s see another way that we can extend transfer learning using an even newer class of deep learning models called zero-shot models. These work, at least conceptually, by allowing us to do classification on a new dataset with data that the original model may never have seen with no additional training data needed. The idea sounds almost magical: we can classify images into categories without ever showing the model any labeled examples of those categories.</p>
+<p>Zero-shot learning became practical with the development of multimodal models that learn to connect images and text in a shared embedding space. These models are trained on massive datasets of image-caption pairs scraped from the internet. By learning to match images with their textual descriptions, the models develop an understanding of concepts that can be expressed in natural language. To classify a new image, we simply compare its embedding to the embeddings of text descriptions of each possible category.</p>
+<p>We will use a model called SigLIP (Sigmoid Language-Image Pre-training), which represents the current state of the art in this type of approach. Like ViT, we have wrapped the model in a convenient interface that handles loading and embedding.</p>
+<div id="b47a06ab" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>siglip <span class="op">=</span> SigLIPEmbedder()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The SigLIP model can embed both images and text into the same space. Images that match a textual description will have embeddings that are close together, measured by the dot product of their embedding vectors. Let’s start with a simple example: we will create a text embedding for “a photo of a canary” and see which images in our dataset are most similar to this description.</p>
+<div id="eef8018d" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>embed <span class="op">=</span> (</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    pl.DataFrame({<span class="st">"text"</span>: [<span class="st">"a photo of a canary"</span>]})</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>        siglip_txt <span class="op">=</span> c.text.map_elements(</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>            siglip.embed_text,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>            return_dtype<span class="op">=</span>pl.List(pl.Float32)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now we can compute the similarity between this text embedding and every image in our dataset. The dot product of two normalized vectors measures how aligned they are: values close to 1 indicate high similarity, while values close to 0 indicate the vectors are nearly orthogonal (unrelated).</p>
+<div id="a5fabe28" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    birds</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    .join(embed, how<span class="op">=</span><span class="st">"cross"</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        sim_score <span class="op">=</span> dot_product(c.siglip, c.siglip_txt)   </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    .sort(c.sim_score, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (1_555, 8)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">label</th>
+<th data-quarto-table-cell-role="th">filepath</th>
+<th data-quarto-table-cell-role="th">index</th>
+<th data-quarto-table-cell-role="th">vit</th>
+<th data-quarto-table-cell-role="th">siglip</th>
+<th data-quarto-table-cell-role="th">text</th>
+<th data-quarto-table-cell-role="th">siglip_txt</th>
+<th data-quarto-table-cell-role="th">sim_score</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>list[f64]</th>
+<th>list[f64]</th>
+<th>str</th>
+<th>list[f32]</th>
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"canary"</td>
+<td>"media/birds10/00092.png"</td>
+<td>"train"</td>
+<td>[0.02978, -0.047476, … 0.033946]</td>
+<td>[-0.031486, -0.00417, … -0.034138]</td>
+<td>"a photo of a canary"</td>
+<td>[-0.013163, 0.00856, … -0.006386]</td>
+<td>0.174141</td>
+</tr>
+<tr class="even">
+<td>"canary"</td>
+<td>"media/birds10/00025.png"</td>
+<td>"test"</td>
+<td>[0.034456, -0.036724, … 0.01517]</td>
+<td>[-0.012494, -0.006824, … -0.011134]</td>
+<td>"a photo of a canary"</td>
+<td>[-0.013163, 0.00856, … -0.006386]</td>
+<td>0.168272</td>
+</tr>
+<tr class="odd">
+<td>"canary"</td>
+<td>"media/birds10/00119.png"</td>
+<td>"train"</td>
+<td>[0.040854, -0.038557, … 0.013647]</td>
+<td>[-0.023419, -0.008008, … -0.032821]</td>
+<td>"a photo of a canary"</td>
+<td>[-0.013163, 0.00856, … -0.006386]</td>
+<td>0.166631</td>
+</tr>
+<tr class="even">
+<td>"canary"</td>
+<td>"media/birds10/00115.png"</td>
+<td>"test"</td>
+<td>[0.020037, -0.035357, … 0.006308]</td>
+<td>[-0.018599, -0.002016, … -0.018126]</td>
+<td>"a photo of a canary"</td>
+<td>[-0.013163, 0.00856, … -0.006386]</td>
+<td>0.164925</td>
+</tr>
+<tr class="odd">
+<td>"canary"</td>
+<td>"media/birds10/00122.png"</td>
+<td>"train"</td>
+<td>[0.024512, -0.034228, … 0.011564]</td>
+<td>[-0.031184, -0.00085, … -0.041639]</td>
+<td>"a photo of a canary"</td>
+<td>[-0.013163, 0.00856, … -0.006386]</td>
+<td>0.16463</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"duck"</td>
+<td>"media/birds10/00393.png"</td>
+<td>"test"</td>
+<td>[-0.016794, -0.018484, … 0.031061]</td>
+<td>[-0.03385, -0.008774, … -0.020661]</td>
+<td>"a photo of a canary"</td>
+<td>[-0.013163, 0.00856, … -0.006386]</td>
+<td>-0.059658</td>
+</tr>
+<tr class="even">
+<td>"duck"</td>
+<td>"media/birds10/00404.png"</td>
+<td>"test"</td>
+<td>[-0.004223, 0.002329, … 0.016521]</td>
+<td>[-0.027971, 0.003032, … -0.035659]</td>
+<td>"a photo of a canary"</td>
+<td>[-0.013163, 0.00856, … -0.006386]</td>
+<td>-0.060996</td>
+</tr>
+<tr class="odd">
+<td>"condor"</td>
+<td>"media/birds10/00272.png"</td>
+<td>"train"</td>
+<td>[-0.046735, -0.034367, … -0.003293]</td>
+<td>[0.008176, 0.001546, … 0.007645]</td>
+<td>"a photo of a canary"</td>
+<td>[-0.013163, 0.00856, … -0.006386]</td>
+<td>-0.062812</td>
+</tr>
+<tr class="even">
+<td>"duck"</td>
+<td>"media/birds10/00423.png"</td>
+<td>"train"</td>
+<td>[0.004472, -0.02733, … 0.018769]</td>
+<td>[-0.042206, 0.008924, … -0.033317]</td>
+<td>"a photo of a canary"</td>
+<td>[-0.013163, 0.00856, … -0.006386]</td>
+<td>-0.065547</td>
+</tr>
+<tr class="odd">
+<td>"condor"</td>
+<td>"media/birds10/00308.png"</td>
+<td>"test"</td>
+<td>[-0.057108, 0.000503, … -0.003844]</td>
+<td>[0.003084, 0.027618, … 0.002365]</td>
+<td>"a photo of a canary"</td>
+<td>[-0.013163, 0.00856, … -0.006386]</td>
+<td>-0.075263</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Visualizing the similarity scores by bird species shows that canary images indeed have the highest similarity to our “a photo of a canary” text prompt. This demonstrates that the model has learned a meaningful connection between the visual appearance of canaries and the word “canary” without us ever explicitly teaching it this connection.</p>
+<div id="1552a80b" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    birds</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    .join(embed, how<span class="op">=</span><span class="st">"cross"</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        sim_score <span class="op">=</span> dot_product(c.siglip, c.siglip_txt)   </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"sim_score"</span>, <span class="st">"label"</span>))</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point()</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<div>
+<figure class="figure">
+<p><a href="15_transferlearn_files/figure-html/cell-17-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="15_transferlearn_files/figure-html/cell-17-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>To perform zero-shot classification on the entire dataset, we need to create text embeddings for all of our bird species categories. We can then assign each image to the category whose text embedding it is most similar to. This process requires no training data at all; we are simply leveraging the knowledge the model acquired during its original pre-training.</p>
+<div id="90871978" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>embed <span class="op">=</span> (</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    birds</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    .select(text <span class="op">=</span> c.label.unique())</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>        siglip_txt <span class="op">=</span> c.text.map_elements(</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>            siglip.embed_text, return_dtype<span class="op">=</span>pl.List(pl.Float32)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    )    </span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>For each image, we compute its similarity to every category label, then select the label with the highest similarity as the predicted class. The classification rate tells us how often this zero-shot approach correctly identifies the bird species.</p>
+<div id="5724da3f" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    birds</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    .join(embed, how<span class="op">=</span><span class="st">"cross"</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>        sim_score <span class="op">=</span> dot_product(c.siglip, c.siglip_txt)   </span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    .sort(c.sim_score, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    .group_by(c.filepath)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">1</span>)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    .select(class_rate <span class="op">=</span> (c.label <span class="op">==</span> c.text).mean())</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (1, 1)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">class_rate</th>
+</tr>
+<tr class="even">
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0.998714</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>While the zero-shot accuracy makes a few errors (in comparison to the model above), it is remarkable that we can achieve any reasonable classification performance without a single labeled training example, let alone such a strong classification rate on the testing data. This approach is particularly valuable when labeled data is expensive or impossible to obtain, there are a very large number of categories, or when we need to quickly prototype a classification system for new categories.</p>
+<p>Let’s examine the images that the zero-shot classifier got wrong. Understanding these errors can provide insight into the model’s limitations and the ambiguity inherent in visual classification.</p>
+<div id="9c6b03e4" class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    birds</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    .join(embed, how<span class="op">=</span><span class="st">"cross"</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>        sim_score <span class="op">=</span> dot_product(c.siglip, c.siglip_txt)   </span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    .sort(c.sim_score, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    .group_by(c.filepath)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">1</span>)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.label <span class="op">!=</span> c.text)</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>        desc <span class="op">=</span> pl.concat_str(<span class="st">"label"</span>, <span class="st">"text"</span>, separator<span class="op">=</span><span class="st">" =&gt; "</span>)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    .pipe(DSImage.plot_image_grid, label_name<span class="op">=</span><span class="st">"desc"</span>, ncol<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="15_transferlearn_files/figure-html/cell-20-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="15_transferlearn_files/figure-html/cell-20-output-1.png" class="img-fluid figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>These two misclassifications involve birds in strange positions and that are cropped at the edges, cutting off import aspects that differentiate the species.</p>
+</section>
+<section id="text-embedding" class="level2" data-number="15.5">
+<h2 data-number="15.5" class="anchored" data-anchor-id="text-embedding"><span class="header-section-number">15.5</span> Text Embedding</h2>
+<p>The transfer learning approach we applied to images works equally well for text data. Just as image models learn to represent visual content in ways that transfer across tasks, language models learn to represent text in ways that capture semantic meaning. By extracting embeddings from a pre-trained language model, we can build text classifiers with minimal task-specific training.</p>
+<p>For this section, we will use a dataset of movie reviews from IMDB. Each review is labeled as either positive or negative, and our goal is to predict the sentiment from the text content. This is the same task we approached in <a href="13_deeplearning.html" class="quarto-xref"><span>Chapter 13</span></a> using neural networks trained from scratch, which allows us to directly compare the transfer learning approach.</p>
+<div id="5916ac04" class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>imdb <span class="op">=</span> pl.read_parquet(<span class="st">"data/imdb5k_pca.parquet"</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>imdb</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="20">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5_000, 5)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">id</th>
+<th data-quarto-table-cell-role="th">label</th>
+<th data-quarto-table-cell-role="th">text</th>
+<th data-quarto-table-cell-role="th">index</th>
+<th data-quarto-table-cell-role="th">e5</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>list[f64]</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"doc0001"</td>
+<td>"negative"</td>
+<td>"In my opinion, this movie is n…</td>
+<td>"test"</td>
+<td>[-0.253192, 0.099743, … -0.000806]</td>
+</tr>
+<tr class="even">
+<td>"doc0002"</td>
+<td>"positive"</td>
+<td>"Loved today's show!!! It was a…</td>
+<td>"test"</td>
+<td>[0.280815, -0.064508, … -0.0273]</td>
+</tr>
+<tr class="odd">
+<td>"doc0003"</td>
+<td>"negative"</td>
+<td>"Nothing about this movie is an…</td>
+<td>"test"</td>
+<td>[-0.179638, 0.171097, … 0.007573]</td>
+</tr>
+<tr class="even">
+<td>"doc0004"</td>
+<td>"positive"</td>
+<td>"Even though this was a disaste…</td>
+<td>"train"</td>
+<td>[0.300824, 0.027666, … -0.028764]</td>
+</tr>
+<tr class="odd">
+<td>"doc0005"</td>
+<td>"positive"</td>
+<td>"I cannot believe I enjoyed thi…</td>
+<td>"test"</td>
+<td>[0.319154, 0.035425, … 0.001316]</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"doc4996"</td>
+<td>"positive"</td>
+<td>""Americans Next Top Model" is …</td>
+<td>"test"</td>
+<td>[0.305853, 0.026326, … 0.006194]</td>
+</tr>
+<tr class="even">
+<td>"doc4997"</td>
+<td>"negative"</td>
+<td>"It's very sad that Lucian Pint…</td>
+<td>"train"</td>
+<td>[0.217778, 0.283147, … -0.028361]</td>
+</tr>
+<tr class="odd">
+<td>"doc4998"</td>
+<td>"positive"</td>
+<td>"Ruth Gordon at her best. This …</td>
+<td>"train"</td>
+<td>[0.373751, 0.076117, … -0.032517]</td>
+</tr>
+<tr class="even">
+<td>"doc4999"</td>
+<td>"negative"</td>
+<td>"I actually saw the movie befor…</td>
+<td>"test"</td>
+<td>[-0.073533, 0.10723, … 0.019535]</td>
+</tr>
+<tr class="odd">
+<td>"doc5000"</td>
+<td>"positive"</td>
+<td>"I've Seen The Beginning Of The…</td>
+<td>"test"</td>
+<td>[0.147752, -0.095977, … -0.02008]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The dataset includes precomputed embeddings from the E5 model, a powerful text embedding model designed specifically to produce representations suitable for downstream tasks like classification and semantic search. Like the image embeddings we used earlier, these text embeddings capture the semantic content of each review in a fixed-dimensional vector that can be used as input to any classifier.</p>
+<p>Training a logistic regression model on these embeddings follows exactly the same pattern we used for the bird classification task. The only difference is the source of the embeddings: images of birds versus reviews of movies.</p>
+<div id="6bd62aa6" class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> (</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    imdb</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>        DSSklearn.logistic_regression_cv,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>        target<span class="op">=</span>c.label,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>        features<span class="op">=</span>[c.e5],</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>        stratify<span class="op">=</span>c.label,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>        l1_ratios<span class="op">=</span>[<span class="dv">0</span>],</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>        solver<span class="op">=</span><span class="st">"saga"</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The performance using transfer learning noticeably exceeds what we achieved in <a href="13_deeplearning.html" class="quarto-xref"><span>Chapter 13</span></a> with neural networks trained from scratch. This improvement comes from the E5 model’s pre-training on vast amounts of text data, which gives it a sophisticated understanding of language that would be impossible to learn from our relatively small training set.</p>
+<div id="0e44f5ed" class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>model.score()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="22">
+<pre><code>{'train': 0.9577142857142857, 'test': 0.9426666666666667}</code></pre>
+</div>
+</div>
+<div id="fc4303a4" class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>model.confusion_matrix()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="15_transferlearn_files/figure-html/cell-24-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="15_transferlearn_files/figure-html/cell-24-output-1.png" class="img-fluid figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>As with the bird images, we can visualize the embedding space using UMAP to see how positive and negative reviews cluster. Well-separated clusters indicate that the embeddings capture the sentiment distinction effectively.</p>
+<div id="525a3f2f" class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    imdb</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>        DSSklearn.umap,</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>        features<span class="op">=</span>[c.e5]</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    .predict(full<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"dr0"</span>, <span class="st">"dr1"</span>))</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point(aes(color<span class="op">=</span><span class="st">"label"</span>))</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="24">
+<div>
+<figure class="figure">
+<p><a href="15_transferlearn_files/figure-html/cell-25-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="15_transferlearn_files/figure-html/cell-25-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The clear separation between positive and negative reviews in this visualization explains why a simple logistic regression classifier performs so well: the embedding model has already done the hard work of mapping reviews into a space where sentiment is linearly separable.</p>
+</section>
+<section id="calling-an-api" class="level2" data-number="15.6">
+<h2 data-number="15.6" class="anchored" data-anchor-id="calling-an-api"><span class="header-section-number">15.6</span> Calling an API</h2>
+<p>Throughout this chapter, we have used pre-trained models that run locally on our computer. This gives us complete control over our data and allows us to process examples quickly once the models are loaded. However, the most powerful AI models available today are too large to run on typical hardware. These models, with billions or even trillions of parameters, require specialized infrastructure to operate and are typically accessed through web-based APIs.</p>
+<p>Using an API to access AI capabilities represents another form of transfer learning. Instead of downloading model weights and running inference locally, we send our data to a remote server that processes it using state-of-the-art models and returns the results. This approach offers access to capabilities far beyond what we could run locally, at the cost of per-request pricing and the need to send data over the network.</p>
+<p>Here is an example of using OpenAI’s API to classify a movie review. The API accepts natural language instructions, so we can describe the classification task in plain English rather than training a model.</p>
+<div id="19cf5879" class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> OpenAI()</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>review_text <span class="op">=</span> imdb.select(<span class="st">"text"</span>).to_series()[<span class="dv">0</span>]</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> client.responses.create(</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"gpt-5-mini-2025-08-07"</span>,</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">input</span><span class="op">=</span>(</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Return only one word, either 'positive' or 'negative'"</span> <span class="op">+</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"for this review:</span><span class="ch">\n\n</span><span class="st">"</span> <span class="op">+</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>        review_text</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>label <span class="op">=</span> response.output_text</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>label</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="f0fdcb46" class="cell" data-execution_count="26">
+<div class="cell-output cell-output-display" data-execution_count="25">
+<pre><code>'negative'</code></pre>
+</div>
+</div>
+<p>The simplicity of this approach is striking: we describe what we want in natural language, provide the input data, and receive a structured response. This zero-shot capability, combined with instruction-following, makes large language models incredibly versatile tools for data processing tasks that would traditionally require custom model development.</p>
+<p>However, API-based approaches have important tradeoffs to consider. Each request incurs a cost, which can add up quickly when processing large datasets. Latency is higher than local inference because data must travel over the network. Privacy concerns may prevent sending sensitive data to external services. And the behavior of API models can change without notice as providers update their systems. For production applications with stable requirements and sufficient training data, local models trained via transfer learning often provide a better balance of cost, reliability, and performance.</p>
+</section>
+<section id="conclusions" class="level2" data-number="15.7">
+<h2 data-number="15.7" class="anchored" data-anchor-id="conclusions"><span class="header-section-number">15.7</span> Conclusions</h2>
+<p>Transfer learning has fundamentally changed how we approach machine learning problems. Rather than treating each task as a fresh challenge requiring massive datasets and extensive training, we can build on the knowledge captured in pre-trained models to achieve strong performance with minimal effort. This chapter demonstrated three complementary approaches to leveraging pre-trained models.</p>
+<p>First, we used embeddings from vision and language models as features for traditional classifiers. This approach requires some labeled data but dramatically reduces the amount needed compared to training from scratch. The ViT embeddings for bird classification and E5 embeddings for sentiment analysis both yielded excellent results with simple logistic regression classifiers. The key insight is that modern embedding models transform raw inputs into representations where the concepts we care about are often linearly separable.</p>
+<p>Second, we explored zero-shot classification with multimodal models like SigLIP. By learning to connect images and text in a shared embedding space, these models can classify images into arbitrary categories described in natural language without any task-specific training. While accuracy may be lower than fine-tuned approaches, zero-shot methods enable rapid prototyping and handle scenarios where labeled data is unavailable.</p>
+<p>Third, we briefly examined how external APIs provide access to capabilities beyond what we can run locally. Large language models accessible through APIs can perform classification and many other tasks given only natural language instructions. This represents the extreme end of transfer learning, where we leverage models trained on essentially all available text and images to perform specific tasks on demand.</p>
+<p>The choice among these approaches depends on the specific requirements of each application. When labeled data is plentiful and consistent performance is critical, traditional embedding plus classifier approaches offer the best balance. When exploring new problems or working with limited labels, zero-shot methods provide a quick baseline. And when tasks require sophisticated language understanding or domain knowledge, API-based models may offer capabilities that local approaches cannot match.</p>
+<p>As pre-trained models continue to improve, the bar for what can be accomplished with transfer learning keeps rising. Tasks that once required extensive custom development can now be solved by combining off-the-shelf embeddings with simple classifiers. This democratization of machine learning capabilities is one of the most significant developments in the field, making powerful AI accessible to practitioners who may not have the resources for large-scale model training.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/taylor-arnold\.github\.io\/fds-py");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./14_cnnwordvec.html" class="pagination-link" aria-label="CNNs and Word2Vec">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">CNNs and Word2Vec</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./16_spatial_data.html" class="pagination-link" aria-label="Spatial Data">
+        <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Spatial Data</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Taylor Arnold</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>A <a href="https://distantviewing.org/">Distant Viewing Lab</a> project</p>
+</div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>

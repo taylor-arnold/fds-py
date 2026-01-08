@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Taylor Arnold">
+
+<title>9&nbsp; Requests – Foundations of Data Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./10_inference.html" rel="next">
+<link href="./08_dataformats.html" rel="prev">
+<link href="./img/owl_explore.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-25064e4154141e7ea34817c6f1220590.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06_program.html">Part II: Programming</a></li><li class="breadcrumb-item"><a href="./09_requests.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Requests</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Foundations of Data Science</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/taylor-arnold/fds-py" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part I: Core</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_modify.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">EDA I: Organizing Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">EDA II: Visualizing Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_combine.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">EDA III: Restructuring Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_collect.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">EDA IV: Collecting Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part II: Programming</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_program.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Programming</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_strings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Strings</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_dataformats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Data Formats</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_requests.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Requests</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part III: Models</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Inference</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_supervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Supervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_unsupervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Unsupervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13_deeplearning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Deep Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_cnnwordvec.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">CNNs and Word2Vec</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15_transferlearn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Transfer Learning</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part IV: Applications</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16_spatial_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Spatial Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17_temporal_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Temporal Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18_network_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Network Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19_textual_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Textual Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20_image_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Image Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part V: Notes</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./21_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Notes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./22_datasets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Datasets</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup"><span class="header-section-number">9.1</span> Setup</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction"><span class="header-section-number">9.2</span> Introduction</a></li>
+  <li><a href="#apis-and-http-requests" id="toc-apis-and-http-requests" class="nav-link" data-scroll-target="#apis-and-http-requests"><span class="header-section-number">9.3</span> APIs and HTTP Requests</a></li>
+  <li><a href="#web-scraping" id="toc-web-scraping" class="nav-link" data-scroll-target="#web-scraping"><span class="header-section-number">9.4</span> Web Scraping</a></li>
+  <li><a href="#calling-local-services" id="toc-calling-local-services" class="nav-link" data-scroll-target="#calling-local-services"><span class="header-section-number">9.5</span> Calling Local Services</a></li>
+  <li><a href="#sparql-and-wikidata" id="toc-sparql-and-wikidata" class="nav-link" data-scroll-target="#sparql-and-wikidata"><span class="header-section-number">9.6</span> SPARQL and Wikidata</a></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions"><span class="header-section-number">9.7</span> Conclusions</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06_program.html">Part II: Programming</a></li><li class="breadcrumb-item"><a href="./09_requests.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Requests</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-requests" class="quarto-section-identifier"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Requests</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Practice Notebooks
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>Notebook09a [<a href="https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook09a.ipynb?hl=en">Colab↗</a>]</li>
+<li>Notebook09b [<a href="https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook09b.ipynb?hl=en">Colab↗</a>]</li>
+</ul>
+</div>
+</div>
+</div>
+<section id="setup" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">9.1</span> Setup</h2>
+<p>Load all of the modules and datasets needed for the chapter. We will also use requests and the requests-cache modules to make API requests and lxml to parse the results.</p>
+<div id="5f79269d" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funs <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plotnine <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polars <span class="im">import</span> col <span class="im">as</span> c</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>theme_set(theme_minimal())</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> lxml <span class="im">import</span> html</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests_cache</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="introduction" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="introduction"><span class="header-section-number">9.2</span> Introduction</h2>
+<p>Throughout this book, we have worked with datasets that were either bundled with our code or available as downloadable files. In practice, however, much of the data we need as data scientists lives on remote servers, updated continuously or made available only through programmatic interfaces. Weather forecasts, stock prices, social media posts, and government statistics are just a few examples of data that change too frequently—or are too large—to distribute as static files.</p>
+<p>This chapter introduces techniques for fetching data directly from the internet using Python. We will explore three increasingly sophisticated approaches. First, we will learn how to call web-based APIs (Application Programming Interfaces), which provide structured access to data from services like Wikipedia, weather providers, and financial databases. Second, we will see how to extract information directly from web pages—a technique called web scraping—when no formal API exists. Third, we will examine how to query structured knowledge bases using SPARQL, a powerful query language for linked data. Along the way, we will also see how to call local services running on our own machine, opening up possibilities for integrating large language models and other resource-intensive tools into our data pipelines.</p>
+<p>These techniques expand what we can analyze far beyond pre-packaged datasets. By the end of this chapter, you will be able to gather real-time data from across the internet and integrate it seamlessly into your Polars workflows.</p>
+</section>
+<section id="apis-and-http-requests" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="apis-and-http-requests"><span class="header-section-number">9.3</span> APIs and HTTP Requests</h2>
+<p>An <em>application programming interface</em> (API) is a generic term for a specific interface that two computers can communicate across. While APIs can take many forms, the most common type for data access communicates over the internet using the Hypertext Transfer Protocol (HTTP). HTTP is the foundational protocol of the World Wide Web—it defines how your web browser requests pages from servers and how those servers respond. When you visit a website, your browser sends an HTTP request and receives an HTTP response containing the page content. APIs work the same way, except instead of returning human-readable web pages, they return structured data (usually in JSON format) designed for programs to consume.</p>
+<p>HTTP defines several <em>methods</em> that describe what kind of action a request is performing. The most common are GET (retrieve data), POST (send data to create something new), PUT (update existing data), and DELETE (remove data). For data retrieval, we almost always use GET requests. The server responds with a <em>status code</em> indicating whether the request succeeded: 200 means success, 404 means the requested resource wasn’t found, 500 means the server encountered an error, and so on. Understanding these basics helps when debugging why a request might fail.</p>
+<p>There are many APIs available online for accessing a variety of different types of data. Some require setting up an account and obtaining an API key—a unique identifier that authenticates your requests. Some APIs require payment for each request, while others offer free access or a free tier for occasional users. Most frequently, APIs provide access to data that changes frequently, such as news stories, weather forecasts, or stock prices. Increasingly, though, even static datasets are being put behind API access rather than allowing straightforward downloads. Fortunately, Python’s <code>requests</code> library makes it relatively easy to make and parse API calls. For more details on the <code>requests</code> library, see its excellent documentation at <a href="https://requests.readthedocs.io/">https://requests.readthedocs.io/</a>.</p>
+<p>We will demonstrate API calls using the MediaWiki API that powers Wikipedia. This API is particularly nice for learning because it is freely available and requires no signup or authentication. Anyone can call the API directly and retrieve data related to Wikipedia and other Wikimedia projects. For comprehensive documentation on this API, see <a href="https://www.mediawiki.org/wiki/API:Main_page">https://www.mediawiki.org/wiki/API:Main_page</a>.</p>
+<p>Before we get started, let’s build a local cache that stores the results of our API calls. This is important for two reasons. First, it avoids overwhelming the server with repeated requests for the same data—a courtesy that many APIs require and all appreciate. Second, it speeds up our code during development, since cached responses return instantly without network latency.</p>
+<div id="3e1c19ac" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>session <span class="op">=</span> requests_cache.CachedSession(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    cache_name<span class="op">=</span><span class="st">"examples/requests_cache"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    backend<span class="op">=</span><span class="st">"sqlite"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    allowable_methods<span class="op">=</span>(<span class="st">'GET'</span>, <span class="st">'HEAD'</span>, <span class="st">'POST'</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    expire_after<span class="op">=</span><span class="va">None</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The <code>requests_cache</code> library creates a drop-in replacement for the standard <code>requests</code> session. Behind the scenes, it stores responses in a SQLite database file. Setting <code>expire_after=None</code> means cached responses never expire—useful for historical data that won’t change, though you might want a shorter expiration for frequently updated data.</p>
+<p>To make an API call, we need three things: a base URL pointing to the API endpoint, parameters specifying what data we want, and headers identifying who we are. The parameters are specific to each API—you’ll need to consult the documentation to learn what options are available. The <code>User-Agent</code> header is a polite way to identify your application; many APIs require it, and it helps server administrators contact you if your requests cause problems.</p>
+<div id="9d900fc6" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>base_url <span class="op">=</span> <span class="st">"https://en.wikipedia.org/w/api.php"</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> {</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'action'</span>: <span class="st">'query'</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'format'</span>: <span class="st">'json'</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'prop'</span>: <span class="st">'pageviews'</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'titles'</span>: <span class="st">'Emily Brontë'</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>headers <span class="op">=</span> {</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"User-Agent"</span>: <span class="st">"DataScienceBook/1.0 (tarnold2@richmond.edu)"</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> session.get(base_url, params<span class="op">=</span>params, headers<span class="op">=</span>headers)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In this example, we’re asking the MediaWiki API for pageview statistics about the Wikipedia article on Emily Brontë. The <code>action</code> parameter tells the API we want to query for information, <code>format</code> specifies we want the response in JSON, <code>prop</code> indicates we want pageview data, and <code>titles</code> names the specific article.</p>
+<p>We can check the response code to verify the request succeeded. A status code of 200 indicates success.</p>
+<div id="66fe43fc" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>response.status_code</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>200</code></pre>
+</div>
+</div>
+<p>The data returned from this API, as with most web-based APIs, is in JSON format. We can access and parse it with a simple method attached to the response object.</p>
+<div id="e028ec95" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> response.json()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now we are back in a situation similar to what we encountered in <a href="08_dataformats.html" class="quarto-xref"><span>Chapter 8</span></a>: we need to parse the JSON data into one or more tabular data structures. JSON from APIs is often deeply nested, requiring us to navigate through multiple levels to reach the data we want. Let’s extract the pageview data into a Polars DataFrame.</p>
+<div id="b9ed615b" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pages <span class="op">=</span> data[<span class="st">'query'</span>][<span class="st">'pages'</span>]</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>page_id <span class="op">=</span> <span class="bu">list</span>(pages.keys())[<span class="dv">0</span>]</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>pageviews <span class="op">=</span> pages[page_id].get(<span class="st">'pageviews'</span>, {})</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>pageview_data <span class="op">=</span> []</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> date, views <span class="kw">in</span> pageviews.items():</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    pageview_data.append({</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">'date'</span>: date,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">'views'</span>: views,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">'doc_id'</span>: <span class="st">'Emily Brontë'</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>page_views_df <span class="op">=</span> pl.DataFrame(pageview_data)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>page_views_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (60, 3)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">date</th>
+<th data-quarto-table-cell-role="th">views</th>
+<th data-quarto-table-cell-role="th">doc_id</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>i64</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"2025-11-06"</td>
+<td>1809</td>
+<td>"Emily Brontë"</td>
+</tr>
+<tr class="even">
+<td>"2025-11-07"</td>
+<td>1923</td>
+<td>"Emily Brontë"</td>
+</tr>
+<tr class="odd">
+<td>"2025-11-08"</td>
+<td>1977</td>
+<td>"Emily Brontë"</td>
+</tr>
+<tr class="even">
+<td>"2025-11-09"</td>
+<td>3909</td>
+<td>"Emily Brontë"</td>
+</tr>
+<tr class="odd">
+<td>"2025-11-10"</td>
+<td>2923</td>
+<td>"Emily Brontë"</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"2025-12-31"</td>
+<td>2567</td>
+<td>"Emily Brontë"</td>
+</tr>
+<tr class="even">
+<td>"2026-01-01"</td>
+<td>2590</td>
+<td>"Emily Brontë"</td>
+</tr>
+<tr class="odd">
+<td>"2026-01-02"</td>
+<td>3231</td>
+<td>"Emily Brontë"</td>
+</tr>
+<tr class="even">
+<td>"2026-01-03"</td>
+<td>3221</td>
+<td>"Emily Brontë"</td>
+</tr>
+<tr class="odd">
+<td>"2026-01-04"</td>
+<td>3098</td>
+<td>"Emily Brontë"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The structure of API responses varies widely between services. Some APIs return flat, table-like data that converts easily to DataFrames. Others, like this one, nest data several levels deep. The key skill is learning to explore the JSON structure (often by printing intermediate results or consulting the API documentation) and then writing code to extract exactly what you need. With practice, you’ll develop an intuition for common patterns.</p>
+</section>
+<section id="web-scraping" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="web-scraping"><span class="header-section-number">9.4</span> Web Scraping</h2>
+<p>Sometimes the data we need isn’t available through a formal API—it exists only on web pages designed for human readers. <em>Web scraping</em> is the technique of programmatically extracting data from HTML pages. While APIs provide structured data explicitly intended for programs, web scraping requires us to parse the visual structure of a page and extract the relevant pieces.</p>
+<p>The <code>requests</code> module can fetch any URL, not just API endpoints. When we request a regular web page, we get back HTML—the markup language that defines the structure of web pages. We can then parse this HTML to extract the data we want.</p>
+<p>For this example, we’ll grab headlines from CNN Lite, a simplified version of the CNN website that’s particularly easy to parse. CNN Lite presents news headlines as a simple list without the complex JavaScript and advertisements of the main site.</p>
+<div id="f9cbf2fb" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://lite.cnn.com/"</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>headers <span class="op">=</span> {</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"User-Agent"</span>: <span class="st">"DataScienceBook/1.0 (tarnold2@richmond.edu)"</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> session.get(url, headers<span class="op">=</span>headers)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>html_text <span class="op">=</span> response.text</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>At this point, the response is just a long string containing raw HTML markup. To extract meaningful data, we need to parse this HTML and navigate its structure. We use the <code>lxml</code> library’s HTML parser, which we introduced in <a href="08_dataformats.html" class="quarto-xref"><span>Chapter 8</span></a>.</p>
+<div id="41f4b70d" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>tree <span class="op">=</span> html.fromstring(html_text)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>stories <span class="op">=</span> tree.xpath(<span class="st">"//li/a"</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>stories_df <span class="op">=</span> pl.DataFrame({</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"headline"</span>: [x.text_content().strip() <span class="cf">for</span> x <span class="kw">in</span> stories],</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"link"</span>: [x.get(<span class="st">'href'</span>) <span class="cf">for</span> x <span class="kw">in</span> stories]</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>stories_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (100, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">headline</th>
+<th data-quarto-table-cell-role="th">link</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Pentagon moves to cut Sen. Mar…</td>
+<td>"/2026/01/05/politics/pentagon-…</td>
+</tr>
+<tr class="even">
+<td>"Greenland, Cuba, Iran and more…</td>
+<td>"/2026/01/05/world/greenland-cu…</td>
+</tr>
+<tr class="odd">
+<td>"2026 Movie Preview: Get ready …</td>
+<td>"/2026/01/05/entertainment/2026…</td>
+</tr>
+<tr class="even">
+<td>"Minnesota Gov. Tim Walz ends r…</td>
+<td>"/2026/01/05/politics/tim-walz-…</td>
+</tr>
+<tr class="odd">
+<td>"Cleveland Browns fire Kevin St…</td>
+<td>"/2026/01/05/sport/football-nfl…</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Suspected mountain lion attack…</td>
+<td>"/2026/01/02/us/mountain-lion-a…</td>
+</tr>
+<tr class="even">
+<td>"In India, door deliveries can …</td>
+<td>"/2026/01/01/india/india-gig-wo…</td>
+</tr>
+<tr class="odd">
+<td>"Mayor Zohran Mamdani doubles d…</td>
+<td>"/2026/01/01/politics/zohran-ma…</td>
+</tr>
+<tr class="even">
+<td>"No. 1 Indiana routs No. 9 Alab…</td>
+<td>"/2026/01/01/sport/football-nca…</td>
+</tr>
+<tr class="odd">
+<td>"Zohran Mamdani’s inauguration …</td>
+<td>"/2026/01/01/politics/nyc-mayor…</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The XPath expression <code>//li/a</code> finds all anchor (<code>&lt;a&gt;</code>) tags that are direct children of list item (<code>&lt;li&gt;</code>) tags anywhere in the document. For each matching element, we extract the text content (the headline) and the <code>href</code> attribute (the link URL). This pattern—fetch HTML, parse it, extract elements matching a pattern—is the core workflow for web scraping.</p>
+<p>A few words of caution about web scraping. First, websites change their structure frequently, which can break your scraping code without warning. Second, some websites prohibit scraping in their terms of service. Third, scraping too aggressively can overload servers—always use caching and rate limiting. Finally, always respect the <code>robots.txt</code> file that websites use to indicate which pages should not be accessed by automated tools. For more on the <code>lxml</code> library and XPath expressions, see <a href="https://lxml.de/">https://lxml.de/</a>.</p>
+</section>
+<section id="calling-local-services" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="calling-local-services"><span class="header-section-number">9.5</span> Calling Local Services</h2>
+<p>So far, we’ve focused on remote services accessed over the internet. But the same HTTP-based techniques work for services running locally on your own machine. This opens up powerful possibilities, particularly for integrating large language models (LLMs) into your data pipelines.</p>
+<p>Tools like <a href="https://lmstudio.ai/">LM Studio</a> allow you to run powerful language models locally without needing to set up complex Python environments or manage GPU configurations directly. LM Studio provides a simple graphical interface for downloading and running models, and it exposes them through an API that follows the OpenAI standard—meaning any code written for OpenAI’s API will work with local models too.</p>
+<p>Why would you want to run models locally rather than using a cloud service? Privacy is one reason: your data never leaves your machine. Cost is another: after the initial setup, local inference is free. And for educational purposes, running models locally helps demystify how these systems work.</p>
+<p>Let’s use a locally-running model to classify the news headlines we scraped earlier. The code below assumes you have LM Studio running with a model loaded and serving on the default port. If you don’t have LM Studio set up, you can skip this section—the concepts transfer directly to cloud-based APIs like OpenAI’s.</p>
+<div id="2a0f99cc" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>BASE_URL <span class="op">=</span> <span class="st">"http://127.0.0.1:1234/v1"</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>MODEL <span class="op">=</span> <span class="st">"openai/gpt-oss-20b"</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>headline <span class="op">=</span> <span class="st">"Senate passes bipartisan bill to reform aviation safety rules"</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>system_prompt <span class="op">=</span> (</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"You are a strict news desk classifier. "</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Return exactly one label from this set:</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'sports, local politics, national politics, world politics, science, law, economics, culture, other.</span><span class="ch">\n</span><span class="st">'</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Return only the label, with no punctuation or extra words."</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>payload <span class="op">=</span> {</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"model"</span>: MODEL,</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"messages"</span>: [</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"role"</span>: <span class="st">"system"</span>, <span class="st">"content"</span>: system_prompt},</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="ss">f"Headline: </span><span class="sc">{</span>headline<span class="sc">}</span><span class="ch">\n</span><span class="ss">Label:"</span>},</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"temperature"</span>: <span class="dv">0</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>headers <span class="op">=</span> {</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Content-Type"</span>: <span class="st">"application/json"</span>,</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Some servers accept/ignore this; it doesn't hurt to include.</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Authorization"</span>: <span class="st">"Bearer lm-studio"</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>resp <span class="op">=</span> session.post(</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>  <span class="ss">f"</span><span class="sc">{</span>BASE_URL<span class="sc">}</span><span class="ss">/chat/completions"</span>, json<span class="op">=</span>payload, headers<span class="op">=</span>headers, timeout<span class="op">=</span><span class="dv">60</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>resp.raise_for_status()</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> resp.json()</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>label <span class="op">=</span> data[<span class="st">"choices"</span>][<span class="dv">0</span>][<span class="st">"message"</span>][<span class="st">"content"</span>].strip()</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>label</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>'national politics'</code></pre>
+</div>
+</div>
+<p>This code sends a POST request to the local LM Studio server. The payload follows the OpenAI chat completions format: a system message that sets the model’s behavior, followed by a user message containing the headline to classify. Setting <code>temperature</code> to 0 makes the model’s output deterministic, which is important for reproducible classification.</p>
+<p>Because our <code>requests_cache</code> session intercepts all HTTP requests, even POST requests to local endpoints are cached automatically. This means if you run the same classification twice, the second call returns instantly from the cache rather than invoking the model again.</p>
+<p>Now let’s classify all of the headlines from our scraped dataset. We’ll loop through each headline, send it to the model, and collect the results.</p>
+<div id="dfd48fe0" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>categories <span class="op">=</span> []</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> headline <span class="kw">in</span> stories_df[<span class="st">"headline"</span>]:</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    payload <span class="op">=</span> {</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"model"</span>: MODEL,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"messages"</span>: [</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>            {<span class="st">"role"</span>: <span class="st">"system"</span>, <span class="st">"content"</span>: system_prompt},</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>            {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="ss">f"Headline: </span><span class="sc">{</span>headline<span class="sc">}</span><span class="ch">\n</span><span class="ss">Label:"</span>},</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        ],</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"temperature"</span>: <span class="dv">0</span>,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    resp <span class="op">=</span> session.post(</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"</span><span class="sc">{</span>BASE_URL<span class="sc">}</span><span class="ss">/chat/completions"</span>,</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>        json<span class="op">=</span>payload,</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>        headers<span class="op">=</span>headers,</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>        timeout<span class="op">=</span><span class="dv">60</span>,</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    resp.raise_for_status()</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    category <span class="op">=</span> resp.json()[<span class="st">"choices"</span>][<span class="dv">0</span>][<span class="st">"message"</span>][<span class="st">"content"</span>].strip()</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    categories.append(category)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>With our classifications complete, we can add them back into the DataFrame using <code>with_columns</code>.</p>
+<div id="6797642f" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>stories_df <span class="op">=</span> stories_df.with_columns(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    pl.Series(<span class="st">"category"</span>, categories)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now we can analyze the distribution of news categories. What topics dominate today’s news cycle?</p>
+<div id="120ff73c" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    stories_df</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .group_by(c.category)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>        n <span class="op">=</span> pl.<span class="bu">len</span>()</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    .sort(c.n)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (9, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">category</th>
+<th data-quarto-table-cell-role="th">n</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>u32</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"economics"</td>
+<td>3</td>
+</tr>
+<tr class="even">
+<td>"science"</td>
+<td>3</td>
+</tr>
+<tr class="odd">
+<td>"other"</td>
+<td>5</td>
+</tr>
+<tr class="even">
+<td>"culture"</td>
+<td>8</td>
+</tr>
+<tr class="odd">
+<td>"sports"</td>
+<td>8</td>
+</tr>
+<tr class="even">
+<td>"local politics"</td>
+<td>11</td>
+</tr>
+<tr class="odd">
+<td>"law"</td>
+<td>13</td>
+</tr>
+<tr class="even">
+<td>"national politics"</td>
+<td>17</td>
+</tr>
+<tr class="odd">
+<td>"world politics"</td>
+<td>32</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>With just a few lines of code, we’ve built a pipeline that scrapes current news headlines from the web and classifies them using a large language model—all without manually downloading data or labeling anything by hand. This illustrates the power of combining web requests with modern machine learning tools.</p>
+</section>
+<section id="sparql-and-wikidata" class="level2" data-number="9.6">
+<h2 data-number="9.6" class="anchored" data-anchor-id="sparql-and-wikidata"><span class="header-section-number">9.6</span> SPARQL and Wikidata</h2>
+<p>So far we’ve fetched data from APIs that return JSON and from web pages that return HTML. A third approach uses <em>SPARQL</em> (pronounced “sparkle”), a query language designed specifically for querying knowledge graphs. If you’re familiar with SQL for relational databases, SPARQL serves a similar purpose for a different type of data structure.</p>
+<p>Traditional relational databases store data in tables with rows and columns. Knowledge graphs instead store data as a network of interconnected facts, where each fact is represented as a <em>triple</em>: a subject, a predicate, and an object. For example, the fact “Paris is the capital of France” would be stored as:</p>
+<ul>
+<li>Subject: Paris</li>
+<li>Predicate: is capital of</li>
+<li>Object: France</li>
+</ul>
+<p>This triple structure—also called RDF (Resource Description Framework)—allows knowledge graphs to represent complex, interconnected information flexibly. You can add new types of relationships without modifying a schema, and you can easily traverse connections between entities.</p>
+<p><em>Wikidata</em> is one of the largest freely available knowledge graphs, containing structured data about millions of entities—people, places, organizations, concepts, and more. It powers the information boxes you see on Wikipedia and is freely queryable through the Wikidata Query Service. For an introduction to Wikidata and its data model, see <a href="https://www.wikidata.org/wiki/Wikidata:Introduction">https://www.wikidata.org/wiki/Wikidata:Introduction</a>.</p>
+<div id="7e0c855a" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>SPARQL_ENDPOINT <span class="op">=</span> <span class="st">"https://query.wikidata.org/sparql"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>SPARQL will feel somewhat familiar to the SQL queries we saw in <a href="08_dataformats.html" class="quarto-xref"><span>Chapter 8</span></a>, though with important differences. A SPARQL query typically contains the following components. PREFIX declarations define shortcuts for the long URIs (Uniform Resource Identifiers) used to identify entities and properties. Wikidata’s query service provides default prefixes, so we often don’t need to declare them explicitly. The SELECT clause specifies which variables to return, similar to SQL. Variables in SPARQL are prefixed with a question mark, like <code>?country</code> or <code>?population</code>. The WHERE block contains triple patterns that describe what we’re looking for. Each pattern has the form <code>subject predicate object</code>, where any component can be a variable. The query engine finds all combinations of values that make the patterns true. Optional clauses handle missing data gracefully—if an entity lacks a particular property, it won’t be excluded from results (similar to a LEFT JOIN in SQL). FILTER, ORDER BY, and LIMIT clauses work much like their SQL counterparts.</p>
+<p>In Wikidata specifically, you’ll encounter these patterns frequently:</p>
+<ul>
+<li><code>wd:Q...</code> refers to items (entities), where Q followed by a number is the unique identifier. For example, <code>wd:Q6256</code> represents the concept “country.”</li>
+<li><code>wdt:P...</code> refers to “truthy” properties—the current, most authoritative value. For example, <code>wdt:P36</code> means “capital.”</li>
+<li>The <code>SERVICE wikibase:label</code> clause automatically retrieves human-readable labels for entities in your preferred language.</li>
+</ul>
+<p>For a comprehensive tutorial on SPARQL and Wikidata, see <a href="https://www.wikidata.org/wiki/Wikidata:SPARQL_tutorial">https://www.wikidata.org/wiki/Wikidata:SPARQL_tutorial</a>.</p>
+<p>Let’s write a query that retrieves all countries along with their capitals and populations. We’ll break down each component.</p>
+<div id="7896e129" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="st">SELECT ?country ?countryLabel ?capitalLabel ?population WHERE {</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="st">  ?country wdt:P31 wd:Q6256.</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="st">  OPTIONAL { ?country wdt:P36 ?capital. }</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="st">  OPTIONAL { ?country wdt:P1082 ?population. }</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="st">  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="st">ORDER BY ?countryLabel</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="st">LIMIT 500</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s trace through what this query does. The line <code>?country wdt:P31 wd:Q6256</code> finds all entities where property P31 (“instance of”) equals Q6256 (“country”). In plain English: “find all things that are instances of the concept ‘country’.”</p>
+<p>The OPTIONAL blocks retrieve each country’s capital (P36) and population (P1082). Using OPTIONAL means countries missing this data will still appear in results with null values, rather than being excluded entirely. The SERVICE clause is Wikidata-specific magic that automatically looks up human-readable labels. Without it, we’d get only the Q-numbers and P-numbers, not the actual names. Finally, we order alphabetically by country name and limit to 500 results.</p>
+<p>To execute the query, we send an HTTP GET request to the Wikidata endpoint. We specify that we want results in JSON format.</p>
+<div id="49af94d0" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>headers <span class="op">=</span> {</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Accept"</span>: <span class="st">"application/sparql+json"</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"User-Agent"</span>: <span class="st">"DataScienceBook/1.0 (tarnold2@richmond.edu)"</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>resp <span class="op">=</span> session.get(</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    SPARQL_ENDPOINT,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    params<span class="op">=</span>{<span class="st">"query"</span>: query, <span class="st">"format"</span>: <span class="st">"json"</span>},</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    headers<span class="op">=</span>headers,</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    timeout<span class="op">=</span><span class="dv">30</span>,</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>resp.raise_for_status()</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(resp.headers[<span class="st">"Content-Type"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>application/sparql-results+json;charset=utf-8</code></pre>
+</div>
+</div>
+<p>The response comes back as JSON with a specific structure for SPARQL results. We need to parse this into a format suitable for creating a DataFrame.</p>
+<div id="4c8a3508" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> resp.json()</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>vars_ <span class="op">=</span> data[<span class="st">"head"</span>][<span class="st">"vars"</span>]</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>rows <span class="op">=</span> []</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> binding <span class="kw">in</span> data[<span class="st">"results"</span>][<span class="st">"bindings"</span>]:</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    row <span class="op">=</span> {}</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> var <span class="kw">in</span> vars_:</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> var <span class="kw">in</span> binding:</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>            row[var] <span class="op">=</span> binding[var][<span class="st">"value"</span>]</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>            row[var] <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    rows.append(row)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pl.DataFrame(rows).with_columns(population <span class="op">=</span> c.population.cast(pl.Int64))</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (239, 4)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">country</th>
+<th data-quarto-table-cell-role="th">countryLabel</th>
+<th data-quarto-table-cell-role="th">capitalLabel</th>
+<th data-quarto-table-cell-role="th">population</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>i64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"http://www.wikidata.org/entity…</td>
+<td>"Afghanistan"</td>
+<td>"Kabul"</td>
+<td>41454761</td>
+</tr>
+<tr class="even">
+<td>"http://www.wikidata.org/entity…</td>
+<td>"Albania"</td>
+<td>"Tirana"</td>
+<td>2811655</td>
+</tr>
+<tr class="odd">
+<td>"http://www.wikidata.org/entity…</td>
+<td>"Algeria"</td>
+<td>"Algiers"</td>
+<td>46164219</td>
+</tr>
+<tr class="even">
+<td>"http://www.wikidata.org/entity…</td>
+<td>"Andorra"</td>
+<td>"Andorra la Vella"</td>
+<td>87486</td>
+</tr>
+<tr class="odd">
+<td>"http://www.wikidata.org/entity…</td>
+<td>"Angola"</td>
+<td>"Luanda"</td>
+<td>36749906</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"http://www.wikidata.org/entity…</td>
+<td>"Yemen"</td>
+<td>"Sanaa"</td>
+<td>28250420</td>
+</tr>
+<tr class="even">
+<td>"http://www.wikidata.org/entity…</td>
+<td>"Yemen"</td>
+<td>"Aden"</td>
+<td>28250420</td>
+</tr>
+<tr class="odd">
+<td>"http://www.wikidata.org/entity…</td>
+<td>"Zambia"</td>
+<td>"Lusaka"</td>
+<td>19610769</td>
+</tr>
+<tr class="even">
+<td>"http://www.wikidata.org/entity…</td>
+<td>"Zimbabwe"</td>
+<td>"Harare"</td>
+<td>15178979</td>
+</tr>
+<tr class="odd">
+<td>"http://www.wikidata.org/entity…</td>
+<td>"sub-Roman Britain"</td>
+<td>null</td>
+<td>null</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The SPARQL result format includes a <code>head</code> section listing the variable names and a <code>results</code> section containing the actual data. Each “binding” is a dictionary mapping variable names to their values. We iterate through the bindings, extract the values, and construct a list of dictionaries that Polars can convert directly into a DataFrame. Note that we cast the population column to <code>Int64</code> after creating the DataFrame. SPARQL returns all values as strings, so numeric columns need explicit type conversion.</p>
+<p>This query demonstrates just a fraction of SPARQL’s power. You can write queries that traverse multiple relationships (find all cities in countries with population over 100 million), aggregate data (count how many Nobel laureates each country has produced), or find paths through the knowledge graph (how is person A related to person B?). The Wikidata Query Service even includes a visual query builder at <a href="https://query.wikidata.org/">https://query.wikidata.org/</a> to help you explore and construct queries.</p>
+</section>
+<section id="conclusions" class="level2" data-number="9.7">
+<h2 data-number="9.7" class="anchored" data-anchor-id="conclusions"><span class="header-section-number">9.7</span> Conclusions</h2>
+<p>This chapter introduced three powerful techniques for gathering data from the internet: calling web APIs, scraping HTML pages, and querying knowledge graphs with SPARQL. Each approach has its place in a data scientist’s toolkit.</p>
+<p>APIs are the preferred approach when available. They provide structured data explicitly designed for programmatic access, with documented formats and (usually) stable interfaces. Many organizations now offer APIs for their data, from social media platforms to government agencies to scientific databases.</p>
+<p>Web scraping fills the gap when no API exists. It’s more fragile than API access—websites change their HTML structure without warning—but it opens up vast amounts of information that would otherwise require manual collection. Use scraping responsibly: cache your requests, rate-limit your access, and respect sites’ terms of service.</p>
+<p>SPARQL and knowledge graphs represent a different paradigm entirely. Rather than thinking in tables, you think in relationships and connections. Wikidata’s comprehensive knowledge base, freely available and constantly updated by a global community, makes it an invaluable resource for augmenting your datasets with contextual information.</p>
+<p>We also saw how HTTP-based communication extends beyond remote servers to local services. Running large language models locally through tools like LM Studio gives you privacy, cost savings, and educational insight into how these systems work—all while using the same requests-based code patterns you’d use for cloud APIs.</p>
+<p>As you work on your own projects, you’ll likely combine these techniques. You might scrape a list of company names from a web page, look up additional information about each company from Wikidata, call an API for their stock prices, and use a local language model to summarize the results. The common thread is HTTP: a simple, universal protocol that lets your Python code communicate with services anywhere—whether across the internet or running on your own machine.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/taylor-arnold\.github\.io\/fds-py");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./08_dataformats.html" class="pagination-link" aria-label="Data Formats">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Data Formats</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./10_inference.html" class="pagination-link" aria-label="Inference">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Inference</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Taylor Arnold</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>A <a href="https://distantviewing.org/">Distant Viewing Lab</a> project</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

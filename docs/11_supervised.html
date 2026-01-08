@@ -1,0 +1,2537 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Taylor Arnold">
+
+<title>11&nbsp; Supervised Learning – Foundations of Data Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./12_unsupervised.html" rel="next">
+<link href="./10_inference.html" rel="prev">
+<link href="./img/owl_explore.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-25064e4154141e7ea34817c6f1220590.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./10_inference.html">Part III: Models</a></li><li class="breadcrumb-item"><a href="./11_supervised.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Supervised Learning</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Foundations of Data Science</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/taylor-arnold/fds-py" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part I: Core</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_modify.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">EDA I: Organizing Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">EDA II: Visualizing Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_combine.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">EDA III: Restructuring Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_collect.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">EDA IV: Collecting Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part II: Programming</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_program.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Programming</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_strings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Strings</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_dataformats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Data Formats</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_requests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Requests</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part III: Models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Inference</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_supervised.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Supervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_unsupervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Unsupervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13_deeplearning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Deep Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_cnnwordvec.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">CNNs and Word2Vec</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15_transferlearn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Transfer Learning</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part IV: Applications</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16_spatial_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Spatial Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17_temporal_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Temporal Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18_network_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Network Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19_textual_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Textual Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20_image_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Image Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part V: Notes</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./21_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Notes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./22_datasets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Datasets</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup"><span class="header-section-number">11.1</span> Setup</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction"><span class="header-section-number">11.2</span> Introduction</a></li>
+  <li><a href="#predictive-modeling" id="toc-predictive-modeling" class="nav-link" data-scroll-target="#predictive-modeling"><span class="header-section-number">11.3</span> Predictive Modeling</a></li>
+  <li><a href="#linear-regression-revisited" id="toc-linear-regression-revisited" class="nav-link" data-scroll-target="#linear-regression-revisited"><span class="header-section-number">11.4</span> Linear Regression Revisited</a></li>
+  <li><a href="#lasso-regression" id="toc-lasso-regression" class="nav-link" data-scroll-target="#lasso-regression"><span class="header-section-number">11.5</span> Lasso Regression</a></li>
+  <li><a href="#ridge-regression-and-enet" id="toc-ridge-regression-and-enet" class="nav-link" data-scroll-target="#ridge-regression-and-enet"><span class="header-section-number">11.6</span> Ridge Regression and ENet</a></li>
+  <li><a href="#gradient-boosting" id="toc-gradient-boosting" class="nav-link" data-scroll-target="#gradient-boosting"><span class="header-section-number">11.7</span> Gradient Boosting</a></li>
+  <li><a href="#classification" id="toc-classification" class="nav-link" data-scroll-target="#classification"><span class="header-section-number">11.8</span> Classification</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">11.9</span> Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./10_inference.html">Part III: Models</a></li><li class="breadcrumb-item"><a href="./11_supervised.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Supervised Learning</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-supervised" class="quarto-section-identifier"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Supervised Learning</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Practice Notebooks
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>Notebook11a [<a href="https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook11a.ipynb?hl=en">Colab↗</a>]</li>
+<li>Notebook11b [<a href="https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook11b.ipynb?hl=en">Colab↗</a>]</li>
+</ul>
+</div>
+</div>
+</div>
+<section id="setup" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">11.1</span> Setup</h2>
+<p>Load all of the modules and datasets needed for the chapter.</p>
+<div id="636df98f" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funs <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plotnine <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polars <span class="im">import</span> col <span class="im">as</span> c</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>theme_set(theme_minimal())</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>country <span class="op">=</span> pl.read_csv(<span class="st">"data/countries.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="introduction" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="introduction"><span class="header-section-number">11.2</span> Introduction</h2>
+<p>The previous chapter introduced statistical inference, a set of methods for drawing conclusions about populations based on samples. In that context, the primary goal was understanding relationships between variables: determining whether differences between groups are statistically significant, whether two categorical variables are associated, or whether changes in one numerical variable are related to changes in another. Hypothesis tests and confidence intervals provided the framework for making such claims while accounting for sampling variability.</p>
+<p>In this chapter, we shift our focus from inference to prediction. Rather than asking whether a relationship exists, we ask: given what we know about some variables, how well can we predict the value of another variable? This is the domain of supervised learning, a collection of methods designed to learn patterns from data that can be applied to make predictions on new, unseen observations.</p>
+<p>The distinction between inference and prediction is subtle but important. In statistical inference, we typically care about the parameters of a model — the estimated coefficients, their standard errors, and their statistical significance. We ask questions like “Is there evidence that height is associated with driving speed?” In predictive modeling, we care primarily about the accuracy of predictions — how close our predicted values are to the actual values. We ask questions like “Given a student’s height and sex, what driving speed would we predict?” A model that performs well for inference may not perform well for prediction, and vice versa.</p>
+<p>The term “supervised” in supervised learning refers to the fact that we train our models using data where the correct answers are already known. We have a set of input variables (called predictors, features, or independent variables) and an output variable (called the response, target, or dependent variable). The model learns from examples where both the inputs and outputs are observed, and then applies what it has learned to make predictions for cases where only the inputs are known.</p>
+<p>This chapter introduces the fundamental concepts and techniques of supervised learning, beginning with the distinction between regression and classification problems. We will revisit linear regression from a predictive perspective, explore regularization techniques that improve prediction accuracy, and introduce gradient boosting as a powerful alternative to linear models. Throughout, we emphasize the importance of evaluating models on data they have not seen during training, a principle that separates predictive modeling from the descriptive statistics we have encountered earlier.</p>
+</section>
+<section id="predictive-modeling" class="level2" data-number="11.3">
+<h2 data-number="11.3" class="anchored" data-anchor-id="predictive-modeling"><span class="header-section-number">11.3</span> Predictive Modeling</h2>
+<p>The goal of predictive modeling is to generate predictions for one column in a dataset using information contained in one or more other columns. This might seem paradoxical at first: why would we want to predict values that we already have? The answer is that our ultimate goal is to apply the model to new data where the predictors are known but the value we want to predict is not. A hospital might use patient characteristics to predict the likelihood of readmission; a retailer might use purchase history to predict future spending; a researcher might use environmental measurements to predict species abundance. In each case, the model is trained on historical data where outcomes are known and then applied to future cases where outcomes have not yet occurred.</p>
+<p>There are several types of predictive models, distinguished primarily by the data type of the variable being predicted. When we predict a numeric variable, the task is called regression. The name comes from the statistical technique of linear regression, though the term now encompasses many methods beyond simple linear models. When we predict a categorical variable — assigning observations to discrete groups or classes — the task is called classification. These two tasks require different evaluation criteria because the nature of prediction errors differs fundamentally between them.</p>
+<p>For regression problems, we need a way to measure how far our predictions are from the actual values. The most common measure is the mean squared error (MSE), which computes the average of the squared differences between predicted and actual values. If we denote the actual values as <span class="math inline">\(y_1, y_2, \ldots, y_n\)</span> and the corresponding predictions as <span class="math inline">\(\hat{y}_1, \hat{y}_2, \ldots, \hat{y}_n\)</span>, the MSE is defined as follows.</p>
+<p><span class="math display">\[
+\text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2
+\]</span></p>
+<p>Squaring the differences ensures that positive and negative errors do not cancel each other out and gives greater weight to larger errors. A model that makes occasional large mistakes will have a higher MSE than one that makes consistent small mistakes, even if the average error magnitude is similar.</p>
+<p>Because the MSE is expressed in squared units of the response variable, it can be difficult to interpret directly. The root mean squared error (RMSE) addresses this by taking the square root of the MSE, returning the measure to the original units.</p>
+<p><span class="math display">\[
+\text{RMSE} = \sqrt{\text{MSE}} = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2}
+\]</span></p>
+<p>The RMSE can be interpreted as the typical magnitude of prediction errors. An RMSE of 5 years in predicting life expectancy means that predictions are typically off by about 5 years in either direction.</p>
+<p>For classification problems, the most straightforward measure of performance is the error rate, which simply counts the proportion of predictions that are incorrect. If we make <span class="math inline">\(n\)</span> predictions and <span class="math inline">\(m\)</span> of them are wrong, the error rate is <span class="math inline">\(m/n\)</span>. Equivalently, the accuracy is <span class="math inline">\((n-m)/n\)</span>, the proportion of correct predictions.</p>
+<p><span class="math display">\[
+\text{Error Rate} = \frac{\text{Number of incorrect predictions}}{\text{Total number of predictions}}
+\]</span></p>
+<p>While the error rate provides a simple summary, it can be misleading in certain situations. If we are predicting a rare outcome — such as whether a patient has a rare disease — a model that always predicts “no disease” might have a very low error rate while being completely useless for its intended purpose. More sophisticated evaluation measures exist for such situations, but the error rate remains a useful starting point for understanding classification performance.</p>
+<p>The process of building a predictive model is called training. During training, we use existing data to find parameter values that minimize prediction error. The general approach involves defining a model with numerical parameters — such as the coefficients in a linear regression — and then using optimization techniques to find the parameter values that produce the best predictions on the training data.</p>
+<p>We encountered this idea in <a href="10_inference.html" class="quarto-xref"><span>Chapter 10</span></a> when fitting linear regression models. The ordinary least squares method finds the intercept and slope values that minimize the sum of squared residuals. Predictive modeling extends this principle to a wide variety of model types, many of which require more sophisticated optimization techniques than simple calculus.</p>
+<p>After training a model, we must evaluate how well it performs. A natural approach would be to compare predictions to the actual values in our data and compute the MSE or error rate. However, this approach has a fundamental flaw: the model was optimized specifically to fit this data, so its performance on this data will be overly optimistic.</p>
+<p>Consider an extreme example. If we had a model flexible enough to memorize every observation in our dataset, it could achieve perfect predictions on that data — zero MSE, zero error rate. Yet such a model would be useless for predicting new observations because it has learned nothing general about the relationships in the data. It has simply memorized the answers.</p>
+<p>This problem is called overfitting, and it represents one of the central challenges in predictive modeling. A model that fits the training data too closely captures not only the true underlying patterns but also the random noise specific to that particular sample. When applied to new data, the noise patterns will be different, and the model’s performance will suffer.</p>
+<p>The solution is to evaluate models on data they have not seen during training. We create two subsets of our data: a training dataset used to fit the model and a testing dataset used to evaluate performance. The model is trained using only the training data, and then predictions are made for the testing data. The MSE or error rate computed on the testing set — called the test error — provides a more realistic assessment of how the model will perform on new observations.</p>
+<p>Typically, we randomly assign observations to training and testing sets, often using proportions like 80 percent training and 20 percent testing. This random split ensures that both sets are representative of the overall data. Some situations require more careful splitting — for example, when data have a time component, we might train on earlier observations and test on later ones — but random splitting is a reasonable default for many applications.</p>
+</section>
+<section id="linear-regression-revisited" class="level2" data-number="11.4">
+<h2 data-number="11.4" class="anchored" data-anchor-id="linear-regression-revisited"><span class="header-section-number">11.4</span> Linear Regression Revisited</h2>
+<p>Having established the framework for predictive modeling, we can now revisit linear regression from a new perspective. In <a href="10_inference.html" class="quarto-xref"><span>Chapter 10</span></a>, we used linear regression primarily for inference: testing whether coefficients were significantly different from zero, constructing confidence intervals, and interpreting the relationships between variables. Here, we focus on prediction: how well can a linear model predict new observations?</p>
+<p>The mathematical form of linear regression remains the same. Given a response variable <span class="math inline">\(y\)</span> and predictor variables <span class="math inline">\(x_1, x_2, \ldots, x_k\)</span>, we model the relationship as:</p>
+<p><span class="math display">\[
+y = \alpha + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_k x_k + \varepsilon
+\]</span></p>
+<p>The coefficients <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta_1, \ldots, \beta_k\)</span> are estimated by minimizing the sum of squared residuals on the training data. Once these coefficients are estimated, we can make predictions for any observation by plugging in the predictor values and computing the predicted response.</p>
+<p>To fit predictive models, we will use a class called <code>DSSklearn</code>, which provides a consistent interface to the scikit-learn machine learning library in Python. Like the <code>DSStatsmodels</code> class from the previous chapter, <code>DSSklearn</code> is designed to work within a Polars pipe chain. It takes as arguments the target variable (the column to predict) and a list of features (the columns to use as predictors).</p>
+<div id="ec8ff2b4" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> (</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        DSSklearn.linear_regression,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        target<span class="op">=</span>c.lexp,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        features<span class="op">=</span>[c.hdi, c.gdp, c.cellphone, c.happy]</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This code fits a linear regression model predicting life expectancy (<code>lexp</code>) using four predictors: the Human Development Index (<code>hdi</code>), GDP per capita (<code>gdp</code>), cellphone subscriptions per 100 people (<code>cellphone</code>), and a happiness index (<code>happy</code>). The function automatically splits the data into training and testing sets, fits the model on the training data, and stores everything needed to evaluate and use the model.</p>
+<p>The resulting model object provides several methods for examining the results. The <code>score</code> method returns a dictionary containing the RMSE for both the training and testing sets.</p>
+<div id="9d2e1113" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>model.score()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>{'train': np.float64(2.916788304946737), 'test': np.float64(3.103181695026965)}</code></pre>
+</div>
+</div>
+<p>The training RMSE tells us how well the model fits the data it was trained on, while the testing RMSE provides a more realistic estimate of prediction accuracy on new data. A large gap between training and testing RMSE can indicate overfitting — the model has learned patterns specific to the training data that do not generalize well.</p>
+<p>The <code>coef</code> method returns a DataFrame containing the estimated coefficients for each predictor.</p>
+<div id="cc4fadf0" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>model.coef()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">param</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Intercept"</td>
+<td>75.147766</td>
+</tr>
+<tr class="even">
+<td>"hdi"</td>
+<td>6.061369</td>
+</tr>
+<tr class="odd">
+<td>"happy"</td>
+<td>0.859377</td>
+</tr>
+<tr class="even">
+<td>"gdp"</td>
+<td>-0.041938</td>
+</tr>
+<tr class="odd">
+<td>"cellphone"</td>
+<td>-0.696483</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>These coefficients have the same interpretation as in the inferential context: each coefficient represents the expected change in the response for a one-unit change in the corresponding predictor, holding all other predictors constant. However, in the predictive context, we are less concerned with testing whether these coefficients are significantly different from zero and more concerned with whether they collectively produce accurate predictions.</p>
+<p>The <code>predict</code> method returns a DataFrame with columns indicating whether each observation was in the training or testing set (<code>index_</code>), the actual response value (<code>target_</code>), and the model’s prediction (<code>prediction_</code>).</p>
+<div id="08502336" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>model.predict()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (135, 3)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">index_</th>
+<th data-quarto-table-cell-role="th">target_</th>
+<th data-quarto-table-cell-role="th">prediction_</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>f64</th>
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"train"</td>
+<td>70.43</td>
+<td>66.342595</td>
+</tr>
+<tr class="even">
+<td>"train"</td>
+<td>76.18</td>
+<td>73.382149</td>
+</tr>
+<tr class="odd">
+<td>"test"</td>
+<td>82.84</td>
+<td>83.170286</td>
+</tr>
+<tr class="even">
+<td>"train"</td>
+<td>79.83</td>
+<td>82.999008</td>
+</tr>
+<tr class="odd">
+<td>"train"</td>
+<td>78.51</td>
+<td>74.634218</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"train"</td>
+<td>79.67</td>
+<td>77.20665</td>
+</tr>
+<tr class="even">
+<td>"test"</td>
+<td>76.03</td>
+<td>77.392255</td>
+</tr>
+<tr class="odd">
+<td>"train"</td>
+<td>76.98</td>
+<td>72.158468</td>
+</tr>
+<tr class="even">
+<td>"train"</td>
+<td>81.77</td>
+<td>81.14838</td>
+</tr>
+<tr class="odd">
+<td>"train"</td>
+<td>66.71</td>
+<td>66.771474</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>This output allows us to examine individual predictions and understand where the model performs well or poorly. We can also add the predictions to the original data using the <code>with_columns</code> method.</p>
+<div id="436402c6" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        model.predict()</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (135, 18)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">iso</th>
+<th data-quarto-table-cell-role="th">full_name</th>
+<th data-quarto-table-cell-role="th">region</th>
+<th data-quarto-table-cell-role="th">subregion</th>
+<th data-quarto-table-cell-role="th">pop</th>
+<th data-quarto-table-cell-role="th">lexp</th>
+<th data-quarto-table-cell-role="th">lat</th>
+<th data-quarto-table-cell-role="th">lon</th>
+<th data-quarto-table-cell-role="th">hdi</th>
+<th data-quarto-table-cell-role="th">gdp</th>
+<th data-quarto-table-cell-role="th">gini</th>
+<th data-quarto-table-cell-role="th">happy</th>
+<th data-quarto-table-cell-role="th">cellphone</th>
+<th data-quarto-table-cell-role="th">water_access</th>
+<th data-quarto-table-cell-role="th">lang</th>
+<th data-quarto-table-cell-role="th">index_</th>
+<th data-quarto-table-cell-role="th">target_</th>
+<th data-quarto-table-cell-role="th">prediction_</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>i64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>str</th>
+<th>str</th>
+<th>f64</th>
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"SEN"</td>
+<td>"Senegal"</td>
+<td>"Africa"</td>
+<td>"Western Africa"</td>
+<td>18.932</td>
+<td>70.43</td>
+<td>14.366667</td>
+<td>-14.283333</td>
+<td>0.53</td>
+<td>4871</td>
+<td>38.1</td>
+<td>50.93</td>
+<td>66.0</td>
+<td>54.93987</td>
+<td>"pbp|fra|wol"</td>
+<td>"train"</td>
+<td>70.43</td>
+<td>66.342595</td>
+</tr>
+<tr class="even">
+<td>"VEN"</td>
+<td>"Venezuela, Bolivarian Republic…</td>
+<td>"Americas"</td>
+<td>"South America"</td>
+<td>28.517</td>
+<td>76.18</td>
+<td>8.0</td>
+<td>-67.0</td>
+<td>0.709</td>
+<td>8899</td>
+<td>44.8</td>
+<td>57.65</td>
+<td>96.8</td>
+<td>95.66913</td>
+<td>"spa|vsl"</td>
+<td>"train"</td>
+<td>76.18</td>
+<td>73.382149</td>
+</tr>
+<tr class="odd">
+<td>"FIN"</td>
+<td>"Finland"</td>
+<td>"Europe"</td>
+<td>"Northern Europe"</td>
+<td>5.623</td>
+<td>82.84</td>
+<td>65.0</td>
+<td>27.0</td>
+<td>0.948</td>
+<td>57574</td>
+<td>27.7</td>
+<td>76.99</td>
+<td>156.4</td>
+<td>99.44798</td>
+<td>"fin|swe"</td>
+<td>"test"</td>
+<td>82.84</td>
+<td>83.170286</td>
+</tr>
+<tr class="even">
+<td>"USA"</td>
+<td>"United States of America"</td>
+<td>"Americas"</td>
+<td>"Northern America"</td>
+<td>347.276</td>
+<td>79.83</td>
+<td>39.828175</td>
+<td>-98.5795</td>
+<td>0.938</td>
+<td>78389</td>
+<td>47.7</td>
+<td>65.21</td>
+<td>91.7</td>
+<td>99.72235</td>
+<td>"eng"</td>
+<td>"train"</td>
+<td>79.83</td>
+<td>82.999008</td>
+</tr>
+<tr class="odd">
+<td>"LKA"</td>
+<td>"Sri Lanka"</td>
+<td>"Asia"</td>
+<td>"Southern Asia"</td>
+<td>23.229</td>
+<td>78.51</td>
+<td>7.0</td>
+<td>81.0</td>
+<td>0.776</td>
+<td>14380</td>
+<td>39.3</td>
+<td>36.02</td>
+<td>83.1</td>
+<td>90.77437</td>
+<td>"sin|sin|tam|tam"</td>
+<td>"train"</td>
+<td>78.51</td>
+<td>74.634218</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"ALB"</td>
+<td>"Albania"</td>
+<td>"Europe"</td>
+<td>"Southern Europe"</td>
+<td>2.772</td>
+<td>79.67</td>
+<td>41.0</td>
+<td>20.0</td>
+<td>0.81</td>
+<td>20362</td>
+<td>30.8</td>
+<td>54.45</td>
+<td>91.9</td>
+<td>98.5473</td>
+<td>"sqi"</td>
+<td>"train"</td>
+<td>79.67</td>
+<td>77.20665</td>
+</tr>
+<tr class="even">
+<td>"MYS"</td>
+<td>"Malaysia"</td>
+<td>"Asia"</td>
+<td>"South-eastern Asia"</td>
+<td>35.978</td>
+<td>76.03</td>
+<td>3.7805111</td>
+<td>102.314362</td>
+<td>0.819</td>
+<td>35990</td>
+<td>46.2</td>
+<td>58.68</td>
+<td>118.2</td>
+<td>95.69194</td>
+<td>"msa"</td>
+<td>"test"</td>
+<td>76.03</td>
+<td>77.392255</td>
+</tr>
+<tr class="odd">
+<td>"SLV"</td>
+<td>"El Salvador"</td>
+<td>"Americas"</td>
+<td>"Central America"</td>
+<td>6.366</td>
+<td>76.98</td>
+<td>13.668889</td>
+<td>-88.866111</td>
+<td>0.678</td>
+<td>12221</td>
+<td>38.3</td>
+<td>64.82</td>
+<td>126.9</td>
+<td>86.19786</td>
+<td>"spa"</td>
+<td>"train"</td>
+<td>76.98</td>
+<td>72.158468</td>
+</tr>
+<tr class="even">
+<td>"CYP"</td>
+<td>"Cyprus"</td>
+<td>"Asia"</td>
+<td>"Western Asia"</td>
+<td>1.371</td>
+<td>81.77</td>
+<td>35.0</td>
+<td>33.0</td>
+<td>0.913</td>
+<td>55720</td>
+<td>31.2</td>
+<td>60.71</td>
+<td>123.1</td>
+<td>99.41781</td>
+<td>"ell|tur"</td>
+<td>"train"</td>
+<td>81.77</td>
+<td>81.14838</td>
+</tr>
+<tr class="odd">
+<td>"PAK"</td>
+<td>"Pakistan"</td>
+<td>"Asia"</td>
+<td>"Southern Asia"</td>
+<td>255.22</td>
+<td>66.71</td>
+<td>30.0</td>
+<td>71.0</td>
+<td>0.544</td>
+<td>5717</td>
+<td>29.6</td>
+<td>45.49</td>
+<td>49.8</td>
+<td>61.92651</td>
+<td>"eng|urd"</td>
+<td>"train"</td>
+<td>66.71</td>
+<td>66.771474</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>This combined DataFrame makes it easy to compare predictions to actual values while also seeing all the original variables, which can help diagnose why certain predictions are more or less accurate.</p>
+</section>
+<section id="lasso-regression" class="level2" data-number="11.5">
+<h2 data-number="11.5" class="anchored" data-anchor-id="lasso-regression"><span class="header-section-number">11.5</span> Lasso Regression</h2>
+<p>Linear regression estimates coefficients by minimizing the sum of squared residuals on the training data. While this produces the best possible fit to the training data, it does not necessarily produce the best predictions on new data. When models have many predictors, or when predictors are highly correlated with each other, the estimated coefficients can become unstable — small changes in the training data lead to large changes in the coefficients. This instability often leads to poor predictions on new observations.</p>
+<p>Regularization addresses this problem by adding a penalty term to the optimization objective. Instead of simply minimizing squared residuals, we minimize squared residuals plus a penalty that discourages extreme coefficient values. This produces coefficients that are somewhat worse at fitting the training data but often better at predicting new data.</p>
+<p>The lasso (Least Absolute Shrinkage and Selection Operator) is one of the most important regularization techniques. It adds a penalty proportional to the sum of the absolute values of the coefficients. If we denote the coefficients as <span class="math inline">\(\beta_1, \beta_2, \ldots, \beta_k\)</span>, the lasso objective function can be written as follows:</p>
+<p><span class="math display">\[
+\min_{\alpha, \beta} \left[ \sum_{i=1}^{n} (y_i - \alpha - \beta_1 x_{i1} - \cdots - \beta_k x_{ik})^2 + \lambda \sum_{j=1}^{k} |\beta_j| \right]
+\]</span></p>
+<p>The parameter <span class="math inline">\(\lambda\)</span> (lambda) controls the strength of the penalty. When <span class="math inline">\(\lambda = 0\)</span>, the lasso is equivalent to ordinary linear regression. As <span class="math inline">\(\lambda\)</span> increases, the penalty term becomes more important, and coefficients are pushed toward zero. A remarkable property of the lasso is that it can push some coefficients exactly to zero, effectively removing those predictors from the model. This makes the lasso useful not only for improving predictions but also for variable selection — identifying which predictors are most important.</p>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Why the Absolute Value?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The absolute value penalty is what gives the lasso its variable selection property. To understand why, imagine the optimization process searching for the best coefficients. When a coefficient is small, the absolute value penalty creates a constant “pull” toward zero, regardless of the coefficient’s current value. This pull can overcome the slight improvement in fit that a small coefficient provides, driving the coefficient all the way to zero. In contrast, other penalty forms (like the squared penalty used in ridge regression) create a pull that weakens as the coefficient approaches zero, so coefficients shrink but never quite reach zero.</p>
+</div>
+</div>
+</div>
+<p>Choosing the right value of <span class="math inline">\(\lambda\)</span> is crucial. Too small a value provides little regularization and does not address overfitting; too large a value over-penalizes the coefficients and produces a model that underfits the data. Cross-validation is the standard approach for selecting <span class="math inline">\(\lambda\)</span>. The training data is divided into several folds (subsets), and for each candidate value of <span class="math inline">\(\lambda\)</span>, the model is trained on some folds and evaluated on the remaining fold. This process is repeated for all possible fold arrangements, and the <span class="math inline">\(\lambda\)</span> value that produces the best average performance is selected.</p>
+<p>The <code>DSSklearn</code> class handles cross-validation automatically when using the <code>elastic_net_cv</code> method, which is a general framework that includes the lasso as a special case. Setting <code>l1_ratio=1</code> specifies that we want the lasso penalty.</p>
+<div id="5313c032" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> (</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        DSSklearn.elastic_net_cv,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        target<span class="op">=</span>c.lexp,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        features<span class="op">=</span>[c.hdi, c.gdp, c.cellphone, c.happy],</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        l1_ratio<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The resulting model object provides the same methods as before. The <code>score</code> method shows performance on training and testing sets.</p>
+<div id="0c857980" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>model.score()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>{'train': np.float64(2.961003671269824),
+ 'test': np.float64(3.0813582323445163)}</code></pre>
+</div>
+</div>
+<p>The <code>predict</code> method returns predictions.</p>
+<div id="e92f85a6" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>model.predict()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (135, 3)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">index_</th>
+<th data-quarto-table-cell-role="th">target_</th>
+<th data-quarto-table-cell-role="th">prediction_</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>f64</th>
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"train"</td>
+<td>70.43</td>
+<td>66.86029</td>
+</tr>
+<tr class="even">
+<td>"train"</td>
+<td>76.18</td>
+<td>73.598074</td>
+</tr>
+<tr class="odd">
+<td>"test"</td>
+<td>82.84</td>
+<td>83.095582</td>
+</tr>
+<tr class="even">
+<td>"train"</td>
+<td>79.83</td>
+<td>82.16778</td>
+</tr>
+<tr class="odd">
+<td>"train"</td>
+<td>78.51</td>
+<td>74.952659</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"train"</td>
+<td>79.67</td>
+<td>77.061804</td>
+</tr>
+<tr class="even">
+<td>"test"</td>
+<td>76.03</td>
+<td>77.588752</td>
+</tr>
+<tr class="odd">
+<td>"train"</td>
+<td>76.98</td>
+<td>72.834118</td>
+</tr>
+<tr class="even">
+<td>"train"</td>
+<td>81.77</td>
+<td>81.054559</td>
+</tr>
+<tr class="odd">
+<td>"train"</td>
+<td>66.71</td>
+<td>67.098843</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The <code>coef</code> method shows the estimated coefficients.</p>
+<div id="19df87ae" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>model.coef()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">param</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Intercept"</td>
+<td>75.147766</td>
+</tr>
+<tr class="even">
+<td>"hdi"</td>
+<td>5.487217</td>
+</tr>
+<tr class="odd">
+<td>"happy"</td>
+<td>0.5501</td>
+</tr>
+<tr class="even">
+<td>"gdp"</td>
+<td>0.0</td>
+</tr>
+<tr class="odd">
+<td>"cellphone"</td>
+<td>-0.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Notice that some coefficients may be exactly zero or very close to zero, reflecting the lasso’s variable selection property. The model has determined that these predictors do not contribute enough to predictions to justify keeping them.</p>
+<p>To compare the relative importance of predictors, it is helpful to examine coefficients on a standardized scale. The <code>raw=True</code> argument returns coefficients based on standardized (scaled) features, making the magnitudes comparable across predictors with different units.</p>
+<div id="8a488aa1" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>model.coef(raw<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">param</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Intercept"</td>
+<td>45.41005</td>
+</tr>
+<tr class="even">
+<td>"hdi"</td>
+<td>35.826175</td>
+</tr>
+<tr class="odd">
+<td>"happy"</td>
+<td>0.048348</td>
+</tr>
+<tr class="even">
+<td>"gdp"</td>
+<td>0.0</td>
+</tr>
+<tr class="odd">
+<td>"cellphone"</td>
+<td>-0.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The <code>alpha</code> method returns the value of <span class="math inline">\(\lambda\)</span> (called alpha in scikit-learn) selected by cross-validation.</p>
+<div id="ef886988" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>model.alpha()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>np.float64(0.24888744821240497)</code></pre>
+</div>
+</div>
+<p>Once we have identified the optimal penalty strength through cross-validation, we can refit the model with this specific value using <code>elastic_net</code> instead of <code>elastic_net_cv</code>. This is useful when we want more control over the fitting process.</p>
+<div id="f20df09b" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>        DSSklearn.elastic_net,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        target<span class="op">=</span>c.lexp,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        features<span class="op">=</span>[c.hdi, c.gdp, c.cellphone, c.happy],</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>        l1_ratio<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>        alpha<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    .coef(raw<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.param <span class="op">!=</span> <span class="dv">0</span>)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">param</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Intercept"</td>
+<td>49.565524</td>
+</tr>
+<tr class="even">
+<td>"hdi"</td>
+<td>33.071864</td>
+</tr>
+<tr class="odd">
+<td>"happy"</td>
+<td>0.011268</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The <code>filter</code> method selects only predictors with nonzero coefficients, showing us which variables the lasso has retained in the model.</p>
+</section>
+<section id="ridge-regression-and-enet" class="level2" data-number="11.6">
+<h2 data-number="11.6" class="anchored" data-anchor-id="ridge-regression-and-enet"><span class="header-section-number">11.6</span> Ridge Regression and ENet</h2>
+<p>While the lasso uses an absolute value penalty, ridge regression uses a squared penalty on the coefficients. The ridge objective function is:</p>
+<p><span class="math display">\[
+\min_{\alpha, \beta} \left[ \sum_{i=1}^{n} (y_i - \alpha - \beta_1 x_{i1} - \cdots - \beta_k x_{ik})^2 + \lambda \sum_{j=1}^{k} \beta_j^2 \right]
+\]</span></p>
+<p>The squared penalty shrinks coefficients toward zero but, unlike the lasso, never shrinks them exactly to zero. This means ridge regression keeps all predictors in the model but with reduced influence. Ridge regression is particularly useful when predictors are highly correlated with each other, a situation where ordinary least squares and even the lasso can produce unstable estimates.</p>
+<p>The elastic net combines both penalties, allowing the user to balance the lasso’s variable selection with ridge regression’s stability. The <code>l1_ratio</code> parameter controls this balance: a value of 1 gives the lasso (all absolute value penalty), a value of 0 gives ridge regression (all squared penalty), and intermediate values give a blend.</p>
+<p>To fit a ridge regression model, we set <code>l1_ratio=0</code>:</p>
+<div id="9b9994b9" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> (</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>        DSSklearn.elastic_net_cv,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>        target<span class="op">=</span>c.lexp,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        features<span class="op">=</span>[c.hdi, c.gdp, c.cellphone, c.happy],</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        l1_ratio<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>        alphas<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.01</span>, <span class="dv">1</span>, <span class="dv">10</span>]</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The <code>alphas</code> parameter specifies the candidate penalty values to consider during cross-validation. The <code>alpha</code> method returns the selected value.</p>
+<div id="85d01023" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>model.alpha()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<pre><code>np.float64(0.01)</code></pre>
+</div>
+</div>
+<p>To fit an elastic net with a blend of both penalties, we specify an intermediate <code>l1_ratio</code>:</p>
+<div id="e9cac030" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> (</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        DSSklearn.elastic_net_cv,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>        target<span class="op">=</span>c.lexp,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>        features<span class="op">=</span>[c.hdi, c.gdp, c.cellphone, c.happy],</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>        l1_ratio<span class="op">=</span><span class="fl">0.2</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="4cdb1f3e" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>model.alpha()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<pre><code>np.float64(0.030825660663502993)</code></pre>
+</div>
+</div>
+<p>The choice between lasso, ridge, and elastic net depends on the specific problem. If variable selection is important and you want an interpretable model with fewer predictors, the lasso is often preferred. If you have many correlated predictors and want to retain all of them with reduced influence, ridge regression is more appropriate. When uncertain, the elastic net provides a compromise that often works well in practice.</p>
+</section>
+<section id="gradient-boosting" class="level2" data-number="11.7">
+<h2 data-number="11.7" class="anchored" data-anchor-id="gradient-boosting"><span class="header-section-number">11.7</span> Gradient Boosting</h2>
+<p>Linear models, even with regularization, assume that the relationship between predictors and response can be captured by a weighted sum. This assumption is violated when relationships are nonlinear or when interactions between predictors are important. In such cases, more flexible models may provide better predictions.</p>
+<p>Gradient boosting is a powerful technique that builds predictions by combining many simple models, typically decision trees. The key insight is that while individual trees may be weak predictors, their combined predictions can be remarkably accurate. The “gradient” in gradient boosting refers to the optimization technique used to build successive trees: each new tree is trained to correct the errors made by the previous trees, gradually improving predictions.</p>
+<p>The process works as follows. First, an initial prediction is made, typically the average of the response variable. Then, a small decision tree is fit to predict the residuals — the differences between actual values and current predictions. This tree’s predictions are added to the current predictions (multiplied by a small learning rate to prevent overcorrection). The process repeats, with each new tree focusing on the remaining errors, until a specified number of trees have been added or further improvement is minimal.</p>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Decision Trees
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>A decision tree makes predictions by recursively splitting the data based on predictor values. At each step, the algorithm finds the predictor and split point that best separates observations with different response values. For regression, “best” typically means minimizing the squared error within each resulting group. The process continues until groups are small enough or further splits provide little improvement. To make a prediction, we follow the splits from the top of the tree down until we reach a final group (called a leaf), and the prediction is the average response value in that group.</p>
+</div>
+</div>
+</div>
+<p>The mathematical formulation of gradient boosting for regression is as follows. Let <span class="math inline">\(F_0(x)\)</span> be the initial prediction (typically the mean of <span class="math inline">\(y\)</span>). For iterations <span class="math inline">\(m = 1, 2, \ldots, M\)</span>:</p>
+<ol type="1">
+<li>Compute the residuals <span class="math inline">\(r_i = y_i - F_{m-1}(x_i)\)</span> for each observation.</li>
+<li>Fit a decision tree <span class="math inline">\(h_m(x)\)</span> to predict these residuals.</li>
+<li>Update the model: <span class="math inline">\(F_m(x) = F_{m-1}(x) + \eta \cdot h_m(x)\)</span></li>
+</ol>
+<p>Here, <span class="math inline">\(\eta\)</span> is the learning rate, a small positive number that controls how much each tree contributes to the final prediction. Smaller learning rates require more trees but often produce better final results.</p>
+<p>The <code>DSSklearn</code> class provides access to gradient boosting through the <code>gradient_boosting_regressor</code> method. Key parameters include the number of trees (<code>n_estimators</code>), the learning rate (<code>learning_rate</code>), and the maximum depth of each tree (<code>max_depth</code>).</p>
+<div id="0775a6e4" class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> (</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>        DSSklearn.gradient_boosting_regressor,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>        target<span class="op">=</span>c.lexp,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>        features<span class="op">=</span>[c.hdi, c.gdp, c.cellphone, c.happy],</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>        n_estimators<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>        learning_rate<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>        max_depth<span class="op">=</span><span class="dv">3</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The model provides the same methods as before. The <code>score</code> method shows training and testing performance.</p>
+<div id="03dd21c2" class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>model.score()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="20">
+<pre><code>{'train': np.float64(0.6290821129470985),
+ 'test': np.float64(3.223076012317957)}</code></pre>
+</div>
+</div>
+<p>The <code>predict</code> method returns predictions for individual observations.</p>
+<div id="dd31b915" class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>model.predict()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (135, 3)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">index_</th>
+<th data-quarto-table-cell-role="th">target_</th>
+<th data-quarto-table-cell-role="th">prediction_</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>f64</th>
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"train"</td>
+<td>70.43</td>
+<td>69.834624</td>
+</tr>
+<tr class="even">
+<td>"train"</td>
+<td>76.18</td>
+<td>76.05566</td>
+</tr>
+<tr class="odd">
+<td>"test"</td>
+<td>82.84</td>
+<td>84.023521</td>
+</tr>
+<tr class="even">
+<td>"train"</td>
+<td>79.83</td>
+<td>80.740508</td>
+</tr>
+<tr class="odd">
+<td>"train"</td>
+<td>78.51</td>
+<td>77.881171</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"train"</td>
+<td>79.67</td>
+<td>78.583256</td>
+</tr>
+<tr class="even">
+<td>"test"</td>
+<td>76.03</td>
+<td>76.472325</td>
+</tr>
+<tr class="odd">
+<td>"train"</td>
+<td>76.98</td>
+<td>76.1445</td>
+</tr>
+<tr class="even">
+<td>"train"</td>
+<td>81.77</td>
+<td>82.213405</td>
+</tr>
+<tr class="odd">
+<td>"train"</td>
+<td>66.71</td>
+<td>66.656872</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Because gradient boosting does not produce simple linear coefficients, we cannot interpret the model in the same way as linear regression. Instead, the <code>importance</code> method provides a measure of how much each predictor contributes to reducing prediction error across all trees.</p>
+<div id="d7c0c85f" class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>model.importance()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="22">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (4, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">importance</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"hdi"</td>
+<td>0.861349</td>
+</tr>
+<tr class="even">
+<td>"gdp"</td>
+<td>0.059907</td>
+</tr>
+<tr class="odd">
+<td>"cellphone"</td>
+<td>0.026876</td>
+</tr>
+<tr class="even">
+<td>"happy"</td>
+<td>0.051868</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Higher importance values indicate predictors that are more useful for making predictions. This gives us insight into which variables matter most, even though we cannot point to a single coefficient with a straightforward interpretation.</p>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tuning Gradient Boosting
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Gradient boosting has several parameters that affect its performance. The number of trees (<code>n_estimators</code>) and learning rate (<code>learning_rate</code>) work together: more trees with a smaller learning rate generally produce better results but require more computation. The maximum depth (<code>max_depth</code>) controls the complexity of individual trees; deeper trees can capture more complex patterns but are more prone to overfitting. In practice, choosing good parameter values often requires experimentation, though reasonable defaults (100-500 trees, learning rate of 0.05-0.1, maximum depth of 3-6) work well for many problems.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="classification" class="level2" data-number="11.8">
+<h2 data-number="11.8" class="anchored" data-anchor-id="classification"><span class="header-section-number">11.8</span> Classification</h2>
+<p>The techniques we have discussed so far address regression problems, where the goal is to predict a numeric response. Classification extends these ideas to categorical responses, where we want to assign observations to discrete classes or categories. Many real-world prediction problems are classification tasks: detecting spam emails, diagnosing diseases, predicting customer churn, or identifying objects in images.</p>
+<p>The fundamental challenge in classification is that we cannot directly minimize squared error when the response is categorical. Instead, we typically model the probability that an observation belongs to each class and then assign the observation to the most likely class. Different classification methods approach this probability modeling in different ways.</p>
+<p>We introduced logistic regression in <a href="10_inference.html" class="quarto-xref"><span>Chapter 10</span></a> as a method for modeling binary outcomes. In the predictive context, logistic regression serves as a classification method. Given predictor values, we compute the probability that an observation belongs to each class and predict the class with the highest probability.</p>
+<p>For classification with more than two classes (called multinomial or multiclass classification), logistic regression extends naturally. Instead of modeling a single probability, we model the probability of each class simultaneously, with the probabilities constrained to sum to one.</p>
+<p>The <code>DSSklearn</code> class provides logistic regression through the <code>.logistic_regression_cv</code> method, which automatically selects the regularization strength through cross-validation. For classification problems, we also typically want to stratify the train-test split, ensuring that each class is proportionally represented in both sets. This is especially important when some classes are rare.</p>
+<div id="25a66e74" class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> (</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>        DSSklearn.logistic_regression_cv,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>        target<span class="op">=</span>c.region,</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>        features<span class="op">=</span>[c.hdi, c.gdp, c.cellphone, c.happy],</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>        stratify<span class="op">=</span>c.region,</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>        l1_ratios<span class="op">=</span>[<span class="dv">1</span>],</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>        solver<span class="op">=</span><span class="st">"saga"</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This code fits a multinomial logistic regression predicting the region of a country based on development indicators. The <code>l1_ratios=[1]</code> specifies lasso regularization, which can help identify the most important predictors for distinguishing between regions. The <code>solver="saga"</code> specifies the optimization algorithm, which is required for lasso regularization with multiple classes.</p>
+<p>The <code>score</code> method returns the accuracy (proportion of correct predictions) for training and testing sets rather than RMSE.</p>
+<div id="d33c9c8f" class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>model.score()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="24">
+<pre><code>{'train': 0.648936170212766, 'test': 0.6585365853658537}</code></pre>
+</div>
+</div>
+<p>The <code>predict</code> method returns the actual and predicted classes for each observation.</p>
+<div id="279707a8" class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>model.predict()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="25">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (135, 3)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">index_</th>
+<th data-quarto-table-cell-role="th">target_</th>
+<th data-quarto-table-cell-role="th">prediction_</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"test"</td>
+<td>"Africa"</td>
+<td>"Africa"</td>
+</tr>
+<tr class="even">
+<td>"test"</td>
+<td>"Americas"</td>
+<td>"Asia"</td>
+</tr>
+<tr class="odd">
+<td>"test"</td>
+<td>"Europe"</td>
+<td>"Europe"</td>
+</tr>
+<tr class="even">
+<td>"test"</td>
+<td>"Americas"</td>
+<td>"Europe"</td>
+</tr>
+<tr class="odd">
+<td>"train"</td>
+<td>"Asia"</td>
+<td>"Asia"</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"train"</td>
+<td>"Europe"</td>
+<td>"Asia"</td>
+</tr>
+<tr class="even">
+<td>"train"</td>
+<td>"Asia"</td>
+<td>"Europe"</td>
+</tr>
+<tr class="odd">
+<td>"test"</td>
+<td>"Americas"</td>
+<td>"Americas"</td>
+</tr>
+<tr class="even">
+<td>"train"</td>
+<td>"Asia"</td>
+<td>"Europe"</td>
+</tr>
+<tr class="odd">
+<td>"test"</td>
+<td>"Asia"</td>
+<td>"Africa"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>While overall accuracy provides a simple summary, it does not reveal which classes are easy or difficult to predict. A confusion matrix shows the detailed breakdown of predictions versus actual classes. Each row represents the actual class, and each column represents the predicted class. The diagonal elements show correct predictions, while off-diagonal elements show misclassifications.</p>
+<div id="946d14ac" class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>model.confusion_matrix()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="11_supervised_files/figure-html/cell-27-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="11_supervised_files/figure-html/cell-27-output-1.png" class="img-fluid figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The confusion matrix helps diagnose model performance. If certain classes are frequently confused with each other, this might suggest that those classes are genuinely similar according to the available predictors, or that additional predictors are needed to distinguish them.</p>
+<p>Rather than just predicting the most likely class, classification models can provide the probability of each class. These probabilities are useful for understanding model confidence and for applications where the costs of different types of errors vary.</p>
+<div id="55a20524" class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>model.predict_proba()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="27">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (135, 9)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">index_</th>
+<th data-quarto-table-cell-role="th">target_</th>
+<th data-quarto-table-cell-role="th">prediction_</th>
+<th data-quarto-table-cell-role="th">prob_pred_</th>
+<th data-quarto-table-cell-role="th">Africa</th>
+<th data-quarto-table-cell-role="th">Americas</th>
+<th data-quarto-table-cell-role="th">Asia</th>
+<th data-quarto-table-cell-role="th">Europe</th>
+<th data-quarto-table-cell-role="th">Oceania</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"test"</td>
+<td>"Africa"</td>
+<td>"Africa"</td>
+<td>0.759865</td>
+<td>0.759865</td>
+<td>0.055419</td>
+<td>0.166564</td>
+<td>0.013723</td>
+<td>0.004429</td>
+</tr>
+<tr class="even">
+<td>"test"</td>
+<td>"Americas"</td>
+<td>"Asia"</td>
+<td>0.342027</td>
+<td>0.267808</td>
+<td>0.270038</td>
+<td>0.342027</td>
+<td>0.106997</td>
+<td>0.01313</td>
+</tr>
+<tr class="odd">
+<td>"test"</td>
+<td>"Europe"</td>
+<td>"Europe"</td>
+<td>0.636833</td>
+<td>0.00973</td>
+<td>0.234236</td>
+<td>0.110384</td>
+<td>0.636833</td>
+<td>0.008816</td>
+</tr>
+<tr class="even">
+<td>"test"</td>
+<td>"Americas"</td>
+<td>"Europe"</td>
+<td>0.757309</td>
+<td>0.00967</td>
+<td>0.033026</td>
+<td>0.192817</td>
+<td>0.757309</td>
+<td>0.007177</td>
+</tr>
+<tr class="odd">
+<td>"train"</td>
+<td>"Asia"</td>
+<td>"Asia"</td>
+<td>0.548601</td>
+<td>0.182781</td>
+<td>0.038866</td>
+<td>0.548601</td>
+<td>0.21298</td>
+<td>0.016771</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"train"</td>
+<td>"Europe"</td>
+<td>"Asia"</td>
+<td>0.442426</td>
+<td>0.10247</td>
+<td>0.169015</td>
+<td>0.442426</td>
+<td>0.270186</td>
+<td>0.015903</td>
+</tr>
+<tr class="even">
+<td>"train"</td>
+<td>"Asia"</td>
+<td>"Europe"</td>
+<td>0.400515</td>
+<td>0.092077</td>
+<td>0.156947</td>
+<td>0.334113</td>
+<td>0.400515</td>
+<td>0.016348</td>
+</tr>
+<tr class="odd">
+<td>"test"</td>
+<td>"Americas"</td>
+<td>"Americas"</td>
+<td>0.398278</td>
+<td>0.307306</td>
+<td>0.398278</td>
+<td>0.20063</td>
+<td>0.082734</td>
+<td>0.011051</td>
+</tr>
+<tr class="even">
+<td>"train"</td>
+<td>"Asia"</td>
+<td>"Europe"</td>
+<td>0.674076</td>
+<td>0.021438</td>
+<td>0.071543</td>
+<td>0.221419</td>
+<td>0.674076</td>
+<td>0.011524</td>
+</tr>
+<tr class="odd">
+<td>"test"</td>
+<td>"Asia"</td>
+<td>"Africa"</td>
+<td>0.724346</td>
+<td>0.724346</td>
+<td>0.035139</td>
+<td>0.21958</td>
+<td>0.016154</td>
+<td>0.004781</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The output includes the predicted class, the maximum probability (the confidence in that prediction), and the probability assigned to each possible class. Observations with high maximum probability are those where the model is most confident; observations with probabilities spread across multiple classes are more uncertain.</p>
+<p>For multinomial classification, there are separate coefficients for each class. Each set of coefficients describes how the predictors relate to the probability of that particular class relative to the others.</p>
+<div id="4b41bee0" class="cell" data-execution_count="28">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>model.coef()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="28">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 6)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">Africa</th>
+<th data-quarto-table-cell-role="th">Americas</th>
+<th data-quarto-table-cell-role="th">Asia</th>
+<th data-quarto-table-cell-role="th">Europe</th>
+<th data-quarto-table-cell-role="th">Oceania</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Intercept"</td>
+<td>0.408246</td>
+<td>0.099516</td>
+<td>1.175219</td>
+<td>0.484503</td>
+<td>-2.167483</td>
+</tr>
+<tr class="even">
+<td>"hdi"</td>
+<td>-1.786861</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.758682</td>
+<td>0.0</td>
+</tr>
+<tr class="odd">
+<td>"gdp"</td>
+<td>0.0</td>
+<td>-0.770284</td>
+<td>0.0</td>
+<td>0.500736</td>
+<td>0.0</td>
+</tr>
+<tr class="even">
+<td>"cellphone"</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>-0.40785</td>
+<td>0.0</td>
+<td>0.0</td>
+</tr>
+<tr class="odd">
+<td>"happy"</td>
+<td>-0.078949</td>
+<td>1.039055</td>
+<td>-0.038645</td>
+<td>0.0</td>
+<td>0.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Interpreting these coefficients is more complex than in binary logistic regression. A positive coefficient for a predictor in a particular class means that higher values of that predictor are associated with higher probability of that class, all else being equal. However, because the probabilities must sum to one, the effects are relative rather than absolute.</p>
+<p>Gradient boosting can also be applied to classification problems. The algorithm adapts to predict class probabilities rather than numeric values, using a suitable loss function for classification.</p>
+<div id="c881f5bb" class="cell" data-execution_count="29">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> (</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>        DSSklearn.gradient_boosting_classifier,</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>        target<span class="op">=</span>c.region,</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>        features<span class="op">=</span>[c.hdi, c.gdp, c.cellphone, c.happy],</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>        n_estimators<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>        learning_rate<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>        max_depth<span class="op">=</span><span class="dv">3</span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="093c6480" class="cell" data-execution_count="30">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>model.score()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="30">
+<pre><code>{'train': 1.0, 'test': 0.5853658536585366}</code></pre>
+</div>
+</div>
+<p>Gradient boosting classifiers can capture complex, nonlinear relationships between predictors and class membership. However, they can also overfit, especially with small datasets or many trees. A common sign of overfitting is a large gap between training accuracy (often very high) and testing accuracy.</p>
+<div id="579aab5b" class="cell" data-execution_count="31">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>model.predict_proba()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="31">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (135, 9)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">index_</th>
+<th data-quarto-table-cell-role="th">target_</th>
+<th data-quarto-table-cell-role="th">prediction_</th>
+<th data-quarto-table-cell-role="th">prob_pred_</th>
+<th data-quarto-table-cell-role="th">Africa</th>
+<th data-quarto-table-cell-role="th">Americas</th>
+<th data-quarto-table-cell-role="th">Asia</th>
+<th data-quarto-table-cell-role="th">Europe</th>
+<th data-quarto-table-cell-role="th">Oceania</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"train"</td>
+<td>"Africa"</td>
+<td>"Africa"</td>
+<td>0.99756</td>
+<td>0.99756</td>
+<td>0.000015</td>
+<td>0.002401</td>
+<td>0.000024</td>
+<td>4.8954e-8</td>
+</tr>
+<tr class="even">
+<td>"train"</td>
+<td>"Americas"</td>
+<td>"Americas"</td>
+<td>0.989641</td>
+<td>0.000369</td>
+<td>0.989641</td>
+<td>0.009535</td>
+<td>0.000453</td>
+<td>0.000001</td>
+</tr>
+<tr class="odd">
+<td>"test"</td>
+<td>"Europe"</td>
+<td>"Europe"</td>
+<td>0.893899</td>
+<td>0.000409</td>
+<td>0.003041</td>
+<td>0.102624</td>
+<td>0.893899</td>
+<td>0.000027</td>
+</tr>
+<tr class="even">
+<td>"train"</td>
+<td>"Americas"</td>
+<td>"Americas"</td>
+<td>0.987551</td>
+<td>0.000278</td>
+<td>0.987551</td>
+<td>0.002829</td>
+<td>0.00934</td>
+<td>0.000002</td>
+</tr>
+<tr class="odd">
+<td>"train"</td>
+<td>"Asia"</td>
+<td>"Asia"</td>
+<td>0.989476</td>
+<td>0.005208</td>
+<td>0.002332</td>
+<td>0.989476</td>
+<td>0.002978</td>
+<td>0.000006</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"train"</td>
+<td>"Europe"</td>
+<td>"Europe"</td>
+<td>0.990756</td>
+<td>0.00121</td>
+<td>0.000478</td>
+<td>0.007554</td>
+<td>0.990756</td>
+<td>0.000002</td>
+</tr>
+<tr class="even">
+<td>"test"</td>
+<td>"Asia"</td>
+<td>"Americas"</td>
+<td>0.927044</td>
+<td>0.002287</td>
+<td>0.927044</td>
+<td>0.023434</td>
+<td>0.047227</td>
+<td>0.000008</td>
+</tr>
+<tr class="odd">
+<td>"train"</td>
+<td>"Americas"</td>
+<td>"Americas"</td>
+<td>0.997877</td>
+<td>0.000023</td>
+<td>0.997877</td>
+<td>0.002094</td>
+<td>0.000006</td>
+<td>7.9017e-8</td>
+</tr>
+<tr class="even">
+<td>"train"</td>
+<td>"Asia"</td>
+<td>"Asia"</td>
+<td>0.98239</td>
+<td>0.000105</td>
+<td>0.001211</td>
+<td>0.98239</td>
+<td>0.016294</td>
+<td>3.5747e-7</td>
+</tr>
+<tr class="odd">
+<td>"train"</td>
+<td>"Asia"</td>
+<td>"Asia"</td>
+<td>0.980853</td>
+<td>0.014223</td>
+<td>0.001893</td>
+<td>0.980853</td>
+<td>0.003024</td>
+<td>0.000006</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Notice that gradient boosting often produces very confident predictions — probabilities close to 0 or 1 — even when accuracy is moderate. This overconfidence can be problematic in applications where calibrated probability estimates are important. The learning rate and number of trees can be adjusted to reduce overfitting, though this may also reduce accuracy.</p>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Choosing Between Methods
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The choice between logistic regression and gradient boosting (or other methods) depends on the specific problem. Logistic regression is simpler, more interpretable, and often works well when relationships between predictors and class membership are approximately linear. Gradient boosting is more flexible and can capture complex patterns, but is harder to interpret and more prone to overfitting. In practice, it is common to try multiple methods and compare their performance on testing data.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="conclusion" class="level2" data-number="11.9">
+<h2 data-number="11.9" class="anchored" data-anchor-id="conclusion"><span class="header-section-number">11.9</span> Conclusion</h2>
+<p>This chapter introduced the fundamental concepts of supervised learning, the branch of machine learning focused on making predictions from data. We began by distinguishing predictive modeling from statistical inference: while both involve modeling relationships in data, inference emphasizes understanding and testing those relationships, while prediction emphasizes accurate forecasting for new observations.</p>
+<p>The central challenge in predictive modeling is overfitting — fitting the training data so closely that the model fails to generalize to new data. We addressed this challenge through the train-test split, which evaluates models on data not used in training, and through regularization techniques like the lasso and ridge regression, which penalize complex models to improve generalization.</p>
+<p>We explored several modeling approaches. Linear regression, familiar from the previous chapter, provides a baseline for regression problems. Regularization methods improve upon basic linear regression by preventing overfitting and, in the case of the lasso, performing variable selection. Gradient boosting offers a powerful alternative that can capture nonlinear relationships, at the cost of interpretability.</p>
+<p>For classification problems, we extended logistic regression to multiple classes and applied similar regularization techniques. Gradient boosting classifiers provide a flexible alternative, though they require careful tuning to avoid overconfidence in predictions.</p>
+<p>Throughout, we emphasized the importance of proper evaluation. Training error measures how well a model fits known data; testing error measures how well it predicts new data. Models should be selected and tuned based on testing performance, not training performance. This principle — never trust a model’s performance on the same data used to build it — is perhaps the most important lesson of supervised learning.</p>
+<p>The techniques introduced here form the foundation for more advanced methods we will explore in subsequent chapters. Deep learning extends these ideas with more flexible model architectures, while careful feature engineering and model selection can further improve predictions. Regardless of the specific method used, the core principles remain the same: learn patterns from labeled data, evaluate on held-out data, and guard against overfitting.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/taylor-arnold\.github\.io\/fds-py");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./10_inference.html" class="pagination-link" aria-label="Inference">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Inference</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./12_unsupervised.html" class="pagination-link" aria-label="Unsupervised Learning">
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Unsupervised Learning</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Taylor Arnold</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>A <a href="https://distantviewing.org/">Distant Viewing Lab</a> project</p>
+</div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>

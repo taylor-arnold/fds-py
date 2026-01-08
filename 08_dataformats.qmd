@@ -1,0 +1,384 @@
+# Data Formats {#sec-dataformats}
+
+```{python}
+#| include: false
+import warnings
+warnings.filterwarnings('ignore')
+```
+
+::: {.callout-tip collapse="true"}
+## Practice Notebooks
+
+- Notebook08a [[Colab↗](https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook08a.ipynb?hl=en)]
+- Notebook08b [[Colab↗](https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook08b.ipynb?hl=en)]
+
+:::
+
+## Setup
+
+Load all of the modules and datasets needed for the chapter. In addition to the standard modules, here we also use duckdb to work with databases, json to parse JSON data, and lxml to parse XML and HTML.
+
+```{python}
+#| output: false
+import numpy as np
+import polars as pl
+
+from funs import *
+from plotnine import *
+from polars import col as c
+theme_set(theme_minimal())
+
+import duckdb
+import json
+from lxml import etree, html
+```
+
+## Introduction
+
+Throughout this text, we have primarily worked with tabular data stored in CSV files. As we have seen, this format is surprisingly flexible while also keeping the data organized in a way that is optimized for using the grammar of graphics and data manipulation verbs to perform exploratory data analysis. Getting data organized for analysis often takes significant time. In fact, preparing data frequently takes more time than the analysis itself. Whether we are creating our own datasets or converting between formats, collecting and organizing data is a time-consuming yet essential task in data science.
+
+There are many other formats available for storing tabular datasets. We mentioned the use of the Excel format in @sec-collect as a useful option for data entry. Later, we will use the special GeoJSON format for storing tabular data along with geospatial information in @sec-spatial and the Parquet format for storing embeddings in @sec-transfer. For most other common tabular data formats, there is likely to be at least one Python function or package that can read—and in most cases write—data stored in that format. Even within Polars, we can load many variations, such as tables that use other delimiters or fixed-width columns.
+
+In some cases, data will be available in a format that is not initially organized into the kinds of tables we introduced in @sec-intro or that requires intentional manipulation before we can access it in a tabular format. Some common types of non-tabular data that we may encounter include raw text, JSON (JavaScript Object Notation), XML (Extensible Markup Language), and HTML (HyperText Markup Language). All of these can be loaded into Python using built-in functions and packages specifically designed to parse them. The challenge, however, is that when read into Python these formats will be in the form of dictionaries, lists, or other custom objects. Parsing these formats into a DataFrame requires writing custom code that takes into account the specific information stored in the data. Often this requires using new functions or query languages, such as regular expressions or XPath queries, to facilitate the conversion process.
+
+In addition to file formats, this chapter also introduces databases. Databases are specialized software systems designed to efficiently store, organize, and retrieve large amounts of structured data. While CSV files work well for small to medium datasets that fit comfortably in memory, databases become essential when working with larger datasets, when multiple users need to access the same data simultaneously, or when data changes frequently. Understanding how to interact with databases is a valuable skill that bridges the gap between exploratory analysis and production data systems.
+
+In this chapter, we introduce these common formats and show examples of how they can be used to represent different kinds of information. Along the way, we demonstrate specific functions for parsing data stored in these file types.
+
+## JSON
+
+JavaScript Object Notation, usually abbreviated as JSON, is a popular open-standard data format. It was originally designed for the JavaScript language but is now supported in virtually every modern programming language. The format of JSON closely resembles native data structures found in Python, making it particularly natural to work with. In part because of the importance of JavaScript as a core programming language in modern web browsers, JSON has become one of the most popular formats for data storage and transfer. This is particularly true for data distributed over web-based APIs, as we will see in @sec-requests.
+
+As with CSV, JSON data is stored in a plaintext format. This means we can open the file in any text editor and see the data in a human-readable format. This transparency is one of JSON's key advantages: we can inspect the data structure directly without needing specialized software. We created a small example of a JSON file displaying information about two of the authors in our Wikipedia dataset:
+
+```json
+{
+  "data": [
+    {
+      "name": "Charlotte Brontë",
+      "age_at_death": 38,
+      "date": {
+        "born": "21 April 1816",
+        "died": "31 March 1855"
+      },
+      "profession": [
+        "novelist",
+        "poet",
+        "governess"
+      ]
+    },
+    {
+      "name": "Virginia Woolf",
+      "age_at_death": 59,
+      "date": {
+        "born": "25 January 1882",
+        "died": "28 March 1941"
+      },
+      "profession": [
+        "novelist",
+        "essayist",
+        "critic"
+      ]
+    }
+  ]
+}
+```
+
+Data stored in the JSON format is highly structured. In some ways, the format is more strict than CSV files because it enforces a consistent syntax and is relatively easy to parse programmatically. Looking at the example above, we see many of the basic element types of JSON data. In fact, there are only six core data types available:
+
+1. an empty value called `null`
+2. a number (either integer or floating-point)
+3. a string (enclosed in double quotes)
+4. a Boolean value equal to `true` or `false`
+5. an object of named value pairs, with names equal to strings and values equal to any other data type (similar to a Python dictionary)
+6. an ordered array of objects coming from any other type (similar to a Python list)
+
+Objects are defined by curly braces and arrays are defined with square brackets. The reason that JSON can become complex even with these limited types is that, as in the example above, it is possible to create deeply nested structures using the object and array types. A JSON array can contain objects, which themselves contain arrays of more objects, and so on indefinitely. This flexibility makes JSON excellent for representing hierarchical data but can make converting it to a flat tabular format challenging.
+
+To read a JSON object into Python, we can use the built-in `json` module. This module is part of Python's standard library, so no additional installation is required. Below, we load a version of the example dataset presented above.
+
+```{python}
+obj_json = json.loads(Path("examples/author.json").read_text())
+
+type(obj_json)
+```
+
+The output object `obj_json` is a Python dictionary. In general, Python turns JSON arrays into lists and objects into dictionaries. Numbers, strings, and Boolean objects become the corresponding Python types, and `null` becomes Python's `None`. This mapping between JSON and Python types is intuitive and makes working with JSON data feel natural.
+
+To create a structured dataset from the output, we can use standard Python dictionary and list operations. Here, we extract the author names using a list comprehension.
+
+```{python}
+[author['name'] for author in obj_json['data']]
+```
+
+This approach of navigating through nested dictionaries and lists is the fundamental technique for working with JSON data. Each level of nesting requires an additional key lookup (for dictionaries) or index access (for lists). In the example above, `obj_json['data']` returns the list of author objects, and then we iterate through each author to extract the `'name'` field.
+
+We can use a for-loop over the JSON data to construct a DataFrame object containing all of the author metadata in a tabular form. The key insight here is that we need to decide which pieces of information belong in our output table and how to handle nested structures.
+
+```{python}
+meta = []
+for author in obj_json['data']:
+    meta.append({
+        'name': author['name'],
+        'age_at_death': author['age_at_death'],
+        'born': author['date']['born'],
+        'died': author['date']['died']
+    })
+
+meta = pl.DataFrame(meta)
+meta
+```
+
+Notice how we "flattened" the nested `date` object by extracting its `born` and `died` fields as separate columns in our output. This is a common pattern when converting JSON to tabular format: nested objects often become multiple columns rather than a single complex column.
+
+The JSON object also associates each author with a set of professions. JSON naturally handles such nested structures, where a single entity has multiple related values. However, this can be difficult to represent in a simple rectangular table. To create a dataset mapping each author to all of their professions, we need to create multiple rows for authors with multiple professions.
+
+```{python}
+prof = []
+for author in obj_json['data']:
+    name = author['name']
+    for profession in author['profession']:
+        prof.append({
+            'name': name,
+            'profession': profession
+        })
+
+prof = pl.DataFrame(prof)
+prof
+```
+
+This result illustrates a fundamental tension between JSON's hierarchical structure and tabular data's rectangular structure. In JSON, Charlotte Brontë appears once with an array of three professions. In our tabular format, she appears in three separate rows, once for each profession. Neither representation is inherently better; they simply serve different purposes. The tabular format makes it easy to filter, group, and join on profession, which would be awkward with nested arrays.
+
+It is often the case that one JSON file needs to be turned into multiple tabular datasets. In our example, we created two separate tables: one with author metadata and one with author-profession pairs. These tables could be linked together using the author's name as a key, following the relational concepts we learned in @sec-restructure. Deciding what tables to build and how to link them together is the core task of turning JSON data into tabular data. The difficulty of this varies greatly depending on the level of nesting in the JSON data as well as the consistency from record to record. Real-world JSON data can be messy, with some records missing fields that others have, or with different records having different structures entirely. Robust code for parsing JSON often needs to handle these inconsistencies gracefully.
+
+::: {.callout-note collapse="true"}
+## Working with large JSON files
+
+For very large JSON files that don't fit comfortably in memory, you may want to consider streaming parsers that can process the file incrementally. The `ijson` package provides this functionality for Python. Additionally, some JSON files store one JSON object per line (a format called JSON Lines or NDJSON), which can be processed line by line without loading the entire file.
+:::
+
+## XML and HTML
+
+*Extensible Markup Language* (XML) is another popular format for transferring and storing data. Like JSON, the format is quite flexible and typically results in nested, tree-like structures that require some work to turn into a rectangular data format. However, XML has a different philosophy than JSON. Much of the formal standards for XML are concerned with describing how groups can produce specific "extensible" dialects of XML that have consistent names and structures to describe particular kinds of data. Popular examples include XML-RDF (Resource Description Framework) for describing linked open data, XML-TEI (Text Encoding Initiative) for providing markup to textual data, and numerous domain-specific formats in fields ranging from finance to biology.
+
+The XML format organizes data inside of hierarchically nested tags. Each tag has a name enclosed in angle brackets, and tags come in pairs: an opening tag like `<author>` and a closing tag like `</author>`. Everything between the opening and closing tags is the content of that element. Tags can also have attributes, which are name-value pairs that appear inside the opening tag. Below is an example of how the data from the previous JSON example could have been stored in an XML dataset.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <author>
+    <name>Charlotte Brontë</name>
+    <life>
+      <item name="born">21 April 1816</item>
+      <item name="died">31 March 1855</item>
+    </life>
+    <ageatdeath>38</ageatdeath>
+    <professions>
+      <profession>novelist</profession>
+      <profession>poet</profession>
+      <profession>governess</profession>
+    </professions>
+  </author>
+  <author>
+    <name>Virginia Woolf</name>
+    <life>
+      <item name="born">25 January 1882</item>
+      <item name="died">28 March 1941</item>
+    </life>
+    <ageatdeath>59</ageatdeath>
+    <professions>
+      <profession>novelist</profession>
+      <profession>essayist</profession>
+      <profession>critic</profession>
+    </professions>
+  </author>
+</root>
+```
+
+Comparing this to the JSON version, we can see several differences. Information can be stored either as text content within tags (like the author's name inside `<n>...</n>`) or as attributes (like `name="born"` in the `<item>` tag). XML tends to be more verbose than JSON because of all the repeated tag names, but it offers more flexibility in how data can be structured and annotated.
+
+Python provides several ways to parse XML. One of the most powerful is the `lxml` library, which provides both speed and a comprehensive feature set. Here is the code to get started loading our example data into Python.
+
+```{python}
+xml_path = Path("examples/author.xml")
+tree = etree.parse(str(xml_path))
+root = tree.getroot()
+root
+```
+
+The `tree` object represents the entire XML document, while `root` is the top-level element (the `<root>` tag in our example). Unlike JSON, which loads directly into Python dictionaries and lists, XML loads into specialized element objects that we need to navigate using XML-specific methods.
+
+To work with the data, we will use a special query language called XPath. XPath allows us to locate elements within an XML document by specifying their position in the document's tree structure, their tag names, their attributes, or combinations of these criteria. You can think of XPath as similar to regular expressions but designed for navigating XML structures rather than matching text patterns. For example, we can use the expression `/root/author` to get all of the tags `<author>` that are directly contained within the tag `<root>`.
+
+```{python}
+author_nodes = root.xpath("/root/author")
+author_nodes
+```
+
+The XPath expression `/root/author` means "starting from the root of the document, find the `root` element, then find all `author` elements directly inside it." The result is a list of element objects, one for each author in our data. The leading slash indicates we're starting from the absolute top of the document, while the forward slashes separate each level of the hierarchy.
+
+Now, to build a DataFrame of the author-level metadata, we need to cycle through each of the author nodes. For each author node, we use further XPath expressions to extract all of the author-level information.
+
+```{python}
+author_df = []
+
+for i, author in enumerate(author_nodes, start=1):
+    author_df.append(
+        {
+            "author_id": i,
+            "name": author.xpath("name")[0].text,
+            "born": author.xpath("life/item[@name='born']")[0].text,
+            "died": author.xpath("life/item[@name='died']")[0].text,
+            "age_at_death": int(author.xpath("ageatdeath")[0].text),
+        }
+    )
+
+author_df = pl.DataFrame(author_df)
+author_df
+```
+
+Notice several important details in this code. First, when we use XPath from an element (like `author.xpath("n")`), the path is relative to that element rather than starting from the document root. Second, the expression `[@name='born']` is an XPath predicate that filters elements based on their attributes—it selects only `<item>` elements where the `name` attribute equals `"born"`. Third, the `.text` property of an element gives us the text content between the opening and closing tags.
+
+We can use a similar approach to parse the professions, creating a separate table that we could later join with the author metadata.
+
+```{python}
+profession_df = []
+
+for i, author in enumerate(author_nodes, start=1):
+    for p in author.xpath("professions/profession"):
+        profession_df.append({
+            "author_id": i,
+            "profession": p.text,
+        })
+
+profession_df = pl.DataFrame(profession_df)
+profession_df
+```
+
+The path `professions/profession` navigates from each author element into the `<professions>` container and then selects all `<profession>` elements within it. This pattern of iterating through parent elements and then through their children is common when converting hierarchical XML into flat tables.
+
+::: {.callout-note collapse="true"}
+## XPath expressions
+
+XPath is a rich query language with many features beyond what we've shown here. Some useful expressions include `//` (find elements anywhere in the document, not just at a specific path), `*` (match any element name), `[position()]` (select elements by their position), and various functions for string manipulation and numeric comparisons. For complex XML documents, investing time in learning XPath can significantly simplify your parsing code.
+:::
+
+HTML, short for HyperText Markup Language, is a closely related format to XML that is primarily intended to be displayed in a web browser. While HTML's primary purpose is not to store arbitrary data, we often need to extract data from HTML documents. This is particularly common when we want to collect data from websites that don't offer a structured API. The process of extracting data from web pages is sometimes called "web scraping."
+
+We can parse HTML using the same `lxml` library, but with its HTML-specific module instead of the XML parser. Here is a simple example:
+
+```{python}
+html_content = """
+<html>
+  <body>
+    <table>
+      <tr><th>Name</th><th>Born</th></tr>
+      <tr><td>Charlotte Brontë</td><td>1816</td></tr>
+      <tr><td>Virginia Woolf</td><td>1882</td></tr>
+    </table>
+  </body>
+</html>
+"""
+
+doc = html.fromstring(html_content)
+rows = doc.xpath("//tr")
+for row in rows:
+    cells = row.xpath("td/text() | th/text()")
+    print(cells)
+```
+
+HTML often has additional whitespace within its tags, and real-world web pages frequently have messy, inconsistent structure. When extracting data from HTML, it can be helpful to use the `.text_content()` method of elements instead of the `.text` property. The `.text_content()` method concatenates all text within an element, including text in nested child elements, while `.text` only returns the text directly inside the element before any child elements.
+
+## DuckDB
+
+Databases are specialized software systems designed to store, organize, and retrieve structured data. They offer significant advantages over simple file-based storage: they can efficiently handle datasets too large to fit in memory, they support concurrent access by multiple users, they enforce data integrity constraints, and they provide powerful query capabilities. If you find yourself working in a corporate environment with larger, complex datasets that change frequently, it is almost certainly the case that you will use a database to fetch data and perform initial processing before pulling subsets into Python for detailed analysis and visualization. Even for local work, if you are dealing with datasets that are difficult to load into memory all at once, a database can provide an efficient solution.
+
+Most databases have well-maintained Python modules for interacting with them. In this section, we illustrate the process of using DuckDB, a modern database implementation that is particularly well-suited for analytical workloads. DuckDB is designed to be embedded directly within applications and requires no external setup—it can be managed entirely from within Python. This makes it an excellent choice for data science work where you want the power of a database without the complexity of setting up and maintaining a separate database server. Other database systems like PostgreSQL, MySQL, or SQLite function similarly but require more involved setup steps. That's not necessarily a problem if you're accessing a database maintained by an IT team, but for local analytical work, DuckDB is an excellent choice.
+
+To start, we will create a local DuckDB database, which is nothing more than a highly optimized file stored on our machine. We will be working with the `countries.csv` dataset and will begin by creating a DuckDB connection to a new file called `countries.duckdb`.
+
+```{python}
+con = duckdb.connect("examples/countries.duckdb")
+```
+
+The `con` object represents our connection to the database. All subsequent operations will go through this connection object.
+
+Interacting with databases typically involves using a specialized language called SQL (Structured Query Language). SQL is used both to define the structure of data (creating tables, defining relationships) and to query and manipulate data that is already stored. Many of SQL's query operations mirror the Polars data manipulation commands we learned in @sec-organize and @sec-restructure. If you understand filtering, selecting, grouping, and joining in Polars, you already understand the core concepts of SQL—only the syntax differs.
+
+We will not provide a complete introduction to SQL here, but we will highlight the key commands that you are most likely to encounter. First, to load a dataset from a CSV file into the database, we use the following command:
+
+```{python}
+con.execute(f"""
+    CREATE TABLE IF NOT EXISTS country AS
+    SELECT *
+    FROM read_csv_auto('data/countries.csv')
+""")
+```
+
+Let's break down this SQL statement. `CREATE TABLE IF NOT EXISTS country` tells the database to create a new table called `country`, but only if a table with that name doesn't already exist. The `AS SELECT * FROM read_csv_auto('data/countries.csv')` part says to populate this table by reading all columns (`*`) from our CSV file. DuckDB's `read_csv_auto` function automatically detects column types and handles common CSV formatting issues.
+
+This loading step only needs to be done once. Once the data is in the database, it persists across Python sessions (unlike DataFrames in memory, which disappear when you close Python). We can then query the data using `SELECT` statements.
+
+```{python}
+df = con.execute("""
+    SELECT iso, full_name, region, hdi, gdp
+    FROM country
+    ORDER BY hdi DESC
+    LIMIT 10
+""").pl()
+df
+```
+
+This query selects five specific columns from our `country` table, sorts the results by `hdi` in descending order, and returns only the top 10 rows. The `.pl()` method at the end converts the result into a Polars DataFrame, allowing us to continue working with the data using all the Polars methods we've learned. Notice how the SQL keywords (`SELECT`, `FROM`, `ORDER BY`, `LIMIT`) directly correspond to Polars operations (`.select()`, reading from a table, `.sort()`, `.head()`).
+
+Often we use a database because the data is too large to fit easily in Python memory in its full form. We can limit the number of rows that we read in using a `WHERE` clause, which is similar to a filter in Polars. This allows us to extract just the subset of data we need for a particular analysis.
+
+```{python}
+df = con.execute("""
+    SELECT iso, full_name, lexp, gdp
+    FROM country
+    WHERE region = 'Americas'
+      AND lexp >= 75
+      AND gdp >= 20000
+    ORDER BY gdp DESC
+""").pl()
+df
+```
+
+The `WHERE` clause supports multiple conditions combined with `AND` or `OR`, along with comparison operators like `=`, `>=`, `<`, and `!=`. This query finds countries in the Americas with high life expectancy and GDP.
+
+We can also perform aggregation directly inside the database using `GROUP BY`:
+
+```{python}
+df = con.execute("""
+    SELECT
+        region,
+        COUNT(*) AS n_countries
+    FROM country
+    GROUP BY region
+    ORDER BY n_countries DESC
+""").pl()
+df
+```
+
+This query counts the number of countries in each region, exactly like we would do with `.group_by()` and `.agg()` in Polars. The `AS n_countries` part gives a name to the computed column, just like providing a column name in a Polars aggregation.
+
+All of this computation happens in DuckDB before sending the data back to Python, making it efficient for larger datasets. The database engine is optimized for these operations and can often process queries faster than equivalent Python code, especially for large datasets that benefit from disk-based processing.
+
+::: {.callout-note collapse="true"}
+## SQL and Polars
+
+If you're curious about the relationship between SQL and Polars, you might be interested to know that DuckDB and Polars share many design principles. Both use columnar data storage and lazy evaluation for query optimization. In fact, Polars can execute SQL queries directly on DataFrames using `.sql()`, and DuckDB can read Polars DataFrames directly without conversion. For data scientists, learning both SQL and Polars is valuable: SQL is essential for working with traditional databases and is widely used in industry, while Polars provides a more Pythonic interface that integrates naturally with the broader Python ecosystem for analysis and visualization.
+:::
+
+SQL provides a somewhat limited set of operations compared to Python's full expressiveness. More involved modeling, visualization, and complex data transformations typically occur directly in Python after fetching the relevant data from the database. Combining the two tools provides a powerful workflow: use SQL and databases for storage and initial filtering of large datasets, then use Python for detailed analysis and visualization. Understanding how to move between these two worlds is an essential skill for working with data at scale.
+
+## Conclusions
+
+In this chapter, we explored several common data formats beyond the CSV files that have been our primary focus throughout this text. JSON provides a flexible, hierarchical format that maps naturally to Python's dictionaries and lists, making it popular for web APIs and configuration files. XML offers similar hierarchical capabilities with a more verbose syntax and powerful querying through XPath. Both formats require us to think carefully about how to flatten nested structures into rectangular tables suitable for analysis.
+
+We also introduced DuckDB as a representative database system, demonstrating how SQL queries can filter, select, and aggregate data before bringing it into Python. Databases become essential when working with datasets too large for memory or when data needs to be shared and updated by multiple users.
+
+The common theme across all these formats is the need to transform data into a structure amenable to analysis. Whether parsing JSON objects, navigating XML trees with XPath, or writing SQL queries, the goal remains the same: extract the information we need and organize it into the tabular format that enables the exploratory data analysis techniques we've developed throughout this book. Mastering these transformations expands the range of data sources we can work with and prepares us for the diverse data landscape we'll encounter in practice.
+
+## References {-}

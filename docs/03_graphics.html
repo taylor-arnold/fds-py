@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Taylor Arnold">
+
+<title>3&nbsp; EDA II: Visualizing Data – Foundations of Data Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./04_combine.html" rel="next">
+<link href="./02_modify.html" rel="prev">
+<link href="./img/owl_explore.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-25064e4154141e7ea34817c6f1220590.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01_intro.html">Part I: Core</a></li><li class="breadcrumb-item"><a href="./03_graphics.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">EDA II: Visualizing Data</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Foundations of Data Science</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/taylor-arnold/fds-py" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part I: Core</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_modify.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">EDA I: Organizing Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_graphics.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">EDA II: Visualizing Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_combine.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">EDA III: Restructuring Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_collect.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">EDA IV: Collecting Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part II: Programming</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_program.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Programming</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_strings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Strings</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_dataformats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Data Formats</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_requests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Requests</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part III: Models</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Inference</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_supervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Supervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_unsupervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Unsupervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13_deeplearning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Deep Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_cnnwordvec.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">CNNs and Word2Vec</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15_transferlearn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Transfer Learning</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part IV: Applications</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16_spatial_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Spatial Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17_temporal_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Temporal Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18_network_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Network Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19_textual_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Textual Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20_image_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Image Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part V: Notes</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./21_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Notes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./22_datasets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Datasets</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup"><span class="header-section-number">3.1</span> Setup</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction"><span class="header-section-number">3.2</span> Introduction</a></li>
+  <li><a href="#points-geometry" id="toc-points-geometry" class="nav-link" data-scroll-target="#points-geometry"><span class="header-section-number">3.3</span> Points Geometry</a></li>
+  <li><a href="#optional-aesthetics" id="toc-optional-aesthetics" class="nav-link" data-scroll-target="#optional-aesthetics"><span class="header-section-number">3.4</span> Optional Aesthetics</a></li>
+  <li><a href="#text-geometry" id="toc-text-geometry" class="nav-link" data-scroll-target="#text-geometry"><span class="header-section-number">3.5</span> Text Geometry</a></li>
+  <li><a href="#lines-and-bars" id="toc-lines-and-bars" class="nav-link" data-scroll-target="#lines-and-bars"><span class="header-section-number">3.6</span> Lines and Bars</a></li>
+  <li><a href="#statistics" id="toc-statistics" class="nav-link" data-scroll-target="#statistics"><span class="header-section-number">3.7</span> Statistics</a></li>
+  <li><a href="#scales" id="toc-scales" class="nav-link" data-scroll-target="#scales"><span class="header-section-number">3.8</span> Scales</a></li>
+  <li><a href="#multiple-datasets" id="toc-multiple-datasets" class="nav-link" data-scroll-target="#multiple-datasets"><span class="header-section-number">3.9</span> Multiple Datasets</a></li>
+  <li><a href="#facets" id="toc-facets" class="nav-link" data-scroll-target="#facets"><span class="header-section-number">3.10</span> Facets</a></li>
+  <li><a href="#labels-and-themes" id="toc-labels-and-themes" class="nav-link" data-scroll-target="#labels-and-themes"><span class="header-section-number">3.11</span> Labels and Themes</a></li>
+  <li><a href="#best-practices" id="toc-best-practices" class="nav-link" data-scroll-target="#best-practices"><span class="header-section-number">3.12</span> Best Practices</a></li>
+  <li><a href="#coming-from-r" id="toc-coming-from-r" class="nav-link" data-scroll-target="#coming-from-r"><span class="header-section-number">3.13</span> Coming from R</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01_intro.html">Part I: Core</a></li><li class="breadcrumb-item"><a href="./03_graphics.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">EDA II: Visualizing Data</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-graphics" class="quarto-section-identifier"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">EDA II: Visualizing Data</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Practice Notebooks
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>Notebook03a [<a href="https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook03a.ipynb?hl=en">Colab↗</a>]</li>
+<li>Notebook03b [<a href="https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook03b.ipynb?hl=en">Colab↗</a>]</li>
+<li>Notebook03c [<a href="https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook03c.ipynb?hl=en">Colab↗</a>]</li>
+<li>Notebook03d [<a href="https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook03d.ipynb?hl=en">Colab↗</a>]</li>
+</ul>
+</div>
+</div>
+</div>
+<section id="setup" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">3.1</span> Setup</h2>
+<p>Load all of the modules and datasets needed for the chapter.</p>
+<div id="9fbc24bf" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funs <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plotnine <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polars <span class="im">import</span> col <span class="im">as</span> c</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>theme_set(theme_minimal())</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>country <span class="op">=</span> pl.read_csv(<span class="st">"data/countries.csv"</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>cellphone <span class="op">=</span> pl.read_csv(<span class="st">"data/countries_cellphone.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="introduction" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="introduction"><span class="header-section-number">3.2</span> Introduction</h2>
+<p>In this chapter, we will learn and use the plotnine package for building informative graphics <span class="citation" data-cites="plotnine">[<a href="#ref-plotnine" role="doc-biblioref">1</a>]</span> <span class="citation" data-cites="wilkinson2012grammar">[<a href="#ref-wilkinson2012grammar" role="doc-biblioref">2</a>]</span>. The package makes it easy to build fairly complex graphics guided by a general theory of data visualization. The only downside is that, because it is built around a theoretical model rather than many one-off solutions for different tasks, it has a somewhat steeper initial learning curve. The chapter is designed to get us started using the package to make a variety of data visualizations.</p>
+<p>The core idea of the grammar of graphics is that visualizations are composed of independent <em>layers</em>. The term “grammar” is used because the theory builds connections between elements of the dataset and elements of a visualization. It assembles complex elements from smaller ones, much like a grammar relates words to generate larger phrases and sentences. To describe a specific layer, we need to specify several components. First, we must specify the dataset from which data will be taken to construct the plot. Next, we specify a set of mappings called <em>aesthetics</em> that describe how elements of the plot relate to columns in the data. For example, we often indicate which column corresponds to the horizontal axis and which corresponds to the vertical axis. We can also describe attributes such as color, shape, and size by associating these quantities with columns in the data. Finally, we need to provide the <em>geometry</em> that will be used in the plot. The geometry describes the kinds of objects associated with each row of the data. A common example is the points geometry, which associates a single point with each observation.</p>
+</section>
+<section id="points-geometry" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="points-geometry"><span class="header-section-number">3.3</span> Points Geometry</h2>
+<p>We can demonstrate the grammar of graphics by using the countries data, where each row corresponds to a particular country. The first plot we will make is a scatter plot that investigates the relationship between the Human Development Index (HDI)—a “composite index of life expectancy, education (mean years of schooling completed and expected years of schooling upon entering the education system), and per capita income indicators, which is used to rank countries into four tiers of human development”—and perceived happiness. In the language of the grammar of graphics, we begin describing this visualization by specifying the Python variable containing the data (<code>country</code>). Next, we associate the horizontal axis (the <code>x</code> aesthetic) with the column in the data named <code>hdi</code>. The vertical axis (the <code>y</code> aesthetic) can similarly be associated with the column named <code>happy</code>. We will make a scatter plot, with each point describing one of our metropolitan regions, which leads us to use a <em>point geometry</em>. Our plot will allow us to understand the relationship between city density and rental prices.</p>
+<p>In Python, we need to use some special functions to indicate all of this information and to instruct the program to produce a plot. We start by specifying the name of the underlying dataset and applying the special method <code>.pipe</code> with its first argument set to the function <code>ggplot</code>. This indicates that we want to create a data visualization. In the second argument of that function we use the <code>aes</code> (short for aesthetics) function to specify the names of the x and y aesthetics corresponding to columns in the dataset. The plot itself is created by adding—literally, with the plus sign—the <code>geom_point</code> function. This function adds a point geometry (a layer of points) to the plot. Code to do this using the values described above is given below.</p>
+<div id="a08f608d" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Europe"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"hdi"</span>, <span class="st">"happy"</span>))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point()</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div>
+<figure class="figure">
+<p><a href="03_graphics_files/figure-html/cell-4-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="03_graphics_files/figure-html/cell-4-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Choosing x and y aesthetics
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>When we have a scatter plot showing the relationship between two columns in a dataset, the usual convention is to put the quantity that is more likely to be a cause on the x-axis and the variable more likely to be the effect or outcome on the y-axis. Here, we put the HDI on the x-axis because it seems more likely that investment in human development leads to happier people rather than the other way around. This general rule can be broken when needed to make the plot more readable or to make it easier to compare with other related visualizations.</p>
+</div>
+</div>
+</div>
+<p>Running the code above will show the desired visualization directly below the code block. In this plot, each row of our dataset — a country — is represented as a point. The location of each point is determined by the country’s HDI and happiness score. Notice that Python has automatically made several choices for the plot that we did not explicitly indicate in the code. For example, the range of values on the two axes, the axis labels, the grid lines, and the tick marks. Python has also automatically picked the color, size, and shape of the points. While the defaults are a good starting point, it’s often useful to modify them; we will see how to change these aspects of the plot in later sections of this chapter.</p>
+<p>As shown in the example, we can include data-manipulation code before the call to <code>.pipe</code>. This lets us seamlessly combine data manipulation and data visualization.</p>
+<p>Scatter plots are typically used to examine the relationship between two numeric variables. What does our first plot tell us about the relationship between HDI and happiness? It appears that, at least in Europe, there is a generally positive relationship between investment in human development and the reported happiness of a population.</p>
+</section>
+<section id="optional-aesthetics" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="optional-aesthetics"><span class="header-section-number">3.4</span> Optional Aesthetics</h2>
+<p>The point geometry requires <code>x</code> and <code>y</code> aesthetics. In addition to these required aesthetics, each geometry type also has several optional aesthetics that add information to the plot. For example, most geometries have a <code>color</code> aesthetic. The syntax for specifying this is similar to the required aesthetics, with the only difference being that we place the aesthetics inside the <code>geom_point()</code> function using another call to <code>aes()</code>. This is true for all aesthetics other than <code>x</code> and <code>y</code>. Let’s see what happens when we add a <code>color</code> aesthetic to our scatter plot by mapping the column <code>subregion</code> to the <code>color</code> aesthetic.</p>
+<div id="ee066ccd" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Europe"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"hdi"</span>, <span class="st">"happy"</span>))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point(aes(color<span class="op">=</span><span class="st">"subregion"</span>))</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div>
+<figure class="figure">
+<p><a href="03_graphics_files/figure-html/cell-5-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="03_graphics_files/figure-html/cell-5-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The result of associating a column in the dataset with a color produces a new variation of the original scatter plot. We have the same set of points and locations on the plot, as well as the same axes. However, now each subregion has been automatically associated with a color, and every point has been colored according to the subregion value in each row of the data. The mapping between colors and region names is shown in an automatically created legend on the right-hand side of the plot. The ability to add additional information to the plot by specifying a single aesthetic mapping illustrates how powerful the grammar of graphics is for quickly producing informative visualizations.</p>
+<p>In the previous example, we changed the color aesthetic from the fixed default color of black to a color that varies with another variable. It is also possible to specify an alternative fixed value for any aesthetic. We can use the color names available in Python; for example, we might want all of the points to be a shade of green. This can be done with a small change to the function call: set the color aesthetic to the name of a color, such as “red”. However, unlike with variable aesthetics, the mapping needs to be done outside of the <code>aes()</code> function but still within the <code>geom_*</code> function. Below is an example of the code to recreate our plot with a different color. We use a color called “#F5276C”, which is a bright reddish-pink.</p>
+<div id="6b639c4a" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Europe"</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"hdi"</span>, <span class="st">"happy"</span>))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point(color<span class="op">=</span><span class="st">"#F5276C"</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<div>
+<figure class="figure">
+<p><a href="03_graphics_files/figure-html/cell-6-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="03_graphics_files/figure-html/cell-6-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hexadecimal color codes
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The color code below uses a format called an HTML hexadecimal color code. These codes let us unambiguously describe a large number of colors with a single string. The first two characters specify the amount of red, the next two the amount of green, and the last two the amount of blue. The values are written in base-16 (hexadecimal) notation, where the digits a–f correspond to the numbers 10 through 15. Usually, people use an interactive website to determine the hex code for a desired color. One good choice is <a href="https://htmlcolorcodes.com">htmlcolorcodes</a>.</p>
+</div>
+</div>
+</div>
+<p>Although minor, the change in notation for specifying fixed aesthetics is a common source of confusion for users new to the grammar of graphics; follow the correct argument syntax shown in the code above. You can interchange the fixed and variable aesthetic commands; the relative order should not affect the output. Just be sure to put fixed terms after finishing the <code>aes()</code> call.</p>
+<p>While each geometry may have different required and optional aesthetics, the plotnine package tries, as much as possible, to use a common set of terms across geometries. Here are some typical aesthetics we’ll see for most geometries:</p>
+<ul>
+<li><code>color</code>: the color of points, lines, or the insides of boxes</li>
+<li><code>fill</code>: the interior color of boxes and polygons</li>
+<li><code>alpha</code>: controls the opacity of objects; set to a number between 0 and 1</li>
+<li><code>size</code>: controls the size of the points, boxes, font etc. of the layer</li>
+<li><code>shape</code>: controls the shape of the points</li>
+<li><code>group</code>: groups together data without changing the color; useful for lines</li>
+</ul>
+<p>Some of these, such as <code>alpha</code>, are most frequently used with fixed values. If needed, however, almost all can be provided with a variable mapping.</p>
+</section>
+<section id="text-geometry" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="text-geometry"><span class="header-section-number">3.5</span> Text Geometry</h2>
+<p>A common critique of computational methods is that they obscure close understanding of each individual object of study by focusing on numeric patterns. This is an important caution: computational analysis should be paired with close analysis. However, visualizations do not always have to reduce complex collections to a few numerical summaries, especially when the dataset contains a relatively small number of observations. Looking back at our first scatter plot, how could we recover a closer analysis of individual countries while also looking for general patterns between the two variables? One option is to add labels indicating the names of the countries. These labels allow viewers to bring their own knowledge of the countries as an additional layer of information when interpreting the plot.</p>
+<p>Adding the names of the countries can be done by using another type of geometry, called <em>text geometry</em>. This geometry is created with the function <code>geom_text</code>. For each row of a dataset, this geometry adds a small textual label. As with the point geometry, we must specify which columns of our data correspond to the <code>x</code> and <code>y</code> aesthetics; these values tell the plot where to place the label. Additionally, the text geometry requires an aesthetic called <code>label</code> that provides the text for each label. In our case, we will use the column called <code>iso</code> to make textual labels on the plot based on the three-letter ISO abbreviation of the country. The code block below produces a plot with text labels by changing the geometry type and adding the <code>label</code> aesthetic.</p>
+<div id="1937ccd4" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Europe"</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"hdi"</span>, <span class="st">"happy"</span>))</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_text(aes(label<span class="op">=</span><span class="st">"iso"</span>))</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<div>
+<figure class="figure">
+<p><a href="03_graphics_files/figure-html/cell-7-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="03_graphics_files/figure-html/cell-7-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The plot generated by the code now allows us to see which countries have the highest levels of happiness (Finland, Iceland, and Denmark) and which have the highest levels of HDI (Iceland, Norway, and Switzerland (CHE)). While we added only a single additional piece of information to the plot, each label uniquely identifies a row of the data. This allows anyone familiar with them to bring many more characteristics of each data point to the plot through their own knowledge. For example, although the plot does not include any information about geography, anyone familiar with Europe will note that the Scandinavian countries are clustered together in the upper-right corner of the plot.</p>
+<p>Although the text plot adds contextual information compared with the scatter plot, it has some shortcomings. Some labels overlap and become difficult to read, and these issues will only worsen if we increase the number of regions in our dataset. It is also unclear which part of a label corresponds to a country’s HDI or happiness score: the center, the start, or the end? We could add a note that the value refers to the center of the label, but that becomes cumbersome to remember and to keep reminding others about.</p>
+<p>To start addressing these issues, we can add the points back into the plot, with labels. We do this in Python by adding the two geometry layers (<code>geom_point</code> and <code>geom_text</code>) one after the other. This makes it clearer where each region is located on the x-axis, but it also makes the country names harder to read. To fix that, we’ll add options to the text geometry to nudge the labels upward and reduce their size. Below is the code that makes both of these modifications.</p>
+<div id="a13537ab" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Europe"</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"hdi"</span>, <span class="st">"happy"</span>))</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point()</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_text(aes(label<span class="op">=</span><span class="st">"iso"</span>), size<span class="op">=</span><span class="dv">6</span>, nudge_y<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div>
+<figure class="figure">
+<p><a href="03_graphics_files/figure-html/cell-8-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="03_graphics_files/figure-html/cell-8-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The plot with points and text labels shows that we attempted to avoid overlapping labels by nudging them slightly. The points indicate the specific HDI and happiness scores, while the labels identify which country each point represents.</p>
+</section>
+<section id="lines-and-bars" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="lines-and-bars"><span class="header-section-number">3.6</span> Lines and Bars</h2>
+<p>The plotnine package supplies a large number of different geometries. In this section, we will look at two additional geometry types that allow us to investigate common relationships among the columns of a dataset.</p>
+<p>For a moment, we look at the cellphone dataset that shows the number of cellphones per one-hundred people over a twenty-year period for each country. Consider a visualization showing the change in the number of cellphones over time. We could create a scatter plot where each point represents a row of the data, the <code>x</code> aesthetic captures the year of each record, and the <code>y</code> aesthetic measures the number of phones. This visualization would be fine and would roughly help us understand changes in cellphone ownership. A more common visualization for data of this format, however, is a line plot, where the values in each year are connected by a line to the values in the subsequent year. To create such a plot, we can use the <code>geom_line</code> geometry. It is most commonly used when the horizontal axis measures some unit of time but can represent other quantities that we expect to change continuously and smoothly between measurements on the x-axis. The line geometry uses the same aesthetics as the point geometry and can be created with the same syntax, as shown in the following block of code.</p>
+<div id="70bba4bb" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    cellphone</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.iso.is_in([<span class="st">"USA"</span>, <span class="st">"GBR"</span>, <span class="st">"IRL"</span>, <span class="st">"CAN"</span>]))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"year"</span>, <span class="st">"cell"</span>))</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_line(aes(color<span class="op">=</span><span class="st">"iso"</span>))</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<div>
+<figure class="figure">
+<p><a href="03_graphics_files/figure-html/cell-9-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="03_graphics_files/figure-html/cell-9-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The output of this visualization shows how the number of cell phones changes over time. The numbers generally increase slowly in North American countries. In Great Britain, they plateau near 2010, while in Ireland they decrease slightly from a peak around 2007.</p>
+<p>Another common use of visualization is to compare the values of a numeric column with the categories of a categorical column. You can represent this relationship with a <code>geom_point</code> layer, but it is often more meaningful visually to use a bar for each category, with the height or length of the bar representing the numeric value. This type of plot is common for showing counts of categories (something we will see in the next chapter), but it can be used whenever a numeric value is associated with different categories. To create a plot with bars, we use the <code>geom_col</code> function, providing both <code>x</code> and <code>y</code> aesthetics. By default the categorical variable maps to <code>x</code> and the numeric variable maps to <code>y</code>, but it is often easier to read the other way around. To address this, we add the <code>coord_flip()</code> layer, which flips the axes. The code block below shows the complete commands to create a bar plot of the population for each country in Africa from our dataset.</p>
+<div id="65810319" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Africa"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"full_name"</span>, <span class="st">"pop"</span>))</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_col()</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> coord_flip()</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<div>
+<figure class="figure">
+<p><a href="03_graphics_files/figure-html/cell-10-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="03_graphics_files/figure-html/cell-10-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>One of the first things that stands out in the output is that the regions are ordered alphabetically from bottom to top. The visualization would be much more useful and readable if we could reorder the categories on the y-axis. To do this, we apply the helper function <code>reorder</code> directly inside the graphics code. The function needs to know the name of the variable being reordered and the name of the variable by which it is being reordered.</p>
+<div id="09e8bdf9" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Africa"</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"reorder(full_name, pop)"</span>, <span class="st">"pop"</span>))</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_col()</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> coord_flip()</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<div>
+<figure class="figure">
+<p><a href="03_graphics_files/figure-html/cell-11-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="03_graphics_files/figure-html/cell-11-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This function can be applied to other aesthetics, including color, to change the order of categories in the corresponding legend.</p>
+</section>
+<section id="statistics" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="statistics"><span class="header-section-number">3.7</span> Statistics</h2>
+<p>All the geometries we’ve seen so far directly visualize the rows in the dataset, with one element in the output corresponding to each row in the data. Several geometries first compute summary statistics before plotting. Their aesthetics correspond to the data-summarization process rather than to individual elements in the output. Let’s look at a few common examples.</p>
+<p>We can use the <code>geom_smooth()</code> geometry, with the option <code>method = "lm"</code>, to add a line of best fit to the dataset. By default, it adds a confidence band, which we turn off in the code below by setting <code>se = FALSE</code>.</p>
+<div id="60fa92ad" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Europe"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"hdi"</span>, <span class="st">"happy"</span>))</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point()</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_smooth(method<span class="op">=</span><span class="st">"lm"</span>, se<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<div>
+<figure class="figure">
+<p><a href="03_graphics_files/figure-html/cell-12-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="03_graphics_files/figure-html/cell-12-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can produce more complex, non-linear smoothing curves by calling <code>geom_smooth()</code> without additional parameters.</p>
+<p>A boxplot lets us see the relationship between a categorical variable and a continuous one. For each category, we plot the 25th, 50th (median), and 75th percentiles as a box with a solid line for the median. A pair of lines, called “whiskers,” extend outward to indicate where most of the remaining data lie. Outliers are plotted as individual points. Often, this involves using <code>reorder()</code> and <code>coord_flip()</code>. Below is an example showing the distribution of HDI values within each region.</p>
+<div id="0308fb8a" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"reorder(region, hdi)"</span>, <span class="st">"hdi"</span>))</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_boxplot()</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> coord_flip()</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<div>
+<figure class="figure">
+<p><a href="03_graphics_files/figure-html/cell-13-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img src="03_graphics_files/figure-html/cell-13-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Certain statistics-based geometries create the y aesthetic directly from the data. These are used to show the univariate distribution of a variable in our dataset. For example, a bar plot using <code>geom_bar</code> takes a categorical variable as a single aesthetic and counts the number of values in each category. The default colors are hard to read, so we change them and flip the coordinates to prevent labels from overlapping. Finally, we can use a special call to <code>reorder</code> to display the results in order of frequency.</p>
+<div id="e81de32d" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"reorder(subregion, subregion, len)"</span>))</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_bar(fill<span class="op">=</span><span class="st">"white"</span>, color<span class="op">=</span><span class="st">"black"</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> coord_flip() </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<div>
+<figure class="figure">
+<p><a href="03_graphics_files/figure-html/cell-14-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11"><img src="03_graphics_files/figure-html/cell-14-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>To summarize the distribution of a numeric variable, the equivalent of a bar plot is a histogram, which we create with <code>geom_histogram</code>. The output is easiest to interpret if we set <code>binwidth</code> and <code>boundary</code> to control the width of each bin and how bins are offset from zero. For example, the code below creates histograms that align neatly in groups with a bin width of 0.1. The output shows how many countries fall into each bin.</p>
+<div id="d0885313" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"hdi"</span>))</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_histogram(fill<span class="op">=</span><span class="st">"white"</span>, color<span class="op">=</span><span class="st">"black"</span>, binwidth<span class="op">=</span><span class="fl">0.1</span>, boundary<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<div>
+<figure class="figure">
+<p><a href="03_graphics_files/figure-html/cell-15-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12"><img src="03_graphics_files/figure-html/cell-15-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Interpreting a histogram
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>If you find interpreting a histogram difficult, it can help to walk through a concrete example. Take the example above and look at the first bar, which spans from 0.4 to 0.5 on the x-axis. The height on the y-axis appears to be 11, indicating that there are 11 countries in the dataset with an HDI value between 0.4 and 0.5. Similarly, it appears there are around 26 countries with an HDI between 0.8 and 0.9, and around 33 with a value between 0.9 and 1.0.</p>
+</div>
+</div>
+</div>
+<p>We can also simply set <code>bins=&lt;int&gt;</code> to define the total number of bins. This is an easier way to quickly create results without knowing the scale of the data. However, the resulting counts can be harder to interpret directly.</p>
+<p>An alternative to a histogram is a density plot. This attempts to model, rather than just counting, the distribution of a continuous variable. The <code>adjust</code> option, which defaults to 1, controls how smooth the distribution is. Higher values produce smoother curves, while lower values more closely fit the data. Trying different values can help you find the one that best reveals the relationship you are interested in.</p>
+<div id="096e9543" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"hdi"</span>))</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_density(fill<span class="op">=</span><span class="st">"white"</span>, color<span class="op">=</span><span class="st">"black"</span>, adjust<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<div>
+<figure class="figure">
+<p><a href="03_graphics_files/figure-html/cell-16-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13"><img src="03_graphics_files/figure-html/cell-16-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Interpreting a density plot
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The total area under a density plot equals 1. The integral of the density function between two points (i.e., the area under the curve between those bounds) gives the proportion of observations that fall between those values. With a larger dataset, the density should resemble the histogram’s shape, differing only by scale and being slightly smoother.</p>
+</div>
+</div>
+</div>
+<p>All of the statistics-based geometries in the section can take an aesthetic called <code>group</code> or <code>color</code> that causes the summaries to be done separately for each unique value of <code>group</code> or <code>color</code>. This quickly becomes very messy and is advisable only when there are a small number (at most 4–5) of groups.</p>
+</section>
+<section id="scales" class="level2" data-number="3.8">
+<h2 data-number="3.8" class="anchored" data-anchor-id="scales"><span class="header-section-number">3.8</span> Scales</h2>
+<p>Python makes many choices for us automatically when creating any plot. In the example above, where we set the color of the points to follow another variable in the dataset, Python handles the details of how to pick the specific colors and sizes. It has figured out how large to make the axes, where to add tick marks, and where to draw grid lines. Letting Python deal with these details is convenient because it frees us to focus on the data itself. Sometimes, such as when preparing plots for external distribution or when the defaults are particularly hard to interpret, it is useful to manually adjust these details. This is exactly what scales are designed for.</p>
+<p>Each aesthetic within the grammar of graphics is associated with a scale. Scales detail how a plot maps aesthetics to concrete, perceivable features. For example, a scale for the <code>x</code> aesthetic describes the smallest and largest values on the x-axis and encodes how to label that axis. Similarly, a color scale describes what colors correspond to each category in a dataset and how to format a legend for the plot. To modify the default scales, we add an additional function to the code. The order of the scales relative to the geometries does not affect the output; by convention, scales are usually grouped after the geometries.</p>
+<p>For example, a popular alternative to the default color palette shown in our previous plot is the function <code>scale_color_cmap_d()</code>. It constructs a set of colors that are color-blind friendly, print well in black and white, and display clearly on poor projectors. After mapping a geometry’s color to a column in the dataset, add this scale by including the function as an extra line in the plot. An example is shown in the following code.</p>
+<div id="192ca712" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Europe"</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"hdi"</span>, <span class="st">"happy"</span>))</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point(aes(color<span class="op">=</span><span class="st">"subregion"</span>))</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> scale_color_cmap_d()</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<div>
+<figure class="figure">
+<p><a href="03_graphics_files/figure-html/cell-17-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14"><img src="03_graphics_files/figure-html/cell-17-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The output shows that the colors now range from dark purple to bright yellow instead of the rainbow of colors in the default plot. As with the categories in the bar plot, the ordering of the unique colors is determined by putting the categories in alphabetical order. Changing this requires modifying the dataset before passing it to the plot, which we will discuss in the next chapter. Note that the <code>_d</code> at the end of the scale function indicates the colors are used to create mappings for a character variable (it stands for “discrete”). There is also a complementary function <code>scale_color_cmap()</code> that produces a similar set of colors when making the color of the points vary according to a numeric variable.</p>
+<p>Many other scales exist to control various aesthetics. For example, <code>scale_size_area</code> can make point sizes proportional to another column in the dataset. Several scales control the x and y axes; for example, we can add <code>scale_x_log10()</code> and <code>scale_y_log10()</code> to a plot to display values on a logarithmic scale, which is useful with heavily skewed datasets. We’ll use these in later chapters as needed.</p>
+<p>The default scale for the x-axis is called <code>scale_x_continuous</code>. A corresponding function, <code>scale_y_continuous</code>, is the default for the y-axis. Adding these to a plot by themselves has no visible effect. However, there are many optional arguments we can provide to these functions that change how a plot is displayed. Setting <code>breaks</code> within one of these scales tells Python how many labels to put on the axis. Usually we use a helper function to set them, such as <code>breaks_width</code>. We can set <code>limits</code> to a pair of numbers to specify the start and end of the plotted range. Below is the code to produce a plot that shows the same data as our original scatter plot but with modified grid lines, axis labels, and vertical range.</p>
+<div id="d84e56d9" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Europe"</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"hdi"</span>, <span class="st">"happy"</span>))</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point()</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> scale_x_continuous(breaks<span class="op">=</span><span class="va">True</span>, limits<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> scale_y_continuous(breaks<span class="op">=</span>breaks_width(<span class="dv">2</span>))</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<div>
+<figure class="figure">
+<p><a href="03_graphics_files/figure-html/cell-18-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-15"><img src="03_graphics_files/figure-html/cell-18-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Finally, there are two special scale types that can be useful for working with colors. In some cases, a column in the dataset already specifies the color of each observation; in that case, it’s sensible to use those colors directly. To do that, add the scale <code>scale_color_identity</code> to the plot. Another useful scale for colors is <code>scale_color_manual</code>; with it, you can specify exactly which color should be used for each category. Below is the syntax for specifying manual colors for each region in the <code>countries</code> dataset.</p>
+<div id="a4dc6775" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Europe"</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"hdi"</span>, <span class="st">"happy"</span>))</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point(aes(color<span class="op">=</span><span class="st">"subregion"</span>))</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> scale_color_manual(values<span class="op">=</span>{</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Eastern Europe"</span>: <span class="st">"lightblue"</span>,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Northern Europe"</span>: <span class="st">"navy"</span>, </span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Southern Europe"</span>: <span class="st">"peachpuff"</span>,</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Western Europe"</span>: <span class="st">"wheat"</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Using manual colors is generally advisable when there are well-known colors associated with the groups in the dataset. For example, when plotting data about political parties, it may be helpful to use the colors traditionally associated with each party. The plotnine documentation includes additional ways to customize visualizations using a variety of alternative scales.</p>
+</section>
+<section id="multiple-datasets" class="level2" data-number="3.9">
+<h2 data-number="3.9" class="anchored" data-anchor-id="multiple-datasets"><span class="header-section-number">3.9</span> Multiple Datasets</h2>
+<p>So far, we have seen how to create visualizations using multiple layers with a single dataset. It is also possible to use different datasets in each layer by defining the <code>data=</code> argument for a specific geometry. When setting the <code>data=</code> argument for a geometry, it affects only that geometry; all other geometries will continue to use the default dataset.</p>
+<p>A common reason to use two different datasets in the same plot is to highlight a subset of points within a larger dataset.</p>
+<div id="1dd4c66a" class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>country_ne <span class="op">=</span> country.<span class="bu">filter</span>(c.subregion <span class="op">==</span> <span class="st">"Northern Europe"</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Europe"</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"hdi"</span>, <span class="st">"happy"</span>))</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point(alpha<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point(color<span class="op">=</span><span class="st">"#F5276C"</span>, data<span class="op">=</span>country_ne)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_text(</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>        aes(label<span class="op">=</span><span class="st">"iso"</span>),</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>        color<span class="op">=</span><span class="st">"#F5276C"</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>        nudge_y<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>        size<span class="op">=</span><span class="dv">8</span>,</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>        data<span class="op">=</span>country_ne</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    ) </span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<div>
+<figure class="figure">
+<p><a href="03_graphics_files/figure-html/cell-20-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-16"><img src="03_graphics_files/figure-html/cell-20-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This approach makes it easy to highlight the relationship between a subset of the data and the full dataset.</p>
+</section>
+<section id="facets" class="level2" data-number="3.10">
+<h2 data-number="3.10" class="anchored" data-anchor-id="facets"><span class="header-section-number">3.10</span> Facets</h2>
+<p>Another way to show differences across groups of a categorical variable is through facets. These create a grid of small plots in which the data is separated by one or two variables. This is done by adding the <code>facet_wrap()</code> function to the plot and supplying the grouping variable. Often, as in the example below, we add color mapped to the grouping variable and turn off the legend to visually indicate which data appears in each facet.</p>
+<div id="81ceccf2" class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"hdi"</span>, <span class="st">"happy"</span>))</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point(aes(color<span class="op">=</span><span class="st">"region"</span>), show_legend<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> facet_wrap(<span class="st">"region"</span>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="19">
+<div>
+<figure class="figure">
+<p><a href="03_graphics_files/figure-html/cell-21-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-17"><img src="03_graphics_files/figure-html/cell-21-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The <code>space</code> option can be set to <code>fixed</code> (the default), <code>free_x</code>, <code>free_y</code>, or <code>free</code> to control whether subplots share the same scales. The <code>facet_grid</code> function lets you supply two variables to arrange across rows and columns.</p>
+<p>Facets can be very powerful and useful for making certain kinds of relationships more readable and make your outputs look very professional. However, take care in using them, as most people getting started in data science have a tendency to significantly overuse facets. Typically, they are best when we have only a small set of categories and have already used all of the other tricks in the sections above to visualize the patterns in the data.</p>
+</section>
+<section id="labels-and-themes" class="level2" data-number="3.11">
+<h2 data-number="3.11" class="anchored" data-anchor-id="labels-and-themes"><span class="header-section-number">3.11</span> Labels and Themes</h2>
+<p>Throughout this chapter, we have seen a number of ways to create and modify data visualizations. One thing we did not cover was how to label our axes. While many data visualization guides stress the importance of labeling axes, it is often best to use the default labels provided by Python during the exploratory phase of analysis. These defaults are useful for several reasons. First, they require minimal effort and make it easy to change axes, variables, and other settings without spending time adjusting labels. Second, the default labels use the variable names in our dataset. When writing code, those names are exactly what we need to refer to a variable in additional plots, models, and data-manipulation tasks. Of course, when we want to present our results to others, it is essential to provide more detailed descriptions of the axes and legends in our plots. Fortunately, these can be added directly using the grammar of graphics.</p>
+<p>In order to change the labels in a plot, we can use the <code>labs</code> function as an additional layer of our plot. Inside the function, we assign labels to the names of aesthetic values that we want to describe. Leaving a value unspecified will keep the default value in place. Labels for the x-axis and y-axis will be placed on the sides of the plot; labels for other aesthetics such as size and color will be placed in the legend. We can also add <code>title</code>, <code>subtitle</code>, and a <code>caption</code> to <code>labs</code> to provide additional information describing the plot as a whole. Here is an example of our color-coded scatter plot that includes a variety of labels.</p>
+<div id="331d7599" class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Europe"</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"hdi"</span>, <span class="st">"happy"</span>))</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point(aes(color<span class="op">=</span><span class="st">"subregion"</span>))</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> labs(</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>        x<span class="op">=</span><span class="st">"Human Development Index (HDI)"</span>,</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>        y<span class="op">=</span><span class="st">"Happiness Score (0-100)"</span>,</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>        color<span class="op">=</span><span class="st">"Subregion"</span>,</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">"Relationship between HDI and Happiness"</span>,</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>        subtitle<span class="op">=</span><span class="st">"Europe"</span>,</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>        caption<span class="op">=</span><span class="st">"Data from the Gapminder"</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="20">
+<div>
+<figure class="figure">
+<p><a href="03_graphics_files/figure-html/cell-22-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-18"><img src="03_graphics_files/figure-html/cell-22-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Another way to prepare our graphics for distribution is to modify the <em>theme</em> of a plot. Themes affect the appearance of plot elements such as axis labels, ticks, and the background. Throughout this book, we’ve set the default plot theme to <code>theme_minimal()</code>. We think it’s a great choice for exploring a dataset. As the name implies, it removes much of the clutter of other themes while keeping grid lines and other visual cues that help with interpretation. When presenting information for external publication, we often prefer a theme based on the work of Edward Tufte, a well-known scholar in the field of data visualization. To set the theme, we can add <code>theme_minimal()</code> or another theme function to our plot, as in the example below.</p>
+<div id="e580c1ef" class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>theme_set(theme_minimal())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, whenever we construct a plot, it will use the newly assigned theme. Minimal themes are designed to use as little “ink” as possible, focusing the reader on the data <span class="citation" data-cites="tufte1987">[<a href="#ref-tufte1987" role="doc-biblioref">3</a>]</span>. They can be a bit too minimal when first exploring a dataset, but are a great tool for presenting results. Again, there are many resources online to customize them according to our needs.</p>
+</section>
+<section id="best-practices" class="level2" data-number="3.12">
+<h2 data-number="3.12" class="anchored" data-anchor-id="best-practices"><span class="header-section-number">3.12</span> Best Practices</h2>
+<p>While the focus of this chapter has been how to create certain graphics, it will be helpful to have a few guiding principles about which graphics to create for certain applications. These are general best practices that you may need to break for specific tasks.</p>
+<ul>
+<li>Use barplots, histograms, and density plots to understand the distribution of a single variable.</li>
+<li>Use scatter plots (points) and boxplots to understand the relationship between two variables.</li>
+<li>Use scatter plots with text labels to understand individal data points, either as a whole or in relationship to a larger set.</li>
+<li>Only use variable color scales when you have already made use of the x- and y-aesthetics as much as possible.</li>
+<li>Size and color for continuous variables should be used as an extra element, not the primary one. Do not use size for categorical variables.</li>
+<li>Color and shape should only be used when we have a small set of categories. The exact cut-off depends on the overall datasize and application, but 8 is a good rough number.</li>
+<li>Line plots should be reserved for the case where a single quantity is measured over time, space, or another continuous variable.</li>
+</ul>
+<p>The best way to understand which plots to make for applications — and when it’s appropriate to break those rules — is to see many examples. We’ll do this throughout the remainder of this text.</p>
+</section>
+<section id="coming-from-r" class="level2" data-number="3.13">
+<h2 data-number="3.13" class="anchored" data-anchor-id="coming-from-r"><span class="header-section-number">3.13</span> Coming from R</h2>
+<p>There is a relatively small gap between R’s <code>ggplot2</code> package and <code>plotnine</code>. <code>plotnine</code> was intentionally created to mirror R’s <code>ggplot2</code> as closely as possible in Python. The only differences are that variable names must be quoted, the entire code block is enclosed in parentheses, and the plus sign is placed at the start of the line rather than the end. Placing the plus sign at the start helps avoid many common errors and makes it easier to comment out particular lines of code when testing.</p>
+</section>
+<section id="references" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+
+
+<div id="refs" class="references csl-bib-body" role="list">
+<div id="ref-plotnine" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">Lavanya, A, Gaurav, L, Sindhuja, S, Seam, H, Joydeep, M, Uppalapati, V, Ali, W and SD, V S (2023 ). Assessing the performance of python data visualization libraries: A review. <em>Int. J. Comput. Eng. Res. Trends</em>. <strong>10</strong> 28–39</div>
+</div>
+<div id="ref-wilkinson2012grammar" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">Wilkinson, L (2012 ). <em>The Grammar of Graphics</em>. Springer</div>
+</div>
+<div id="ref-tufte1987" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">Tufte, E (1987 ). <em>The Visual Display of Quantitative Information</em>. Graphics Press</div>
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/taylor-arnold\.github\.io\/fds-py");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./02_modify.html" class="pagination-link" aria-label="EDA I: Organizing Data">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">EDA I: Organizing Data</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./04_combine.html" class="pagination-link" aria-label="EDA III: Restructuring Data">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">EDA III: Restructuring Data</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Taylor Arnold</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>A <a href="https://distantviewing.org/">Distant Viewing Lab</a> project</p>
+</div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>

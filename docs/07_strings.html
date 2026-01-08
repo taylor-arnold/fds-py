@@ -1,0 +1,2892 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Taylor Arnold">
+
+<title>7&nbsp; Strings – Foundations of Data Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./08_dataformats.html" rel="next">
+<link href="./06_program.html" rel="prev">
+<link href="./img/owl_explore.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-25064e4154141e7ea34817c6f1220590.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06_program.html">Part II: Programming</a></li><li class="breadcrumb-item"><a href="./07_strings.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Strings</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Foundations of Data Science</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/taylor-arnold/fds-py" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part I: Core</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_modify.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">EDA I: Organizing Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">EDA II: Visualizing Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_combine.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">EDA III: Restructuring Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_collect.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">EDA IV: Collecting Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part II: Programming</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_program.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Programming</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_strings.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Strings</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_dataformats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Data Formats</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_requests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Requests</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part III: Models</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Inference</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_supervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Supervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_unsupervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Unsupervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13_deeplearning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Deep Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_cnnwordvec.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">CNNs and Word2Vec</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15_transferlearn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Transfer Learning</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part IV: Applications</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16_spatial_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Spatial Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17_temporal_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Temporal Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18_network_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Network Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19_textual_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Textual Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20_image_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Image Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part V: Notes</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./21_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Notes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./22_datasets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Datasets</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup"><span class="header-section-number">7.1</span> Setup</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction"><span class="header-section-number">7.2</span> Introduction</a></li>
+  <li><a href="#filtering-with-contains" id="toc-filtering-with-contains" class="nav-link" data-scroll-target="#filtering-with-contains"><span class="header-section-number">7.3</span> Filtering with Contains</a></li>
+  <li><a href="#regular-expression-basics" id="toc-regular-expression-basics" class="nav-link" data-scroll-target="#regular-expression-basics"><span class="header-section-number">7.4</span> Regular Expression Basics</a></li>
+  <li><a href="#aggregating-strings" id="toc-aggregating-strings" class="nav-link" data-scroll-target="#aggregating-strings"><span class="header-section-number">7.5</span> Aggregating Strings</a></li>
+  <li><a href="#extracting-text-with-patterns" id="toc-extracting-text-with-patterns" class="nav-link" data-scroll-target="#extracting-text-with-patterns"><span class="header-section-number">7.6</span> Extracting Text with Patterns</a></li>
+  <li><a href="#capture-groups" id="toc-capture-groups" class="nav-link" data-scroll-target="#capture-groups"><span class="header-section-number">7.7</span> Capture Groups</a></li>
+  <li><a href="#replacing-text" id="toc-replacing-text" class="nav-link" data-scroll-target="#replacing-text"><span class="header-section-number">7.8</span> Replacing Text</a></li>
+  <li><a href="#working-with-substrings" id="toc-working-with-substrings" class="nav-link" data-scroll-target="#working-with-substrings"><span class="header-section-number">7.9</span> Working with Substrings</a></li>
+  <li><a href="#counting-strings" id="toc-counting-strings" class="nav-link" data-scroll-target="#counting-strings"><span class="header-section-number">7.10</span> Counting Strings</a></li>
+  <li><a href="#splitting-strings" id="toc-splitting-strings" class="nav-link" data-scroll-target="#splitting-strings"><span class="header-section-number">7.11</span> Splitting Strings</a></li>
+  <li><a href="#regex-reference" id="toc-regex-reference" class="nav-link" data-scroll-target="#regex-reference"><span class="header-section-number">7.12</span> RegEx Reference</a></li>
+  <li><a href="#coming-from-r-or-pandas" id="toc-coming-from-r-or-pandas" class="nav-link" data-scroll-target="#coming-from-r-or-pandas"><span class="header-section-number">7.13</span> Coming from R or Pandas</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06_program.html">Part II: Programming</a></li><li class="breadcrumb-item"><a href="./07_strings.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Strings</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-strings" class="quarto-section-identifier"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Strings</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Practice Notebooks
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>Notebook07a [<a href="https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook07a.ipynb?hl=en">Colab↗</a>]</li>
+<li>Notebook07b [<a href="https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook07b.ipynb?hl=en">Colab↗</a>]</li>
+</ul>
+</div>
+</div>
+</div>
+<section id="setup" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">7.1</span> Setup</h2>
+<p>Load all of the modules and datasets needed for the chapter.</p>
+<div id="71d69a7b" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funs <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plotnine <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polars <span class="im">import</span> col <span class="im">as</span> c</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>theme_set(theme_minimal())</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>wiki <span class="op">=</span> pl.read_csv(<span class="st">"data/wiki_uk_meta.csv.gz"</span>, ignore_errors<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="introduction" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="introduction"><span class="header-section-number">7.2</span> Introduction</h2>
+<p>Text data appears everywhere in data science: names, addresses, product descriptions, social media posts, and scraped web content. Working effectively with strings requires learning a small set of operations that allow us to search, extract, and transform text within a DataFrame. In this chapter, we explore the string methods available in Polars, which provide a consistent and efficient way to manipulate text columns. We will also introduce regular expressions, a powerful pattern-matching language that underlies many of these operations.</p>
+<p>To illustrate these methods, we use a dataset of British writers compiled from Wikipedia. The dataset contains metadata about 75 authors spanning from the medieval period to the present day.</p>
+<div id="fb608f94" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>wiki.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 75
+Columns: 7
+$ doc_id &lt;str&gt; 'Marie de France', 'Geoffrey Chaucer', 'John Gower', 'William Langland', 'Margery Kempe', 'Thomas Malory', 'Thomas More', 'Edmund Spenser', 'Walter Raleigh', 'Philip Sidney'
+$ born   &lt;i64&gt; 1160, 1343, 1330, 1332, 1373, 1405, 1478, 1552, 1552, 1554
+$ died   &lt;i64&gt; 1215, 1400, 1408, 1386, 1438, 1471, 1535, 1599, 1618, 1586
+$ era    &lt;str&gt; 'Early', 'Early', 'Early', 'Early', 'Early', 'Early', 'Sixteenth C', 'Sixteenth C', 'Sixteenth C', 'Sixteenth C'
+$ gender &lt;str&gt; 'female', 'male', 'male', 'male', 'female', 'male', 'male', 'male', 'male', 'male'
+$ link   &lt;str&gt; 'Marie_de_France', 'Geoffrey_Chaucer', 'John_Gower', 'William_Langland', 'Margery_Kempe', 'Thomas_Malory', 'Thomas_More', 'Edmund_Spenser', 'Walter_Raleigh', 'Philip_Sidney'
+$ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Malory', 'More', 'Spenser', 'Raleigh', 'Sidney'
+</code></pre>
+</div>
+</div>
+<p>The <code>doc_id</code> column contains each author’s full name, while <code>short</code> provides a shortened version. The <code>link</code> column gives the Wikipedia URL suffix for each author’s page. We also have birth and death years, a categorical <code>era</code> column, and <code>gender</code>. This mix of structured and semi-structured text gives us plenty of opportunities to practice string manipulation.</p>
+</section>
+<section id="filtering-with-contains" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="filtering-with-contains"><span class="header-section-number">7.3</span> Filtering with Contains</h2>
+<p>A common task is selecting rows where a text column contains a particular pattern. The <code>contains</code> method checks whether each value in a string column matches a given pattern. Let’s find all authors whose names include “William”:</p>
+<div id="dc93ce51" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.doc_id.<span class="bu">str</span>.contains(<span class="st">"William"</span>))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (4, 7)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">born</th>
+<th data-quarto-table-cell-role="th">died</th>
+<th data-quarto-table-cell-role="th">era</th>
+<th data-quarto-table-cell-role="th">gender</th>
+<th data-quarto-table-cell-role="th">link</th>
+<th data-quarto-table-cell-role="th">short</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>i64</th>
+<th>i64</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"William Langland"</td>
+<td>1332</td>
+<td>1386</td>
+<td>"Early"</td>
+<td>"male"</td>
+<td>"William_Langland"</td>
+<td>"Langland"</td>
+</tr>
+<tr class="even">
+<td>"William Shakespeare"</td>
+<td>1564</td>
+<td>1616</td>
+<td>"Sixteenth C"</td>
+<td>"male"</td>
+<td>"William_Shakespeare"</td>
+<td>"Shakespeare"</td>
+</tr>
+<tr class="odd">
+<td>"William Blake"</td>
+<td>1757</td>
+<td>1827</td>
+<td>"Romantic"</td>
+<td>"male"</td>
+<td>"William_Blake"</td>
+<td>"Blake"</td>
+</tr>
+<tr class="even">
+<td>"William Wordsworth"</td>
+<td>1770</td>
+<td>1850</td>
+<td>"Romantic"</td>
+<td>"male"</td>
+<td>"William_Wordsworth"</td>
+<td>"Wordsworth"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The pattern matching is case-sensitive. To find authors from the sixteenth century, we filter on the <code>era</code> column:</p>
+<div id="f48397ea" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.era.<span class="bu">str</span>.contains(<span class="st">"Sixteenth"</span>))</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (6, 7)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">born</th>
+<th data-quarto-table-cell-role="th">died</th>
+<th data-quarto-table-cell-role="th">era</th>
+<th data-quarto-table-cell-role="th">gender</th>
+<th data-quarto-table-cell-role="th">link</th>
+<th data-quarto-table-cell-role="th">short</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>i64</th>
+<th>i64</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Thomas More"</td>
+<td>1478</td>
+<td>1535</td>
+<td>"Sixteenth C"</td>
+<td>"male"</td>
+<td>"Thomas_More"</td>
+<td>"More"</td>
+</tr>
+<tr class="even">
+<td>"Edmund Spenser"</td>
+<td>1552</td>
+<td>1599</td>
+<td>"Sixteenth C"</td>
+<td>"male"</td>
+<td>"Edmund_Spenser"</td>
+<td>"Spenser"</td>
+</tr>
+<tr class="odd">
+<td>"Walter Raleigh"</td>
+<td>1552</td>
+<td>1618</td>
+<td>"Sixteenth C"</td>
+<td>"male"</td>
+<td>"Walter_Raleigh"</td>
+<td>"Raleigh"</td>
+</tr>
+<tr class="even">
+<td>"Philip Sidney"</td>
+<td>1554</td>
+<td>1586</td>
+<td>"Sixteenth C"</td>
+<td>"male"</td>
+<td>"Philip_Sidney"</td>
+<td>"Sidney"</td>
+</tr>
+<tr class="odd">
+<td>"Christopher Marlowe"</td>
+<td>1564</td>
+<td>1593</td>
+<td>"Sixteenth C"</td>
+<td>"male"</td>
+<td>"Christopher_Marlowe"</td>
+<td>"Marlowe"</td>
+</tr>
+<tr class="even">
+<td>"William Shakespeare"</td>
+<td>1564</td>
+<td>1616</td>
+<td>"Sixteenth C"</td>
+<td>"male"</td>
+<td>"William_Shakespeare"</td>
+<td>"Shakespeare"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>We can combine string filters with other conditions using the standard logical operators. Below we find female authors born before 1800:</p>
+<div id="6f886803" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        (c.gender <span class="op">==</span> <span class="st">"female"</span>) <span class="op">&amp;</span> (c.born <span class="op">&lt;</span> <span class="dv">1800</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (11, 7)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">born</th>
+<th data-quarto-table-cell-role="th">died</th>
+<th data-quarto-table-cell-role="th">era</th>
+<th data-quarto-table-cell-role="th">gender</th>
+<th data-quarto-table-cell-role="th">link</th>
+<th data-quarto-table-cell-role="th">short</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>i64</th>
+<th>i64</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>1160</td>
+<td>1215</td>
+<td>"Early"</td>
+<td>"female"</td>
+<td>"Marie_de_France"</td>
+<td>"Marie d. F."</td>
+</tr>
+<tr class="even">
+<td>"Margery Kempe"</td>
+<td>1373</td>
+<td>1438</td>
+<td>"Early"</td>
+<td>"female"</td>
+<td>"Margery_Kempe"</td>
+<td>"Kempe"</td>
+</tr>
+<tr class="odd">
+<td>"Emilia Lanier"</td>
+<td>1569</td>
+<td>1645</td>
+<td>"Seventeenth C"</td>
+<td>"female"</td>
+<td>"Emilia_Lanier"</td>
+<td>"Lanier"</td>
+</tr>
+<tr class="even">
+<td>"Katherine Philipps"</td>
+<td>1632</td>
+<td>1664</td>
+<td>"Seventeenth C"</td>
+<td>"female"</td>
+<td>"Katherine_Philipps"</td>
+<td>"Philipps"</td>
+</tr>
+<tr class="odd">
+<td>"Margaret Cavendish"</td>
+<td>1623</td>
+<td>1673</td>
+<td>"Seventeenth C"</td>
+<td>"female"</td>
+<td>"Margaret_Cavendish"</td>
+<td>"Cavendish"</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Mary Robinson"</td>
+<td>1757</td>
+<td>1800</td>
+<td>"Romantic"</td>
+<td>"female"</td>
+<td>"Mary_Robinson_(poet)"</td>
+<td>"Robinson"</td>
+</tr>
+<tr class="even">
+<td>"Mary Wollstonecraft"</td>
+<td>1759</td>
+<td>1797</td>
+<td>"Romantic"</td>
+<td>"female"</td>
+<td>"Mary_Wollstonecraft"</td>
+<td>"Wollstonecraft"</td>
+</tr>
+<tr class="odd">
+<td>"Ann Radcliffe"</td>
+<td>1764</td>
+<td>1823</td>
+<td>"Romantic"</td>
+<td>"female"</td>
+<td>"Ann_Radcliffe"</td>
+<td>"Radcliffe"</td>
+</tr>
+<tr class="even">
+<td>"Jane Austen"</td>
+<td>1775</td>
+<td>1817</td>
+<td>"Romantic"</td>
+<td>"female"</td>
+<td>"Jane_Austen"</td>
+<td>"Austen"</td>
+</tr>
+<tr class="odd">
+<td>"Felicia Hemans"</td>
+<td>1793</td>
+<td>1835</td>
+<td>"Romantic"</td>
+<td>"female"</td>
+<td>"Felicia_Hemans"</td>
+<td>"Hemans"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="regular-expression-basics" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="regular-expression-basics"><span class="header-section-number">7.4</span> Regular Expression Basics</h2>
+<p>So far we have searched for literal text, but the <code>contains</code> method (and most other string methods in Polars) actually accepts regular expressions by default. Regular expressions are patterns that describe sets of strings. They give us far more flexibility than searching for exact text.</p>
+<p>Let’s start with two simple but powerful patterns: <code>^</code> matches the start of a string, and <code>$</code> matches the end. To find all authors whose names start with the letter “M”:</p>
+<div id="b1bb9efc" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.doc_id.<span class="bu">str</span>.contains(<span class="vs">r"</span><span class="dv">^</span><span class="vs">M"</span>))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (6, 7)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">born</th>
+<th data-quarto-table-cell-role="th">died</th>
+<th data-quarto-table-cell-role="th">era</th>
+<th data-quarto-table-cell-role="th">gender</th>
+<th data-quarto-table-cell-role="th">link</th>
+<th data-quarto-table-cell-role="th">short</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>i64</th>
+<th>i64</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>1160</td>
+<td>1215</td>
+<td>"Early"</td>
+<td>"female"</td>
+<td>"Marie_de_France"</td>
+<td>"Marie d. F."</td>
+</tr>
+<tr class="even">
+<td>"Margery Kempe"</td>
+<td>1373</td>
+<td>1438</td>
+<td>"Early"</td>
+<td>"female"</td>
+<td>"Margery_Kempe"</td>
+<td>"Kempe"</td>
+</tr>
+<tr class="odd">
+<td>"Margaret Cavendish"</td>
+<td>1623</td>
+<td>1673</td>
+<td>"Seventeenth C"</td>
+<td>"female"</td>
+<td>"Margaret_Cavendish"</td>
+<td>"Cavendish"</td>
+</tr>
+<tr class="even">
+<td>"Mary Robinson"</td>
+<td>1757</td>
+<td>1800</td>
+<td>"Romantic"</td>
+<td>"female"</td>
+<td>"Mary_Robinson_(poet)"</td>
+<td>"Robinson"</td>
+</tr>
+<tr class="odd">
+<td>"Mary Wollstonecraft"</td>
+<td>1759</td>
+<td>1797</td>
+<td>"Romantic"</td>
+<td>"female"</td>
+<td>"Mary_Wollstonecraft"</td>
+<td>"Wollstonecraft"</td>
+</tr>
+<tr class="even">
+<td>"Matthew Arnold"</td>
+<td>1822</td>
+<td>1888</td>
+<td>"Victorian"</td>
+<td>"male"</td>
+<td>"Matthew_Arnold"</td>
+<td>"Arnold"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The <code>r</code> before the string creates a raw string literal, which is a Python convention for regular expressions. It prevents Python from treating backslashes as escape characters, which becomes important with more complex patterns.</p>
+<p>To find names that end with the letter “e”:</p>
+<div id="7b563f50" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.doc_id.<span class="bu">str</span>.contains(<span class="vs">r"e</span><span class="dv">$</span><span class="vs">"</span>))</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (17, 7)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">born</th>
+<th data-quarto-table-cell-role="th">died</th>
+<th data-quarto-table-cell-role="th">era</th>
+<th data-quarto-table-cell-role="th">gender</th>
+<th data-quarto-table-cell-role="th">link</th>
+<th data-quarto-table-cell-role="th">short</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>i64</th>
+<th>i64</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>1160</td>
+<td>1215</td>
+<td>"Early"</td>
+<td>"female"</td>
+<td>"Marie_de_France"</td>
+<td>"Marie d. F."</td>
+</tr>
+<tr class="even">
+<td>"Margery Kempe"</td>
+<td>1373</td>
+<td>1438</td>
+<td>"Early"</td>
+<td>"female"</td>
+<td>"Margery_Kempe"</td>
+<td>"Kempe"</td>
+</tr>
+<tr class="odd">
+<td>"Thomas More"</td>
+<td>1478</td>
+<td>1535</td>
+<td>"Sixteenth C"</td>
+<td>"male"</td>
+<td>"Thomas_More"</td>
+<td>"More"</td>
+</tr>
+<tr class="even">
+<td>"Christopher Marlowe"</td>
+<td>1564</td>
+<td>1593</td>
+<td>"Sixteenth C"</td>
+<td>"male"</td>
+<td>"Christopher_Marlowe"</td>
+<td>"Marlowe"</td>
+</tr>
+<tr class="odd">
+<td>"William Shakespeare"</td>
+<td>1564</td>
+<td>1616</td>
+<td>"Sixteenth C"</td>
+<td>"male"</td>
+<td>"William_Shakespeare"</td>
+<td>"Shakespeare"</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Oscar Wilde"</td>
+<td>1854</td>
+<td>1900</td>
+<td>"Victorian"</td>
+<td>"male"</td>
+<td>"Oscar_Wilde"</td>
+<td>"Wilde"</td>
+</tr>
+<tr class="even">
+<td>"James Joyce"</td>
+<td>1882</td>
+<td>1941</td>
+<td>"Twentieth C"</td>
+<td>"male"</td>
+<td>"James_Joyce"</td>
+<td>"Joyce"</td>
+</tr>
+<tr class="odd">
+<td>"D. H. Lawrence"</td>
+<td>1885</td>
+<td>1930</td>
+<td>"Twentieth C"</td>
+<td>"male"</td>
+<td>"D._H._Lawrence"</td>
+<td>"Lawrence"</td>
+</tr>
+<tr class="even">
+<td>"A. A. Milne"</td>
+<td>1882</td>
+<td>1956</td>
+<td>"Twentieth C"</td>
+<td>"male"</td>
+<td>"A._A._Milne"</td>
+<td>"Milne"</td>
+</tr>
+<tr class="odd">
+<td>"Louis MacNeice"</td>
+<td>1907</td>
+<td>1963</td>
+<td>"Twentieth C"</td>
+<td>"male"</td>
+<td>"Louis_MacNeice"</td>
+<td>"MacNeice"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>We can combine these anchors with character classes. Square brackets define a set of characters to match. The pattern <code>[A-Z]</code> matches any uppercase letter, while <code>[a-z]</code> matches any lowercase letter. To find names where the first character is lowercase (unusual for English names), we write:</p>
+<div id="44ba0a1d" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.doc_id.<span class="bu">str</span>.contains(<span class="vs">r"</span><span class="dv">^</span><span class="pp">[a-z]</span><span class="vs">"</span>))</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (0, 7)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">born</th>
+<th data-quarto-table-cell-role="th">died</th>
+<th data-quarto-table-cell-role="th">era</th>
+<th data-quarto-table-cell-role="th">gender</th>
+<th data-quarto-table-cell-role="th">link</th>
+<th data-quarto-table-cell-role="th">short</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>i64</th>
+<th>i64</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>No results—every name starts with a capital letter, as expected. But what about names that contain a word starting with a lowercase letter? The pattern <code>\s[a-z]</code> matches a space followed by a lowercase letter:</p>
+<div id="3d8c7d0c" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.doc_id.<span class="bu">str</span>.contains(<span class="vs">r"</span><span class="dv">\s</span><span class="pp">[a-z]</span><span class="vs">"</span>))</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (2, 7)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">born</th>
+<th data-quarto-table-cell-role="th">died</th>
+<th data-quarto-table-cell-role="th">era</th>
+<th data-quarto-table-cell-role="th">gender</th>
+<th data-quarto-table-cell-role="th">link</th>
+<th data-quarto-table-cell-role="th">short</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>i64</th>
+<th>i64</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>1160</td>
+<td>1215</td>
+<td>"Early"</td>
+<td>"female"</td>
+<td>"Marie_de_France"</td>
+<td>"Marie d. F."</td>
+</tr>
+<tr class="even">
+<td>"Daphne du Maurier"</td>
+<td>1907</td>
+<td>1989</td>
+<td>"Twentieth C"</td>
+<td>"female"</td>
+<td>"Daphne_du_Maurier"</td>
+<td>"Maurier"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>This finds “Marie de France,” whose name includes the lowercase “de.” The <code>\s</code> is a shorthand character class meaning “any whitespace character.” There are several useful shorthands: <code>\d</code> matches any digit, <code>\w</code> matches any “word character” (letters, digits, and underscore), and <code>\S</code>, <code>\D</code>, and <code>\W</code> match the opposite of their lowercase counterparts.</p>
+<p>Quantifiers let us specify repetition. The <code>+</code> means “one or more” of the preceding element. The pattern <code>\d+</code> matches one or more consecutive digits:</p>
+<div id="29b9ac92" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.link.<span class="bu">str</span>.contains(<span class="vs">r"</span><span class="dv">\d</span><span class="op">+</span><span class="vs">"</span>))</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (0, 7)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">born</th>
+<th data-quarto-table-cell-role="th">died</th>
+<th data-quarto-table-cell-role="th">era</th>
+<th data-quarto-table-cell-role="th">gender</th>
+<th data-quarto-table-cell-role="th">link</th>
+<th data-quarto-table-cell-role="th">short</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>i64</th>
+<th>i64</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>This finds authors whose Wikipedia link contains numbers, such as “Mary_I_of_England.” Other quantifiers include <code>*</code> (zero or more) and <code>?</code> (zero or one).</p>
+<p>If you want to search for literal text and avoid interpreting special characters as regex operators, set <code>literal=True</code>:</p>
+<div id="233515cc" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.era.<span class="bu">str</span>.contains(<span class="st">"C"</span>, literal<span class="op">=</span><span class="va">True</span>))</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (36, 7)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">born</th>
+<th data-quarto-table-cell-role="th">died</th>
+<th data-quarto-table-cell-role="th">era</th>
+<th data-quarto-table-cell-role="th">gender</th>
+<th data-quarto-table-cell-role="th">link</th>
+<th data-quarto-table-cell-role="th">short</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>i64</th>
+<th>i64</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Thomas More"</td>
+<td>1478</td>
+<td>1535</td>
+<td>"Sixteenth C"</td>
+<td>"male"</td>
+<td>"Thomas_More"</td>
+<td>"More"</td>
+</tr>
+<tr class="even">
+<td>"Edmund Spenser"</td>
+<td>1552</td>
+<td>1599</td>
+<td>"Sixteenth C"</td>
+<td>"male"</td>
+<td>"Edmund_Spenser"</td>
+<td>"Spenser"</td>
+</tr>
+<tr class="odd">
+<td>"Walter Raleigh"</td>
+<td>1552</td>
+<td>1618</td>
+<td>"Sixteenth C"</td>
+<td>"male"</td>
+<td>"Walter_Raleigh"</td>
+<td>"Raleigh"</td>
+</tr>
+<tr class="even">
+<td>"Philip Sidney"</td>
+<td>1554</td>
+<td>1586</td>
+<td>"Sixteenth C"</td>
+<td>"male"</td>
+<td>"Philip_Sidney"</td>
+<td>"Sidney"</td>
+</tr>
+<tr class="odd">
+<td>"Christopher Marlowe"</td>
+<td>1564</td>
+<td>1593</td>
+<td>"Sixteenth C"</td>
+<td>"male"</td>
+<td>"Christopher_Marlowe"</td>
+<td>"Marlowe"</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Stephen Spender"</td>
+<td>1909</td>
+<td>1995</td>
+<td>"Twentieth C"</td>
+<td>"male"</td>
+<td>"Stephen_Spender"</td>
+<td>"Spender"</td>
+</tr>
+<tr class="even">
+<td>"Christopher Isherwood"</td>
+<td>1904</td>
+<td>1986</td>
+<td>"Twentieth C"</td>
+<td>"male"</td>
+<td>"Christopher_Isherwood"</td>
+<td>"Isherwood"</td>
+</tr>
+<tr class="odd">
+<td>"Edward Upward"</td>
+<td>1903</td>
+<td>2009</td>
+<td>"Twentieth C"</td>
+<td>"male"</td>
+<td>"Edward_Upward"</td>
+<td>"Upward"</td>
+</tr>
+<tr class="even">
+<td>"Rex Warner"</td>
+<td>1905</td>
+<td>1986</td>
+<td>"Twentieth C"</td>
+<td>"male"</td>
+<td>"Rex_Warner"</td>
+<td>"Warner"</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>1939</td>
+<td>1939</td>
+<td>"Twentieth C"</td>
+<td>"male"</td>
+<td>"Seamus_Heaney"</td>
+<td>"Heaney"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="aggregating-strings" class="level2" data-number="7.5">
+<h2 data-number="7.5" class="anchored" data-anchor-id="aggregating-strings"><span class="header-section-number">7.5</span> Aggregating Strings</h2>
+<p>When working with grouped data, we sometimes want to combine text values into a single string. The <code>join</code> method concatenates all values in a string column, separated by a delimiter you specify. This is particularly useful after grouping.</p>
+<p>For example, we can list all authors in each era, separated by commas:</p>
+<div id="3dc134de" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    .group_by(c.era)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>        authors <span class="op">=</span> c.short.sort().<span class="bu">str</span>.join(<span class="st">", "</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (7, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">era</th>
+<th data-quarto-table-cell-role="th">authors</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Romantic"</td>
+<td>"Austen, Blake, Burns, Byron, C…</td>
+</tr>
+<tr class="even">
+<td>"Seventeenth C"</td>
+<td>"Cavendish, Donne, Herbert, Hob…</td>
+</tr>
+<tr class="odd">
+<td>"Sixteenth C"</td>
+<td>"Marlowe, More, Raleigh, Shakes…</td>
+</tr>
+<tr class="even">
+<td>"Restoration"</td>
+<td>"Boswell, Dryden, Johnson, Lock…</td>
+</tr>
+<tr class="odd">
+<td>"Twentieth C"</td>
+<td>"Auden, Beckett, C. S. Lewis, C…</td>
+</tr>
+<tr class="even">
+<td>"Victorian"</td>
+<td>"Arnold, Browning, C. Brontë, D…</td>
+</tr>
+<tr class="odd">
+<td>"Early"</td>
+<td>"Chaucer, Gower, Kempe, Langlan…</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Notice that we sorted the names before joining to produce alphabetized lists. You can also call <code>unique()</code> before joining if you want to eliminate duplicates. The combination of <code>sort</code>, <code>unique</code>, and <code>join</code> is a common pattern for producing clean, readable summaries.</p>
+</section>
+<section id="extracting-text-with-patterns" class="level2" data-number="7.6">
+<h2 data-number="7.6" class="anchored" data-anchor-id="extracting-text-with-patterns"><span class="header-section-number">7.6</span> Extracting Text with Patterns</h2>
+<p>The <code>extract</code> method pulls out the first match of a regular expression pattern. This is used inside <code>with_columns</code> to create new columns. For example, we can extract the first word from each author’s full name using the pattern <code>^\w+</code>, which means “one or more word characters at the start of the string”:</p>
+<div id="12bddcfd" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .select(c.doc_id)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>        first_name <span class="op">=</span> c.doc_id.<span class="bu">str</span>.extract(<span class="vs">r"</span><span class="dv">^\w</span><span class="op">+</span><span class="vs">"</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (75, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">first_name</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>null</td>
+</tr>
+<tr class="even">
+<td>"Geoffrey Chaucer"</td>
+<td>null</td>
+</tr>
+<tr class="odd">
+<td>"John Gower"</td>
+<td>null</td>
+</tr>
+<tr class="even">
+<td>"William Langland"</td>
+<td>null</td>
+</tr>
+<tr class="odd">
+<td>"Margery Kempe"</td>
+<td>null</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Stephen Spender"</td>
+<td>null</td>
+</tr>
+<tr class="even">
+<td>"Christopher Isherwood"</td>
+<td>null</td>
+</tr>
+<tr class="odd">
+<td>"Edward Upward"</td>
+<td>null</td>
+</tr>
+<tr class="even">
+<td>"Rex Warner"</td>
+<td>null</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>null</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Similarly, the pattern <code>\w+$</code> extracts the last word:</p>
+<div id="26ac8673" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    .select(c.doc_id)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        last_word <span class="op">=</span> c.doc_id.<span class="bu">str</span>.extract(<span class="vs">r"</span><span class="dv">\w</span><span class="op">+</span><span class="dv">$</span><span class="vs">"</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (75, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">last_word</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>null</td>
+</tr>
+<tr class="even">
+<td>"Geoffrey Chaucer"</td>
+<td>null</td>
+</tr>
+<tr class="odd">
+<td>"John Gower"</td>
+<td>null</td>
+</tr>
+<tr class="even">
+<td>"William Langland"</td>
+<td>null</td>
+</tr>
+<tr class="odd">
+<td>"Margery Kempe"</td>
+<td>null</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Stephen Spender"</td>
+<td>null</td>
+</tr>
+<tr class="even">
+<td>"Christopher Isherwood"</td>
+<td>null</td>
+</tr>
+<tr class="odd">
+<td>"Edward Upward"</td>
+<td>null</td>
+</tr>
+<tr class="even">
+<td>"Rex Warner"</td>
+<td>null</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>null</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="capture-groups" class="level2" data-number="7.7">
+<h2 data-number="7.7" class="anchored" data-anchor-id="capture-groups"><span class="header-section-number">7.7</span> Capture Groups</h2>
+<p>When a pattern contains parentheses, they create capture groups that let you extract specific parts of a match. By default, <code>extract</code> returns group 1 (the first set of parentheses). You can specify which group to extract by passing a second argument.</p>
+<p>Consider a pattern that matches a first name, then anything in the middle, then a last word: <code>^(\w+).*\s(\w+)$</code>. The first group captures the opening word, and the second captures the final word. We can extract each separately:</p>
+<div id="b60db57c" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    .select(c.doc_id)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        first_name <span class="op">=</span> c.doc_id.<span class="bu">str</span>.extract(<span class="vs">r"</span><span class="dv">^</span><span class="kw">(</span><span class="dv">\w</span><span class="op">+</span><span class="kw">)</span><span class="dv">.</span><span class="op">*</span><span class="dv">\s</span><span class="kw">(</span><span class="dv">\w</span><span class="op">+</span><span class="kw">)</span><span class="dv">$</span><span class="vs">"</span>, <span class="dv">1</span>),</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        last_word <span class="op">=</span> c.doc_id.<span class="bu">str</span>.extract(<span class="vs">r"</span><span class="dv">^</span><span class="kw">(</span><span class="dv">\w</span><span class="op">+</span><span class="kw">)</span><span class="dv">.</span><span class="op">*</span><span class="dv">\s</span><span class="kw">(</span><span class="dv">\w</span><span class="op">+</span><span class="kw">)</span><span class="dv">$</span><span class="vs">"</span>, <span class="dv">2</span>)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (75, 3)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">first_name</th>
+<th data-quarto-table-cell-role="th">last_word</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>"Marie"</td>
+<td>"France"</td>
+</tr>
+<tr class="even">
+<td>"Geoffrey Chaucer"</td>
+<td>"Geoffrey"</td>
+<td>"Chaucer"</td>
+</tr>
+<tr class="odd">
+<td>"John Gower"</td>
+<td>"John"</td>
+<td>"Gower"</td>
+</tr>
+<tr class="even">
+<td>"William Langland"</td>
+<td>"William"</td>
+<td>"Langland"</td>
+</tr>
+<tr class="odd">
+<td>"Margery Kempe"</td>
+<td>"Margery"</td>
+<td>"Kempe"</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Stephen Spender"</td>
+<td>"Stephen"</td>
+<td>"Spender"</td>
+</tr>
+<tr class="even">
+<td>"Christopher Isherwood"</td>
+<td>"Christopher"</td>
+<td>"Isherwood"</td>
+</tr>
+<tr class="odd">
+<td>"Edward Upward"</td>
+<td>"Edward"</td>
+<td>"Upward"</td>
+</tr>
+<tr class="even">
+<td>"Rex Warner"</td>
+<td>"Rex"</td>
+<td>"Warner"</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>"Seamus"</td>
+<td>"Heaney"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The <code>.</code> in the pattern matches any character, and <code>.*</code> matches zero or more of any character—this is how we skip over the middle portion of the name.</p>
+<p>If you want all matches of a pattern rather than just the first, use <code>extract_all</code>, which returns a list:</p>
+<div id="b5cf865b" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    .select(c.doc_id)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>        capital_letters <span class="op">=</span> c.doc_id.<span class="bu">str</span>.extract_all(<span class="vs">r"</span><span class="pp">[A-Z]</span><span class="vs">"</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (75, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">capital_letters</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>list[str]</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>["M", "F"]</td>
+</tr>
+<tr class="even">
+<td>"Geoffrey Chaucer"</td>
+<td>["G", "C"]</td>
+</tr>
+<tr class="odd">
+<td>"John Gower"</td>
+<td>["J", "G"]</td>
+</tr>
+<tr class="even">
+<td>"William Langland"</td>
+<td>["W", "L"]</td>
+</tr>
+<tr class="odd">
+<td>"Margery Kempe"</td>
+<td>["M", "K"]</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Stephen Spender"</td>
+<td>["S", "S"]</td>
+</tr>
+<tr class="even">
+<td>"Christopher Isherwood"</td>
+<td>["C", "I"]</td>
+</tr>
+<tr class="odd">
+<td>"Edward Upward"</td>
+<td>["E", "U"]</td>
+</tr>
+<tr class="even">
+<td>"Rex Warner"</td>
+<td>["R", "W"]</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>["S", "H"]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="replacing-text" class="level2" data-number="7.8">
+<h2 data-number="7.8" class="anchored" data-anchor-id="replacing-text"><span class="header-section-number">7.8</span> Replacing Text</h2>
+<p>The <code>replace</code> method substitutes the first occurrence of a pattern with a new string, while <code>replace_all</code> substitutes every occurrence. Below we standardize the era labels by removing the ” C” suffix:</p>
+<div id="ff4bb049" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    .select(c.era)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>        era_clean <span class="op">=</span> c.era.<span class="bu">str</span>.replace(<span class="st">" C"</span>, <span class="st">""</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    .unique()</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (7, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">era</th>
+<th data-quarto-table-cell-role="th">era_clean</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Romantic"</td>
+<td>"Romantic"</td>
+</tr>
+<tr class="even">
+<td>"Victorian"</td>
+<td>"Victorian"</td>
+</tr>
+<tr class="odd">
+<td>"Seventeenth C"</td>
+<td>"Seventeenth"</td>
+</tr>
+<tr class="even">
+<td>"Sixteenth C"</td>
+<td>"Sixteenth"</td>
+</tr>
+<tr class="odd">
+<td>"Restoration"</td>
+<td>"Restoration"</td>
+</tr>
+<tr class="even">
+<td>"Early"</td>
+<td>"Early"</td>
+</tr>
+<tr class="odd">
+<td>"Twentieth C"</td>
+<td>"Twentieth"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Replacements can use capture groups from the pattern. In the replacement string, <code>$1</code> refers to the first capture group, <code>$2</code> to the second, and so on. Here we swap the first and last words of each name:</p>
+<div id="0ccadcab" class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    .select(c.doc_id)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>        swapped <span class="op">=</span> c.doc_id.<span class="bu">str</span>.replace(<span class="vs">r"</span><span class="dv">^</span><span class="kw">(</span><span class="dv">\w</span><span class="op">+</span><span class="kw">)(</span><span class="dv">.</span><span class="op">*</span><span class="dv">\s</span><span class="kw">)(</span><span class="dv">\w</span><span class="op">+</span><span class="kw">)</span><span class="dv">$</span><span class="vs">"</span>, <span class="st">"$3$2$1"</span>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="19">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (75, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">swapped</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>"France de Marie"</td>
+</tr>
+<tr class="even">
+<td>"Geoffrey Chaucer"</td>
+<td>"Chaucer Geoffrey"</td>
+</tr>
+<tr class="odd">
+<td>"John Gower"</td>
+<td>"Gower John"</td>
+</tr>
+<tr class="even">
+<td>"William Langland"</td>
+<td>"Langland William"</td>
+</tr>
+<tr class="odd">
+<td>"Margery Kempe"</td>
+<td>"Kempe Margery"</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Stephen Spender"</td>
+<td>"Spender Stephen"</td>
+</tr>
+<tr class="even">
+<td>"Christopher Isherwood"</td>
+<td>"Isherwood Christopher"</td>
+</tr>
+<tr class="odd">
+<td>"Edward Upward"</td>
+<td>"Upward Edward"</td>
+</tr>
+<tr class="even">
+<td>"Rex Warner"</td>
+<td>"Warner Rex"</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>"Heaney Seamus"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="working-with-substrings" class="level2" data-number="7.9">
+<h2 data-number="7.9" class="anchored" data-anchor-id="working-with-substrings"><span class="header-section-number">7.9</span> Working with Substrings</h2>
+<p>Sometimes we need to extract a fixed portion of a string rather than matching a pattern. The <code>slice</code> method returns a substring given a starting position and length. Positions are zero-indexed, meaning the first character is at position 0.</p>
+<div id="5648fa05" class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    .select(c.doc_id)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>        initials <span class="op">=</span> c.doc_id.<span class="bu">str</span>.<span class="bu">slice</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="20">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (75, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">initials</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>"M"</td>
+</tr>
+<tr class="even">
+<td>"Geoffrey Chaucer"</td>
+<td>"G"</td>
+</tr>
+<tr class="odd">
+<td>"John Gower"</td>
+<td>"J"</td>
+</tr>
+<tr class="even">
+<td>"William Langland"</td>
+<td>"W"</td>
+</tr>
+<tr class="odd">
+<td>"Margery Kempe"</td>
+<td>"M"</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Stephen Spender"</td>
+<td>"S"</td>
+</tr>
+<tr class="even">
+<td>"Christopher Isherwood"</td>
+<td>"C"</td>
+</tr>
+<tr class="odd">
+<td>"Edward Upward"</td>
+<td>"E"</td>
+</tr>
+<tr class="even">
+<td>"Rex Warner"</td>
+<td>"R"</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>"S"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>For cleaning whitespace, <code>strip_chars</code> removes leading and trailing spaces (or other characters you specify). The case conversion methods <code>to_lowercase</code>, <code>to_uppercase</code>, and <code>to_titlecase</code> are useful for standardizing text:</p>
+<div id="b7a5fed4" class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    .select(c.era)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>        era_upper <span class="op">=</span> c.era.<span class="bu">str</span>.to_uppercase(),</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>        era_lower <span class="op">=</span> c.era.<span class="bu">str</span>.to_lowercase()</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    .unique()</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (7, 3)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">era</th>
+<th data-quarto-table-cell-role="th">era_upper</th>
+<th data-quarto-table-cell-role="th">era_lower</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Romantic"</td>
+<td>"ROMANTIC"</td>
+<td>"romantic"</td>
+</tr>
+<tr class="even">
+<td>"Victorian"</td>
+<td>"VICTORIAN"</td>
+<td>"victorian"</td>
+</tr>
+<tr class="odd">
+<td>"Sixteenth C"</td>
+<td>"SIXTEENTH C"</td>
+<td>"sixteenth c"</td>
+</tr>
+<tr class="even">
+<td>"Seventeenth C"</td>
+<td>"SEVENTEENTH C"</td>
+<td>"seventeenth c"</td>
+</tr>
+<tr class="odd">
+<td>"Restoration"</td>
+<td>"RESTORATION"</td>
+<td>"restoration"</td>
+</tr>
+<tr class="even">
+<td>"Twentieth C"</td>
+<td>"TWENTIETH C"</td>
+<td>"twentieth c"</td>
+</tr>
+<tr class="odd">
+<td>"Early"</td>
+<td>"EARLY"</td>
+<td>"early"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="counting-strings" class="level2" data-number="7.10">
+<h2 data-number="7.10" class="anchored" data-anchor-id="counting-strings"><span class="header-section-number">7.10</span> Counting Strings</h2>
+<p>Several string methods return numeric values rather than text. The <code>len_chars</code> method returns the number of characters in each string:</p>
+<div id="4a301200" class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    .select(c.doc_id)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>        name_length <span class="op">=</span> c.doc_id.<span class="bu">str</span>.len_chars()</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    .sort(c.name_length, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="22">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (75, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">name_length</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>u32</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Elizabeth Barrett Browning"</td>
+<td>26</td>
+</tr>
+<tr class="even">
+<td>"Samuel Taylor Coleridge"</td>
+<td>23</td>
+</tr>
+<tr class="odd">
+<td>"Alfred, Lord Tennyson"</td>
+<td>21</td>
+</tr>
+<tr class="even">
+<td>"Christopher Isherwood"</td>
+<td>21</td>
+</tr>
+<tr class="odd">
+<td>"Percy Bysshe Shelley"</td>
+<td>20</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"John Locke"</td>
+<td>10</td>
+</tr>
+<tr class="even">
+<td>"Lord Byron"</td>
+<td>10</td>
+</tr>
+<tr class="odd">
+<td>"John Clare"</td>
+<td>10</td>
+</tr>
+<tr class="even">
+<td>"John Keats"</td>
+<td>10</td>
+</tr>
+<tr class="odd">
+<td>"Rex Warner"</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The <code>count_matches</code> method counts how many times a pattern appears in each string. Here we count the number of spaces in each name, which tells us how many words it contains (plus one):</p>
+<div id="a359158c" class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    .select(c.doc_id)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>        spaces <span class="op">=</span> c.doc_id.<span class="bu">str</span>.count_matches(<span class="st">" "</span>),</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>        word_count <span class="op">=</span> c.doc_id.<span class="bu">str</span>.count_matches(<span class="st">" "</span>) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="23">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (75, 3)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">spaces</th>
+<th data-quarto-table-cell-role="th">word_count</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>u32</th>
+<th>u32</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr class="even">
+<td>"Geoffrey Chaucer"</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td>"John Gower"</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td>"William Langland"</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td>"Margery Kempe"</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Stephen Spender"</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td>"Christopher Isherwood"</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td>"Edward Upward"</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td>"Rex Warner"</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>1</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The <code>find</code> method returns the starting index of the first match, or -1 if not found:</p>
+<div id="673a6283" class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    .select(c.doc_id)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>        space_pos <span class="op">=</span> c.doc_id.<span class="bu">str</span>.find(<span class="st">" "</span>)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="24">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (75, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">space_pos</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>u32</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>5</td>
+</tr>
+<tr class="even">
+<td>"Geoffrey Chaucer"</td>
+<td>8</td>
+</tr>
+<tr class="odd">
+<td>"John Gower"</td>
+<td>4</td>
+</tr>
+<tr class="even">
+<td>"William Langland"</td>
+<td>7</td>
+</tr>
+<tr class="odd">
+<td>"Margery Kempe"</td>
+<td>7</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Stephen Spender"</td>
+<td>7</td>
+</tr>
+<tr class="even">
+<td>"Christopher Isherwood"</td>
+<td>11</td>
+</tr>
+<tr class="odd">
+<td>"Edward Upward"</td>
+<td>6</td>
+</tr>
+<tr class="even">
+<td>"Rex Warner"</td>
+<td>3</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>6</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="splitting-strings" class="level2" data-number="7.11">
+<h2 data-number="7.11" class="anchored" data-anchor-id="splitting-strings"><span class="header-section-number">7.11</span> Splitting Strings</h2>
+<p>The <code>split</code> method divides a string into a list of substrings based on a delimiter. This creates a list column, which often needs further processing. The most common follow-up is to use <code>explode</code> to expand each list element into its own row.</p>
+<div id="70167ccf" class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    .select(c.doc_id)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>        name_parts <span class="op">=</span> c.doc_id.<span class="bu">str</span>.split(<span class="st">" "</span>)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="25">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (75, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">name_parts</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>list[str]</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>["Marie", "de", "France"]</td>
+</tr>
+<tr class="even">
+<td>"Geoffrey Chaucer"</td>
+<td>["Geoffrey", "Chaucer"]</td>
+</tr>
+<tr class="odd">
+<td>"John Gower"</td>
+<td>["John", "Gower"]</td>
+</tr>
+<tr class="even">
+<td>"William Langland"</td>
+<td>["William", "Langland"]</td>
+</tr>
+<tr class="odd">
+<td>"Margery Kempe"</td>
+<td>["Margery", "Kempe"]</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Stephen Spender"</td>
+<td>["Stephen", "Spender"]</td>
+</tr>
+<tr class="even">
+<td>"Christopher Isherwood"</td>
+<td>["Christopher", "Isherwood"]</td>
+</tr>
+<tr class="odd">
+<td>"Edward Upward"</td>
+<td>["Edward", "Upward"]</td>
+</tr>
+<tr class="even">
+<td>"Rex Warner"</td>
+<td>["Rex", "Warner"]</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>["Seamus", "Heaney"]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>When we explode the list column, each word becomes a separate row:</p>
+<div id="36a857ee" class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    .select(c.doc_id, c.short)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>        name_parts <span class="op">=</span> c.doc_id.<span class="bu">str</span>.split(<span class="st">" "</span>)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    .explode(c.name_parts)</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="26">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (164, 3)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">short</th>
+<th data-quarto-table-cell-role="th">name_parts</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>"Marie d. F."</td>
+<td>"Marie"</td>
+</tr>
+<tr class="even">
+<td>"Marie de France"</td>
+<td>"Marie d. F."</td>
+<td>"de"</td>
+</tr>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>"Marie d. F."</td>
+<td>"France"</td>
+</tr>
+<tr class="even">
+<td>"Geoffrey Chaucer"</td>
+<td>"Chaucer"</td>
+<td>"Geoffrey"</td>
+</tr>
+<tr class="odd">
+<td>"Geoffrey Chaucer"</td>
+<td>"Chaucer"</td>
+<td>"Chaucer"</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Edward Upward"</td>
+<td>"Upward"</td>
+<td>"Upward"</td>
+</tr>
+<tr class="even">
+<td>"Rex Warner"</td>
+<td>"Warner"</td>
+<td>"Rex"</td>
+</tr>
+<tr class="odd">
+<td>"Rex Warner"</td>
+<td>"Warner"</td>
+<td>"Warner"</td>
+</tr>
+<tr class="even">
+<td>"Seamus Heaney"</td>
+<td>"Heaney"</td>
+<td>"Seamus"</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>"Heaney"</td>
+<td>"Heaney"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>This pattern is useful for tasks like building a vocabulary of unique words or counting word frequencies across a corpus.</p>
+</section>
+<section id="regex-reference" class="level2" data-number="7.12">
+<h2 data-number="7.12" class="anchored" data-anchor-id="regex-reference"><span class="header-section-number">7.12</span> RegEx Reference</h2>
+<p>Polars uses Rust-based regular expressions. The full syntax is documented on the <a href="https://docs.rs/regex/latest/regex/#syntax">regex crate page</a>. Here is a summary of the patterns we have used in this chapter, along with a few additional ones. A full summary is provided in <a href="21_notes.html" class="quarto-xref"><span>Chapter 21</span></a>.</p>
+</section>
+<section id="coming-from-r-or-pandas" class="level2" data-number="7.13">
+<h2 data-number="7.13" class="anchored" data-anchor-id="coming-from-r-or-pandas"><span class="header-section-number">7.13</span> Coming from R or Pandas</h2>
+<p>If you have used the <code>stringi</code> package in R or the <code>.str</code> accessor in Pandas, the methods here will feel familiar. Polars uses the same general approach of namespacing string operations under <code>.str</code>. The main differences are in function names and the specific regular expression engine (Rust’s regex crate, which is similar to but not identical to PCRE). The core concepts of pattern matching, extraction, and replacement transfer directly.</p>
+</section>
+<section id="references" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/taylor-arnold\.github\.io\/fds-py");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./06_program.html" class="pagination-link" aria-label="Programming">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Programming</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./08_dataformats.html" class="pagination-link" aria-label="Data Formats">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Data Formats</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Taylor Arnold</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>A <a href="https://distantviewing.org/">Distant Viewing Lab</a> project</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

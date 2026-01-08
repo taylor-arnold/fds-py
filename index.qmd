@@ -1,0 +1,5 @@
+# Welcome {-}
+
+**This book is currently under development. It will be extended and updated throughout the 2025-2026 academic year. It is being used for our year-long undergraduate sequence of data science courses (DSST289 and DSST389).**
+
+

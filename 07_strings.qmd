@@ -1,0 +1,348 @@
+# Strings {#sec-strings}
+
+```{python}
+#| include: false
+import warnings
+warnings.filterwarnings('ignore')
+```
+
+::: {.callout-tip collapse="true"}
+## Practice Notebooks
+
+- Notebook07a [[Colab↗](https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook07a.ipynb?hl=en)]
+- Notebook07b [[Colab↗](https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook07b.ipynb?hl=en)]
+
+:::
+
+## Setup
+
+Load all of the modules and datasets needed for the chapter.
+
+```{python}
+#| output: false
+import numpy as np
+import polars as pl
+
+from funs import *
+from plotnine import *
+from polars import col as c
+theme_set(theme_minimal())
+
+wiki = pl.read_csv("data/wiki_uk_meta.csv.gz", ignore_errors=True)
+```
+
+## Introduction
+
+Text data appears everywhere in data science: names, addresses, product descriptions, social media posts, and scraped web content. Working effectively with strings requires learning a small set of operations that allow us to search, extract, and transform text within a DataFrame. In this chapter, we explore the string methods available in Polars, which provide a consistent and efficient way to manipulate text columns. We will also introduce regular expressions, a powerful pattern-matching language that underlies many of these operations.
+
+To illustrate these methods, we use a dataset of British writers compiled from Wikipedia. The dataset contains metadata about 75 authors spanning from the medieval period to the present day.
+
+```{python}
+wiki.glimpse()
+```
+
+The `doc_id` column contains each author's full name, while `short` provides a shortened version. The `link` column gives the Wikipedia URL suffix for each author's page. We also have birth and death years, a categorical `era` column, and `gender`. This mix of structured and semi-structured text gives us plenty of opportunities to practice string manipulation.
+
+## Filtering with Contains
+
+A common task is selecting rows where a text column contains a particular pattern. The `contains` method checks whether each value in a string column matches a given pattern. Let's find all authors whose names include "William":
+
+```{python}
+(
+    wiki
+    .filter(c.doc_id.str.contains("William"))
+)
+```
+
+The pattern matching is case-sensitive. To find authors from the sixteenth century, we filter on the `era` column:
+
+```{python}
+(
+    wiki
+    .filter(c.era.str.contains("Sixteenth"))
+)
+```
+
+We can combine string filters with other conditions using the standard logical operators. Below we find female authors born before 1800:
+
+```{python}
+(
+    wiki
+    .filter(
+        (c.gender == "female") & (c.born < 1800)
+    )
+)
+```
+
+## Regular Expression Basics
+
+So far we have searched for literal text, but the `contains` method (and most other string methods in Polars) actually accepts regular expressions by default. Regular expressions are patterns that describe sets of strings. They give us far more flexibility than searching for exact text.
+
+Let's start with two simple but powerful patterns: `^` matches the start of a string, and `$` matches the end. To find all authors whose names start with the letter "M":
+
+```{python}
+(
+    wiki
+    .filter(c.doc_id.str.contains(r"^M"))
+)
+```
+
+The `r` before the string creates a raw string literal, which is a Python convention for regular expressions. It prevents Python from treating backslashes as escape characters, which becomes important with more complex patterns.
+
+To find names that end with the letter "e":
+
+```{python}
+(
+    wiki
+    .filter(c.doc_id.str.contains(r"e$"))
+)
+```
+
+We can combine these anchors with character classes. Square brackets define a set of characters to match. The pattern `[A-Z]` matches any uppercase letter, while `[a-z]` matches any lowercase letter. To find names where the first character is lowercase (unusual for English names), we write:
+
+```{python}
+(
+    wiki
+    .filter(c.doc_id.str.contains(r"^[a-z]"))
+)
+```
+
+No results—every name starts with a capital letter, as expected. But what about names that contain a word starting with a lowercase letter? The pattern `\s[a-z]` matches a space followed by a lowercase letter:
+
+```{python}
+(
+    wiki
+    .filter(c.doc_id.str.contains(r"\s[a-z]"))
+)
+```
+
+This finds "Marie de France," whose name includes the lowercase "de." The `\s` is a shorthand character class meaning "any whitespace character." There are several useful shorthands: `\d` matches any digit, `\w` matches any "word character" (letters, digits, and underscore), and `\S`, `\D`, and `\W` match the opposite of their lowercase counterparts.
+
+Quantifiers let us specify repetition. The `+` means "one or more" of the preceding element. The pattern `\d+` matches one or more consecutive digits:
+
+```{python}
+(
+    wiki
+    .filter(c.link.str.contains(r"\d+"))
+)
+```
+
+This finds authors whose Wikipedia link contains numbers, such as "Mary_I_of_England." Other quantifiers include `*` (zero or more) and `?` (zero or one).
+
+If you want to search for literal text and avoid interpreting special characters as regex operators, set `literal=True`:
+
+```{python}
+(
+    wiki
+    .filter(c.era.str.contains("C", literal=True))
+)
+```
+
+## Aggregating Strings
+
+When working with grouped data, we sometimes want to combine text values into a single string. The `join` method concatenates all values in a string column, separated by a delimiter you specify. This is particularly useful after grouping.
+
+For example, we can list all authors in each era, separated by commas:
+
+```{python}
+(
+    wiki
+    .group_by(c.era)
+    .agg(
+        authors = c.short.sort().str.join(", ")
+    )
+)
+```
+
+Notice that we sorted the names before joining to produce alphabetized lists. You can also call `unique()` before joining if you want to eliminate duplicates. The combination of `sort`, `unique`, and `join` is a common pattern for producing clean, readable summaries.
+
+## Extracting Text with Patterns
+
+The `extract` method pulls out the first match of a regular expression pattern. This is used inside `with_columns` to create new columns. For example, we can extract the first word from each author's full name using the pattern `^\w+`, which means "one or more word characters at the start of the string":
+
+```{python}
+(
+    wiki
+    .select(c.doc_id)
+    .with_columns(
+        first_name = c.doc_id.str.extract(r"^\w+")
+    )
+)
+```
+
+Similarly, the pattern `\w+$` extracts the last word:
+
+```{python}
+(
+    wiki
+    .select(c.doc_id)
+    .with_columns(
+        last_word = c.doc_id.str.extract(r"\w+$")
+    )
+)
+```
+
+## Capture Groups
+
+When a pattern contains parentheses, they create capture groups that let you extract specific parts of a match. By default, `extract` returns group 1 (the first set of parentheses). You can specify which group to extract by passing a second argument.
+
+Consider a pattern that matches a first name, then anything in the middle, then a last word: `^(\w+).*\s(\w+)$`. The first group captures the opening word, and the second captures the final word. We can extract each separately:
+
+```{python}
+(
+    wiki
+    .select(c.doc_id)
+    .with_columns(
+        first_name = c.doc_id.str.extract(r"^(\w+).*\s(\w+)$", 1),
+        last_word = c.doc_id.str.extract(r"^(\w+).*\s(\w+)$", 2)
+    )
+)
+```
+
+The `.` in the pattern matches any character, and `.*` matches zero or more of any character—this is how we skip over the middle portion of the name.
+
+If you want all matches of a pattern rather than just the first, use `extract_all`, which returns a list:
+
+```{python}
+(
+    wiki
+    .select(c.doc_id)
+    .with_columns(
+        capital_letters = c.doc_id.str.extract_all(r"[A-Z]")
+    )
+)
+```
+
+## Replacing Text
+
+The `replace` method substitutes the first occurrence of a pattern with a new string, while `replace_all` substitutes every occurrence. Below we standardize the era labels by removing the " C" suffix:
+
+```{python}
+(
+    wiki
+    .select(c.era)
+    .with_columns(
+        era_clean = c.era.str.replace(" C", "")
+    )
+    .unique()
+)
+```
+
+Replacements can use capture groups from the pattern. In the replacement string, `$1` refers to the first capture group, `$2` to the second, and so on. Here we swap the first and last words of each name:
+
+```{python}
+(
+    wiki
+    .select(c.doc_id)
+    .with_columns(
+        swapped = c.doc_id.str.replace(r"^(\w+)(.*\s)(\w+)$", "$3$2$1")
+    )
+)
+```
+
+## Working with Substrings
+
+Sometimes we need to extract a fixed portion of a string rather than matching a pattern. The `slice` method returns a substring given a starting position and length. Positions are zero-indexed, meaning the first character is at position 0.
+
+```{python}
+(
+    wiki
+    .select(c.doc_id)
+    .with_columns(
+        initials = c.doc_id.str.slice(0, 1)
+    )
+)
+```
+
+For cleaning whitespace, `strip_chars` removes leading and trailing spaces (or other characters you specify). The case conversion methods `to_lowercase`, `to_uppercase`, and `to_titlecase` are useful for standardizing text:
+
+```{python}
+(
+    wiki
+    .select(c.era)
+    .with_columns(
+        era_upper = c.era.str.to_uppercase(),
+        era_lower = c.era.str.to_lowercase()
+    )
+    .unique()
+)
+```
+
+## Counting Strings
+
+Several string methods return numeric values rather than text. The `len_chars` method returns the number of characters in each string:
+
+```{python}
+(
+    wiki
+    .select(c.doc_id)
+    .with_columns(
+        name_length = c.doc_id.str.len_chars()
+    )
+    .sort(c.name_length, descending=True)
+)
+```
+
+The `count_matches` method counts how many times a pattern appears in each string. Here we count the number of spaces in each name, which tells us how many words it contains (plus one):
+
+```{python}
+(
+    wiki
+    .select(c.doc_id)
+    .with_columns(
+        spaces = c.doc_id.str.count_matches(" "),
+        word_count = c.doc_id.str.count_matches(" ") + 1
+    )
+)
+```
+
+The `find` method returns the starting index of the first match, or -1 if not found:
+
+```{python}
+(
+    wiki
+    .select(c.doc_id)
+    .with_columns(
+        space_pos = c.doc_id.str.find(" ")
+    )
+)
+```
+
+## Splitting Strings
+
+The `split` method divides a string into a list of substrings based on a delimiter. This creates a list column, which often needs further processing. The most common follow-up is to use `explode` to expand each list element into its own row.
+
+```{python}
+(
+    wiki
+    .select(c.doc_id)
+    .with_columns(
+        name_parts = c.doc_id.str.split(" ")
+    )
+)
+```
+
+When we explode the list column, each word becomes a separate row:
+
+```{python}
+(
+    wiki
+    .select(c.doc_id, c.short)
+    .with_columns(
+        name_parts = c.doc_id.str.split(" ")
+    )
+    .explode(c.name_parts)
+)
+```
+
+This pattern is useful for tasks like building a vocabulary of unique words or counting word frequencies across a corpus.
+
+## RegEx Reference
+
+Polars uses Rust-based regular expressions. The full syntax is documented on the [regex crate page](https://docs.rs/regex/latest/regex/#syntax). Here is a summary of the patterns we have used in this chapter, along with a few additional ones. A full summary is provided in @sec-notes.
+
+## Coming from R or Pandas
+
+If you have used the `stringi` package in R or the `.str` accessor in Pandas, the methods here will feel familiar. Polars uses the same general approach of namespacing string operations under `.str`. The main differences are in function names and the specific regular expression engine (Rust's regex crate, which is similar to but not identical to PCRE). The core concepts of pattern matching, extraction, and replacement transfer directly.
+
+## References {-}

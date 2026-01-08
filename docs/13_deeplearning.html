@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Taylor Arnold">
+
+<title>13&nbsp; Deep Learning – Foundations of Data Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./14_cnnwordvec.html" rel="next">
+<link href="./12_unsupervised.html" rel="prev">
+<link href="./img/owl_explore.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-25064e4154141e7ea34817c6f1220590.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./10_inference.html">Part III: Models</a></li><li class="breadcrumb-item"><a href="./13_deeplearning.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Deep Learning</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Foundations of Data Science</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/taylor-arnold/fds-py" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part I: Core</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_modify.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">EDA I: Organizing Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">EDA II: Visualizing Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_combine.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">EDA III: Restructuring Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_collect.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">EDA IV: Collecting Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part II: Programming</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_program.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Programming</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_strings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Strings</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_dataformats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Data Formats</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_requests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Requests</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part III: Models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Inference</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_supervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Supervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_unsupervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Unsupervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13_deeplearning.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Deep Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_cnnwordvec.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">CNNs and Word2Vec</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15_transferlearn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Transfer Learning</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part IV: Applications</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16_spatial_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Spatial Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17_temporal_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Temporal Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18_network_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Network Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19_textual_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Textual Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20_image_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Image Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part V: Notes</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./21_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Notes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./22_datasets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Datasets</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup"><span class="header-section-number">13.1</span> Setup</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction"><span class="header-section-number">13.2</span> Introduction</a></li>
+  <li><a href="#mnist-data" id="toc-mnist-data" class="nav-link" data-scroll-target="#mnist-data"><span class="header-section-number">13.3</span> MNIST Data</a></li>
+  <li><a href="#dense-neural-networks" id="toc-dense-neural-networks" class="nav-link" data-scroll-target="#dense-neural-networks"><span class="header-section-number">13.4</span> Dense Neural Networks</a></li>
+  <li><a href="#stochastic-gradient-descent" id="toc-stochastic-gradient-descent" class="nav-link" data-scroll-target="#stochastic-gradient-descent"><span class="header-section-number">13.5</span> Stochastic Gradient Descent</a></li>
+  <li><a href="#dense-nn-in-pytorch" id="toc-dense-nn-in-pytorch" class="nav-link" data-scroll-target="#dense-nn-in-pytorch"><span class="header-section-number">13.6</span> Dense NN in PyTorch</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">13.7</span> Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./10_inference.html">Part III: Models</a></li><li class="breadcrumb-item"><a href="./13_deeplearning.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Deep Learning</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-deep" class="quarto-section-identifier"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Deep Learning</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Practice Notebooks
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>Notebook13a [<a href="https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook13a.ipynb?hl=en">Colab↗</a>]</li>
+<li>Notebook13b [<a href="https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook13b.ipynb?hl=en">Colab↗</a>]</li>
+</ul>
+</div>
+</div>
+</div>
+<section id="setup" class="level2" data-number="13.1">
+<h2 data-number="13.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">13.1</span> Setup</h2>
+<p>Load all of the modules and datasets needed for the chapter. We load two submodules of the torch module to build neural network models. The <code>mnist</code> dataset contains a sample of 1,000 images of handwritten digits from the well-known MNIST collection. Full details are available in <a href="22_datasets.html" class="quarto-xref"><span>Chapter 22</span></a>.</p>
+<div id="fa46fd80" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funs <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plotnine <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polars <span class="im">import</span> col <span class="im">as</span> c</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>theme_set(theme_minimal())</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.optim <span class="im">as</span> optim</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>mnist <span class="op">=</span> pl.read_csv(<span class="st">"data/mnist_1000.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="introduction" class="level2" data-number="13.2">
+<h2 data-number="13.2" class="anchored" data-anchor-id="introduction"><span class="header-section-number">13.2</span> Introduction</h2>
+<p>The main idea behind deep learning is that instead of building a model, such as linear regression, that goes from the inputs to the predictions, we should generate intermediate results that summarize the important information in the inputs. The summarized information can then be used to produce the final predictions. The idea can be expanded to many layers of intermediate representations. This is where the term “deep” come from, indicating that there is a large distance between the things we put into the model and the things that come out of it. The earliest deep models drew from biological analogies to neurons in the brain, which is why the models also became known as <strong>neural networks</strong>. These ideas have been incredibly powerful, perhaps the single most important idea in computer science in the last 50 years, and have been behind almost all of the growth in machine learning and AI over the past two decades, including the rise of generative text models such as ChatGPT.</p>
+<p>The power of deep learning is most apparent in application domains where the input data is only connected to the things we want to know about the data in a complex and/or abstract way. This is true, for example, with text analysis where individual letters only have meaning when put together in specific patterns and orders. The same goes for the air pressure measurements that are recorded in sound data and the individual pixels that represent images. A sequence of sound pressures gets interpreted as a specific song only through a complex relationship that is hard to explain but easy for our ears and brains to decode. The inner representations within a deep learning model work to transform the raw data into things that more closely have a connection to the things they represent.</p>
+<p>Training deep learning models requires more hands-on background knowledge than kinds of models we saw in Chapters 13 and 14. While there is a lot of theory of computational depth in linear and logistic regression models, once experts have coded the algorithms to learn from data we can (mostly) apply them without understanding the mechanics of how the models determine the final weights. This is not so with deep learning because there are far too many different ways that different sets of intermediate results could produce the same predictions. Choosing “good” representations is the key to making the model work well on data that it has not been trained on. This is something that is attainable by anyone reading this book (it’s not magic), but requires some practice and time.</p>
+</section>
+<section id="mnist-data" class="level2" data-number="13.3">
+<h2 data-number="13.3" class="anchored" data-anchor-id="mnist-data"><span class="header-section-number">13.3</span> MNIST Data</h2>
+<p>To understand the true power of deep learning we need to work with a dataset where there is a disconnect between the information contained in the object and the raw format of the data that we are given. This, for example, is the case with text, image, video, and sound data. There is a wide gap between the data stored on one hand in the individual pixels of an image, characters in a text, or sound pressure at a specific millisecond and the semantic meaning represented by these objects when processed by the human perceptive system.</p>
+<p>In order to better understand how this works, we will work in this chapter with a subset of the MNIST (Modified National Institute of Standards and Technology database) hand-written digits dataset. This is one of the earliest popular image processing datasets. It consists of small, standardized images of hand-written digits from 0 to 9. The goal is to build a supervised model that recognizes which digit is written based on the image. All of the image datasets in this text use a format where we have metadata about the images in one table. This table includes a <code>filepath</code> column that contains the location of each of the image files. In this case, each image is a greyscale file of a square image that is 28 pixels tall and wide. Here is the dataset:</p>
+<div id="4242ecdd" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mnist</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (1_000, 3)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">label</th>
+<th data-quarto-table-cell-role="th">filepath</th>
+<th data-quarto-table-cell-role="th">index</th>
+</tr>
+<tr class="even">
+<th>i64</th>
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>3</td>
+<td>"media/mnist_1000/00000.png"</td>
+<td>"test"</td>
+</tr>
+<tr class="even">
+<td>9</td>
+<td>"media/mnist_1000/00001.png"</td>
+<td>"test"</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>"media/mnist_1000/00002.png"</td>
+<td>"train"</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>"media/mnist_1000/00003.png"</td>
+<td>"test"</td>
+</tr>
+<tr class="odd">
+<td>8</td>
+<td>"media/mnist_1000/00004.png"</td>
+<td>"train"</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>"media/mnist_1000/00995.png"</td>
+<td>"train"</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>"media/mnist_1000/00996.png"</td>
+<td>"train"</td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td>"media/mnist_1000/00997.png"</td>
+<td>"test"</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>"media/mnist_1000/00998.png"</td>
+<td>"train"</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>"media/mnist_1000/00999.png"</td>
+<td>"test"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>We have a helper function called <code>DSImage.plot_image_grid</code> that allows us to see a collection of the images from within Python along with their labels. Here is an example of what the data looks like for 30 randomly selected images.</p>
+<div id="04b58154" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>DSImage.plot_image_grid(mnist.sample(<span class="dv">30</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="13_deeplearning_files/figure-html/cell-5-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="13_deeplearning_files/figure-html/cell-5-output-1.png" class="img-fluid figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In order to load the data into Python, we have another helper function called <code>DSTorch.load_image</code> that takes the dataset and some parameters and generates objects corresponding to the features and responses of the data. We have both the data split into a training and testing set as well as the complete original data. The latter is useful if we later want to add information back into the <code>mnist</code> table.</p>
+<div id="dc5dc8d5" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>X, X_train, X_test, y, y_train, y_test, cn <span class="op">=</span> DSTorch.load_image(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    mnist, scale<span class="op">=</span><span class="va">True</span>, flatten<span class="op">=</span><span class="va">True</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Notice that we set the option <code>flatten</code> to <code>True</code> above. This takes the pixel data from the images and converts them to a single vector that has no implicit encoding of the shape of the image. In this case, this means that the 28-by-28 grid of pixel intensities has been converted into a single string of <span class="math inline">\(28 * 28 = 784\)</span> values. We can see the shape of the <code>X</code> object below.</p>
+<div id="a1423a9c" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>X.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>torch.Size([1000, 784])</code></pre>
+</div>
+</div>
+<p>All of the objects returned by <code>DSTorch.load_image</code> other than <code>cn</code> (the category names) are special objects called a Tensor created by the torch library. These are the formats that we will need to run deep-learning models in Python. The category names are returned because the <code>y</code> Tensor needs to be integer codes rather than the names of the labels. In the special case of MNIST these are the same (the digits are already integer codes). In nearly every other application this will be different and having the original names will be very helpful.</p>
+</section>
+<section id="dense-neural-networks" class="level2" data-number="13.4">
+<h2 data-number="13.4" class="anchored" data-anchor-id="dense-neural-networks"><span class="header-section-number">13.4</span> Dense Neural Networks</h2>
+<p>Let’s say we have a dataset with <span class="math inline">\(n\)</span> features that we want to use to predict an output. We’ve seen how to do linear regression with a linear combination of the parameters. We can modify this slightly by creating an intermediate value <span class="math inline">\(h\)</span> that is a linear combination in exactly the same way and then produce the prediction for the output <span class="math inline">\(y\)</span> as a simple linear combination of <span class="math inline">\(h\)</span>. Mathematically, we can write this as:</p>
+<p><span class="math display">\[
+\begin{aligned}
+h &amp;= \beta_0 + \beta_1 \cdot x_1 + \beta_2 \cdot x_2 + \cdots + \beta_n \cdot x_n \\
+y &amp;= \gamma_0 + \gamma_1 \cdot h
+\end{aligned}
+\]</span></p>
+<p>There are a few things to take note of here. First of all, the model as written is not fundamentally any different than linear regression. A linear combination of linear combinations is just another linear combination. We simply have more ways of getting to the same output. The second thing is that the value of <span class="math inline">\(h\)</span> is not something we actually observe in the data. It is only an intermediate value that helps us go from the input values <span class="math inline">\(x_j\)</span> to the output value <span class="math inline">\(y\)</span>. We use the letter <span class="math inline">\(h\)</span> here because this value relates to a hidden state of the model in the sense that no data we observe is directly related to it.</p>
+<p>In order to do something that is not possible with normal regressions, we need to add something non-linear (not just adding and multiplying constants) into the model. The typical way to do this is to add a pre-determined function that gets applied to the result before creating the value <span class="math inline">\(h\)</span>. This function is called an activation function. It is often written with the symbol <span class="math inline">\(\sigma(\cdot)\)</span> (sigma) because the earliest models used a sigmoid function for this. We can modify our equation as follows.</p>
+<p><span class="math display">\[
+\begin{aligned}
+h &amp;= \sigma\left(\beta_0 + \beta_1 \cdot x_1 + \beta_2 \cdot x_2 + \cdots + \beta_n \cdot x_n\right) \\
+y &amp;= \gamma_0 + \gamma_1 \cdot h
+\end{aligned}
+\]</span></p>
+<p>Most models now use simpler activation functions than the sigmoid. The most common choice is a rectified linear unit (ReLU). While the name sounds complicated, the function is actually very simple. It is equal to the identity function for positive inputs while mapping all negative values to zero. Mathematically, we can write this as:</p>
+<p><span class="math display">\[
+\text{ReLU}(z) = \max(0, z)
+\]</span></p>
+<p>The key features of an activation function are that it must be differentiable at almost all points and it must be non-linear. The ReLU satisfies both requirements while being computationally efficient to evaluate.</p>
+<p>We can visually think about the mathematical formulation we now have as a network diagram such as the one in Figure <a href="#fig-nn-one" class="quarto-xref">Figure&nbsp;<span>13.1</span></a>. For every observation, we have a number associated with each of the inputs in the left. Then, if we know all of the slopes and intercepts defined by the model, we can compute the hidden state <span class="math inline">\(h\)</span> and the output value <span class="math inline">\(y\)</span>.</p>
+<div id="fig-nn-one" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-nn-one-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="img/nn_one_hidden_state.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;13.1: A simple neural network with a single hidden state."><img src="img/nn_one_hidden_state.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nn-one-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.1: A simple neural network with a single hidden state.
+</figcaption>
+</figure>
+</div>
+<p>With the activation function we can now generate ways of producing estimates <span class="math inline">\(y\)</span> from our input data that are not strictly the same as those from linear regression. However, we are still very constrained in the kinds of models we can build, and the overall complexity of what we can represent is essentially the same. In order to produce more complex models we need to include a larger set of hidden states, all of which are individual linear combinations of the inputs followed by the activation function. Then, the output <span class="math inline">\(y\)</span> is a linear combination of all of these outputs. Below is a mathematical description of this model. Figure <a href="#fig-nn-many" class="quarto-xref">Figure&nbsp;<span>13.2</span></a> shows the corresponding visualization of adding more hidden states into our model.</p>
+<p><span class="math display">\[
+\begin{aligned}
+h_1 &amp;= \sigma\left(\beta_{1,0} + \beta_{1,1} \cdot x_1 + \beta_{1,2} \cdot x_2 + \cdots + \beta_{1,n} \cdot x_n\right) \\
+&amp;\,\,\vdots \\
+h_m &amp;= \sigma\left(\beta_{m,0} + \beta_{m,1} \cdot x_1 + \beta_{m,2} \cdot x_2 + \cdots + \beta_{m,n} \cdot x_n\right) \\
+y &amp;= \gamma_0 + \gamma_1 \cdot h_1 + \cdots + \gamma_m \cdot h_m
+\end{aligned}
+\]</span></p>
+<div id="fig-nn-many" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-nn-many-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="img/nn_many_hidden_states.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;13.2: A neural network with a single layer of m hidden states."><img src="img/nn_many_hidden_states.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nn-many-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.2: A neural network with a single layer of <span class="math inline">\(m\)</span> hidden states.
+</figcaption>
+</figure>
+</div>
+<p>The model above is an example of the basic building blocks of a dense, shallow neural network. A very-well known result about neural networks shows that given enough hidden states, any well-behaved real-valued function of <span class="math inline">\(n\)</span> dimensions can be approximated by such as model <span class="citation" data-cites="barron1993">[<a href="#ref-barron1993" role="doc-biblioref">1</a>]</span>. This property makes neural networks—even simple, shallow ones—a type of estimator known as a universal approximator.</p>
+<p>In order to see the real power of neural networks, we need to expand the model not just by the number of hidden states, but also by the number of hidden layers themselves. In other words, we can create a collection of hidden intermediate values that are combinations for the hidden values we created in the first layer and then use these second-order hidden layers to construct the output. We won’t attempt to write this out mathematically because the notation is already getting complicated. But, we can visualize this fairly straightforwardly as shown in Figure <a href="#fig-nn-many-layer" class="quarto-xref">Figure&nbsp;<span>13.3</span></a>.</p>
+<div id="fig-nn-many-layer" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-nn-many-layer-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="img/nn_many_hidden_layers.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;13.3: A dense neural network with two hidden layers Here the second layer has four hidden states, but in general can have as many as needed."><img src="img/nn_many_hidden_layers.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nn-many-layer-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.3: A dense neural network with two hidden layers Here the second layer has four hidden states, but in general can have as many as needed.
+</figcaption>
+</figure>
+</div>
+<p>We can continue in the same way by increasing the number of layers and adjusting the number of hidden states in each. As we increase the number of layers (the exact cut-off is debated; certainly after 10) we arrive at a deep neural network. It turns out that while even a one-hidden layer model can approximate any function, it is much quicker to approximate a function increasing the number of layers rather than the number of states within a layer. At the same time, it becomes more and more difficult to learn how to make the model do so, particularly when we are using large complex training data. In the next section we will investigate how we actually train these models using data.</p>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Interpreting parameters
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Unlike linear regression, where each coefficient directly measures the effect of a one-unit change in a predictor on the response, the parameters in a neural network have no straightforward interpretation. The weights connecting one hidden layer to another describe relationships between intermediate representations that have no direct connection to either the original inputs or the final output. Combined with the non-linear activation functions applied at each layer, it becomes essentially impossible to understand what any individual parameter does in a network of even modest size. This is why neural networks are sometimes called black-box models. We can observe what goes in and what comes out, but the internal workings remain opaque. Various research efforts have attempted to interpret neural network representations, with some success in specific domains like image classification, but this remains an active and challenging area of study.</p>
+</div>
+</div>
+</div>
+<p>Before we continue, it will be useful to modify our visual concept of a neural network beyond the complex web of circles and arrows that we have used so far. Instead of thinking about each hidden state as a separate entity, it will be much more scalable to think about each layer as a concrete unit. The typical way that you will see neural networks described in papers and in code is through the format shown in Figure <a href="#fig-nn-abstract" class="quarto-xref">Figure&nbsp;<span>13.4</span></a>. This abstraction explains all of the information that we need to know other than the size of the input and the number of hidden states in each linear unit. Once we specify those, the model is completely described by this relatively simple diagram.</p>
+<div id="fig-nn-abstract" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-nn-abstract-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="img/nn-abstract.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;13.4: An abstraction of how a neural network is constructed."><img src="img/nn-abstract.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nn-abstract-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.4: An abstraction of how a neural network is constructed.
+</figcaption>
+</figure>
+</div>
+<p>One thing that become clear with the abstract form of the neural network is that the process of going from the last hidden layer to the output is structurally the same as creating any of the internal hidden layers. In other words, these are all just linear units that consist of a linear combination of all the output from the previous states. The only difference is that the final Linear unit for a regression problem would always have only a single output that corresponds with the value we want to predict.</p>
+<p>Almost all of the deep learning tasks we will look at involve classification. The fact that the output is structurally no different from the other layers indicates a way to using this to easily extend to classification. We can change the last layer to output one prediction for each category rather than only a single number. Then, we can apply a special activation function called as Softmax that turns a collection of number into a valid set of probabilities (all non-negative numbers that sum to one). Figure <a href="#fig-nn-abstract-softmax" class="quarto-xref">Figure&nbsp;<span>13.5</span></a> illustrates how this can be seen as one additional layer on the neural network.</p>
+<div id="fig-nn-abstract-softmax" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-nn-abstract-softmax-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="img/nn-abstract-softmax.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;13.5: Classification variation of a neural network with a final softmax layer."><img src="img/nn-abstract-softmax.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nn-abstract-softmax-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.5: Classification variation of a neural network with a final softmax layer.
+</figcaption>
+</figure>
+</div>
+<p>We will continue to see throughout this chapter that deep neural networks can be extended by adding new layer types and combinations to work with increasingly large and complex datasets.</p>
+</section>
+<section id="stochastic-gradient-descent" class="level2" data-number="13.5">
+<h2 data-number="13.5" class="anchored" data-anchor-id="stochastic-gradient-descent"><span class="header-section-number">13.5</span> Stochastic Gradient Descent</h2>
+<p>When we introduced linear regression in <a href="10_inference.html" class="quarto-xref"><span>Chapter 10</span></a> it was mentioned that the slopes and intercepts in the model were fit using ordinary least squares (OLS). In other words, we find the parameters that minimize the sum of squared differences between the model predictions and the observed data. There is a well known formula for solving OLS and we didn’t go any more into the computational details. We let statsmodels compute the values for us and moved on to the next step. When discussing penalized regression and gradient boosted trees in <a href="11_supervised.html" class="quarto-xref"><span>Chapter 11</span></a> we mentioned a few more details but still avoiding discussing too many computational details about the process. There are excellent algorithms already coded into sklearn that are able to find the optimal solutions in a straightforward way with no manual intervention. Neural networks are computationally much more complicated and will require some understanding of the way they are trained with data.</p>
+<p>We will motivate the technique used in training neural networks with an easy to visualize one-dimensional example of trying to minimize a relatively smooth function. Of course, the ideal way to find the minimum of a function is to compute its derivative and determine where this derivative is equal to zero. In many cases, though, it is not possible to compute the derivative for all of the points and even when we can it may not be possible to figure out at what points that function is equal to zero. An alternative is to do something iterative: we start at an initial guess, compute measurements about the function in a small neighborhood of this point, and then use this information to find a new point that should be closer to the optimal value. We will look at a few different approaches of this type using a single function where our initial guess is near -2.</p>
+<p>To start, we will compute the first and second derivative of the function at our initial starting point. This allows us to construct a quadratic approximation of the function. A quadratic function will always “turn around” somewhere. In other words, there will be an easy to compute minimum for the approximation of this approximation of the function. A straightforward approach is, therefore, to jump to the minimum of this approximation and then start the process all over again. We can do this until the process converges to a point, which it does in our example very quickly.</p>
+<div id="fig-gd-quadratic" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gd-quadratic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="img/gd_1d_quadratic.gif" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Figure&nbsp;13.6: A second-order method for finding the minimum value of a function."><img src="img/gd_1d_quadratic.gif" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gd-quadratic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.6: A second-order method for finding the minimum value of a function.
+</figcaption>
+</figure>
+</div>
+<p>The technique above is called a second-order method because it uses the second derivative of the function to compute the minimum value. These techniques are very fast and for functions with unique minima have strong convergence results. Second-order methods are used throughout statistics and the sciences as the go-to method when there are no analytic solutions available, as is often the case when we go beyond the most basic techniques. Unfortunately, these are not feasible for training neural networks. The higher-dimensional analog of a second-derivative is a Hessian matrix, which in <span class="math inline">\(d\)</span> dimensions requires <span class="math inline">\(d^2\)</span> parameters. Modern neural networks often have dozens of billions of parameters. Storing a single Hessian matrix would take hundreds of Exabytes, or approximately 1 million hours of HD video. Clearly this is not a practical approach for such large models even if we had enough data to reliably compute the Hessian matrix, which we do not.</p>
+<p>An alternative is to use a first-order method that is based only on the first derivative of the function at a given point. The multidimensional equivalent is the gradient. It requires only <span class="math inline">\(d\)</span> parameters in <span class="math inline">\(d\)</span> dimensions (one partial derivative for each dimension) and is therefore reasonable to both compute and store. The difficulty is that the derivative approximates a function by a line. This will tell us which direction to go in to find the minimum. By way of the slope, it may possibly also give some idea of how fast it is descending. However, since a line never turns around we have no idea how far to go in the direction of the derivative. The standard solution is to pick a positive value represented by <span class="math inline">\(\eta\)</span> (eta) called the learning rate. We then update our guess of the optimal value by using the following formula (the negative sign because we are moving in the opposite direction of the derivative when minimizing the function):</p>
+<p><span class="math display">\[
+x \rightarrow x - \eta \times \frac{d}{dx}(x)
+\]</span></p>
+<p>This technique is called gradient descent. The visualization below shows an example of gradient descent with a relatively small value of <span class="math inline">\(\eta\)</span>. The algorithm eventually finds the minimum, but only after taking a large number of small steps.</p>
+<div id="fig-gd-slow" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gd-slow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="img/gd_1d_slow.gif" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Figure&nbsp;13.7: Gradient descent with a small learning rate."><img src="img/gd_1d_slow.gif" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gd-slow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.7: Gradient descent with a small learning rate.
+</figcaption>
+</figure>
+</div>
+<p>In the example below we use a larger value for <span class="math inline">\(\eta\)</span>. The first two steps are approach the minimum much quicker, but the increased learning rate eventually causes the estimates to bounce back and forth on other side of the minimum value and it never seems to completely converge to the optimal point (at least during the cycle of the simulation).</p>
+<div id="fig-gd-fast" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gd-fast-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="img/gd_1d_fast.gif" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Figure&nbsp;13.8: Gradient descent with a large learning rate."><img src="img/gd_1d_fast.gif" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gd-fast-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.8: Gradient descent with a large learning rate.
+</figcaption>
+</figure>
+</div>
+<p>The two examples above illustrate how the choice of the learning rate greatly affects the ability of even a simple one-dimensional example to converge to a minimum value. Too low and we do not move fast enough; too large and we bounce around the minimum value and never converge. These do illustrate, though, two ways of trying to improve the performance of gradient descent. First of all, we can slowly decrease the learning rate over time. Bigger steps are great to make quick progress to decent values and then smaller steps can be used to refine the best parameters in a local neighborhood. Secondly, we can introduce a momentum term that keeps track of how the derivatives change over time. When, as in the first case, they continue to increase in the same direction we can pick up the pace of the steps. In the second case, the derivatives keep shifting directions, indicating that we should take very small steps to center into the minimum value. We can describe this by setting a momentum factor <span class="math inline">\(\mu\)</span>, keeping track of a velocity value <span class="math inline">\(v\)</span> and updating as follows:</p>
+<p><span class="math display">\[
+\begin{aligned}
+v &amp;\rightarrow \mu \times v - \eta \times \frac{d}{dx}(x) \\
+x &amp;\rightarrow x + v \\
+\end{aligned}
+\]</span></p>
+<p>A visualization of this is given below, where we see that the convergence happens quicker than in the low learning rate case but does not overshoot the target as in the high learning rate case.</p>
+<div id="fig-gd-momentum" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gd-momentum-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="img/gd_1d_momentum.gif" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="Figure&nbsp;13.9: Gradient descent with a momentum term."><img src="img/gd_1d_momentum.gif" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gd-momentum-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.9: Gradient descent with a momentum term.
+</figcaption>
+</figure>
+</div>
+<p>Note that all of the methods introduced here, including the powerful second-order methods, have the possibility of getting stuck in a local minimum, such as the one in our example around <span class="math inline">\(x=1\)</span>. For example, below is a visualization in which our momentum term is turned too high and we ultimately get into the second minima.</p>
+<div id="fig-gd-overshoot" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gd-overshoot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="img/gd_1d_overshoot.gif" class="lightbox" data-gallery="quarto-lightbox-gallery-11" title="Figure&nbsp;13.10: Optimization"><img src="img/gd_1d_overshoot.gif" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gd-overshoot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.10: Optimization
+</figcaption>
+</figure>
+</div>
+<p>While the models we saw in previous chapters have convex functions that define their optimal values, the complex nature of the parameters in neural networks causes them to have a very large number of local optima. This means that we never find the true minimum. Rather, the goal is simply to find a value of the parameters that produces reasonably predictive results.</p>
+<p>We’ve talked a lot in the abstract about optimization here. How does this actually get put into practice with neural networks? As with OLS or logistic regression, we can train a neural network with training data to find the parameters (the slopes and intercepts in all of the hidden layers) that attempt to minimize the RMSE or classification error rate. This is done using a modified version of the methods introduced above called stochastic gradient descent (SGD). The only core difference is that rather than using all of the (often very large) data to determine the derivatives at each step, we instead take a small step using data from only a small set of the observations in the training data. We do this over and over again until we have used every data point once, called an epoch, and then start over again.</p>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Backpropagation
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Computing the gradient in a neural network requires determining how changes in each parameter affect the final loss function. This is complicated because parameters in early layers influence the output only indirectly, through many subsequent layers. The solution is an algorithm called backpropagation, which applies the chain rule from calculus systematically through the network. Starting from the output layer and working backward toward the input, backpropagation computes how much each parameter contributed to the prediction error. For a given batch of training examples, we first run the forward pass to compute predictions, then run the backward pass to compute gradients, and finally update the parameters using those gradients. Modern deep learning libraries like PyTorch handle backpropagation automatically, building a computational graph during the forward pass that records all operations, then traversing this graph in reverse to compute gradients efficiently.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="dense-nn-in-pytorch" class="level2" data-number="13.6">
+<h2 data-number="13.6" class="anchored" data-anchor-id="dense-nn-in-pytorch"><span class="header-section-number">13.6</span> Dense NN in PyTorch</h2>
+<p>We are now ready to implement a dense neural network in Python using PyTorch. PyTorch is one of the two dominant deep learning libraries (the other being TensorFlow). It provides the building blocks for constructing neural networks along with efficient implementations of stochastic gradient descent and backpropagation.</p>
+<p>In PyTorch, we define a neural network by creating a class that inherits from <code>nn.Module</code>. The class must define two methods: <code>__init__</code>, which sets up the layers of the network, and <code>forward</code>, which describes how data flows through those layers. The code below defines a dense neural network for classifying our MNIST digits.</p>
+<div id="7bee023b" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DenseNet(nn.Module):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.net <span class="op">=</span> nn.Sequential(</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>            nn.Linear(<span class="dv">784</span>, <span class="dv">128</span>),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>            nn.ReLU(),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>            nn.Linear(<span class="dv">128</span>, <span class="dv">64</span>),</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>            nn.ReLU(),</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>            nn.Linear(<span class="dv">64</span>, <span class="dv">10</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.net(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The architecture defined above uses <code>nn.Sequential</code> to chain together the layers in order. The first <code>nn.Linear(784, 128)</code> creates a fully connected layer that takes our 784-dimensional input (the flattened 28×28 pixel image) and produces 128 hidden values. Each of the 784 inputs is connected to each of the 128 outputs through a learned weight, plus a bias term for each output. This layer alone contains <span class="math inline">\(784 \times 128 + 128 = 100{,}480\)</span> trainable parameters. The ReLU activation function is applied after this linear transformation to introduce non-linearity.</p>
+<p>The second linear layer reduces from 128 hidden values down to 64, again followed by a ReLU activation. The final layer maps from 64 values to 10 outputs, one for each digit class (0 through 9). Notice that there is no activation function after the final layer. This is because we will use a loss function during training that internally applies the softmax transformation and computes the cross-entropy loss, which is the standard approach for multi-class classification problems.</p>
+<p>With the network architecture defined, we next create an instance of the model and an optimizer. The optimizer implements the gradient descent update rule. Here we use the Adam optimizer, which implements a version of stochastic gradient descent with an adaptive learning rate. We set the initial learning rate to 0.001, a good starting point for this particular model.</p>
+<div id="7ae3c99d" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> DenseNet()</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> optim.Adam(model.parameters(), lr<span class="op">=</span><span class="fl">0.001</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Training the model involves repeatedly showing it batches of training examples and updating the parameters to reduce the prediction error. The <code>DSTorch.train</code> method handles this process. It takes the model, optimizer, training data, and several hyperparameters: the number of epochs (complete passes through the training data) and the batch size (number of examples processed before each parameter update).</p>
+<div id="325d7d63" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>DSTorch.train(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    model, optimizer, X_train, y_train, num_epochs<span class="op">=</span><span class="dv">20</span>, batch_size<span class="op">=</span><span class="dv">64</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Epoch 1/20, Loss: 2.4144
+Epoch 2/20, Loss: 1.9836
+Epoch 3/20, Loss: 1.3640
+Epoch 4/20, Loss: 0.8600
+Epoch 5/20, Loss: 0.6220
+Epoch 6/20, Loss: 0.4884
+Epoch 7/20, Loss: 0.3796
+Epoch 8/20, Loss: 0.3192
+Epoch 9/20, Loss: 0.2853
+Epoch 10/20, Loss: 0.2341
+Epoch 11/20, Loss: 0.2003
+Epoch 12/20, Loss: 0.1634
+Epoch 13/20, Loss: 0.1391
+Epoch 14/20, Loss: 0.1233
+Epoch 15/20, Loss: 0.1081
+Epoch 16/20, Loss: 0.0918
+Epoch 17/20, Loss: 0.0847
+Epoch 18/20, Loss: 0.0677
+Epoch 19/20, Loss: 0.0629
+Epoch 20/20, Loss: 0.0495</code></pre>
+</div>
+</div>
+<p>The output shows the training loss decreasing over epochs, which indicates that the model is learning to fit the training data. However, the loss on training data alone does not tell us how well the model will perform on new, unseen examples. To evaluate generalization performance, we use the <code>DSTorch.score_image</code> method, which computes predictions and compares them to the true labels.</p>
+<div id="6f68db72" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>DSTorch.score_image(model, X_train, y_train, cn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>1.0</code></pre>
+</div>
+</div>
+<div id="dfd25738" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>DSTorch.score_image(model, X_test, y_test, cn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>0.843999981880188</code></pre>
+</div>
+</div>
+<p>The training accuracy tells us how well the model fits the data it was trained on, while the test accuracy measures how well it generalizes to new examples. A large gap between these two numbers would indicate overfitting, where the model has memorized the training examples rather than learning patterns that transfer to new data. With the architecture and hyperparameters used here, we achieve strong performance on both sets, demonstrating that a dense neural network can effectively learn to recognize handwritten digits.</p>
+</section>
+<section id="conclusion" class="level2" data-number="13.7">
+<h2 data-number="13.7" class="anchored" data-anchor-id="conclusion"><span class="header-section-number">13.7</span> Conclusion</h2>
+<p>This chapter introduced the fundamental concepts and architectures of deep learning. We began with the building blocks of neural networks: layers of linear combinations followed by non-linear activation functions. We saw how stacking these layers creates models capable of learning complex patterns that would be impossible to capture with traditional linear methods.</p>
+<p>The training process for neural networks relies on stochastic gradient descent, which iteratively updates model parameters to reduce prediction error on batches of training examples. The learning rate and momentum are critical hyperparameters that control the speed and stability of this optimization process. Backpropagation provides an efficient algorithm for computing the gradients needed at each step. In this chapter, we implemented a dense (fully connected) network treats each input feature independently, making it a straightforward extension of the regression models from earlier chapters.</p>
+<p>The MNIST digit classification task served as our running example throughout the chapter. While this dataset is small and simple by modern standards, it effectively illustrates the key concepts: how to structure a neural network, how to train it with gradient descent, and how to evaluate its performance on held-out test data. The same principles apply to much larger and more complex tasks, though the architectures grow accordingly.</p>
+<p>Deep learning has transformed many areas of artificial intelligence and data science over the past decade. Image recognition, speech processing, natural language understanding, and game playing have all been revolutionized by neural network approaches. As you continue to explore this field, you will encounter many variations and extensions of the basic ideas introduced here: different layer types, regularization techniques to prevent overfitting, normalization methods to stabilize training, and attention mechanisms that allow models to focus on relevant parts of the input. The foundation laid in this chapter provides the conceptual framework for understanding these more advanced techniques.</p>
+
+
+<div id="refs" class="references csl-bib-body" role="list">
+<div id="ref-barron1993" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">Barron, A (1993 ). <a href="https://doi.org/10.1109/18.256500">Universal approximation bounds for superpositions of a sigmoidal function</a>. <em>IEEE Transactions on Information Theory</em>. <strong>39</strong> 930–45</div>
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/taylor-arnold\.github\.io\/fds-py");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./12_unsupervised.html" class="pagination-link" aria-label="Unsupervised Learning">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Unsupervised Learning</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./14_cnnwordvec.html" class="pagination-link" aria-label="CNNs and Word2Vec">
+        <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">CNNs and Word2Vec</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Taylor Arnold</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>A <a href="https://distantviewing.org/">Distant Viewing Lab</a> project</p>
+</div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>

@@ -1,0 +1,82 @@
+project:
+  type: book
+  output-dir: docs
+
+book:
+  title: "Foundations of Data Science"
+  reader-mode: true
+  author: "Taylor Arnold"
+
+  site-url: https://taylor-arnold.github.io/fds-py
+  repo-url: https://github.com/taylor-arnold/fds-py
+  repo-branch: main
+
+  sidebar:
+    search: true
+    collapse-level: 1
+
+  page-footer:
+    left: |
+      Taylor Arnold
+    right: |
+      A <a href="https://distantviewing.org/">Distant Viewing Lab</a> project
+
+  cover-image: img/owl_explore.png
+  favicon: img/owl_explore.png
+
+  chapters:
+    - index.qmd
+
+    - part: "Part I: Core"
+      chapters:
+        - 01_intro.qmd
+        - 02_modify.qmd
+        - 03_graphics.qmd
+        - 04_combine.qmd
+        - 05_collect.qmd
+
+    - part: "Part II: Programming"
+      chapters:
+        - 06_program.qmd
+        - 07_strings.qmd
+        - 08_dataformats.qmd
+        - 09_requests.qmd
+
+
+    - part: "Part III: Models"
+      chapters:
+        - 10_inference.qmd
+        - 11_supervised.qmd
+        - 12_unsupervised.qmd
+        - 13_deeplearning.qmd
+        - 14_cnnwordvec.qmd
+        - 15_transferlearn.qmd
+
+
+    - part: "Part IV: Applications"
+      chapters:
+        - 16_spatial_data.qmd
+        - 17_temporal_data.qmd
+        - 18_network_data.qmd
+        - 19_textual_data.qmd
+        - 20_image_data.qmd
+
+    - part: "Part V: Notes"
+      chapters:
+        - 21_notes.qmd
+        - 22_datasets.qmd
+
+bibliography: refs.bib
+csl: journal-of-combinatorics.csl
+
+format:
+  html:
+    theme:
+      - cosmo
+      - custom.scss
+
+    link-external-newwindow: true
+    
+    author-meta: "Taylor Arnold"
+    callout-appearance: simple
+    lightbox: true

@@ -1,0 +1,468 @@
+# Notes {#sec-notes}
+
+## Setup
+
+Load all of the modules and datasets needed for the chapter.
+
+```{python}
+#|eval: false
+import numpy as np
+import polars as pl
+
+from funs import *
+from plotnine import *
+from polars import col as c
+theme_set(theme_minimal())
+```
+
+## Introduction
+
+In this chapter, we provide a list of the key functions that have been introduced throughout the book, with a particular focus on the general-purpose methods in the first two sections. We strongly recommend first using these notes when referencing a specific operation rather than the original text. The latter is designed for reading, whereas this is designed for quick reference and  reduces the need to jump around across many different pages.
+
+In the notes below we use the term `df` and `df_r` to be two DataFrame objects loaded into python. The terms `col1`, `col2`, and `col3` are column names; when quotes are needed these are always added in the reference code. The values `<i64>`, `<f64>`, and `<str>` refer to integers, floats, and strings respectively. These are sometimes used multiple times in the same example; this does not indicate that they need to be the same number. 
+
+Note that the examples often only give the core code that would need to be included within DataFrame transformation or visualization pipelines. A few complete examples are given to indicate how this should be formated and where it should go. When feasable, we have added comments after the `#` sign to gloss what the code does. These notes should not be included in your own code.
+
+## Loading and Saving Data
+
+Here is the standard way of loading a CSV dataset into Python and saving it as a DataFrame called `df`.
+
+```{python}
+#|eval: false
+df = pl.read_csv("data/hans_roslin.csv")
+df
+```
+
+If you have messy data from another source, this is a helpful one-line of code that sanitises the column names. We usually will not need this for the datasets in this book, but it is very helpful to have when working on data from other  sources.
+
+```{python}
+#|eval: false
+df = df.rename(lambda c: c.lower().replace_all(r"[^a-z0-9_]", ""))
+```
+
+Finally, to write the output as a CSV file, use the following code:
+
+```{python}
+#|eval: false
+df.write_csv("output_name.csv")
+```
+
+Other input and output formats can be found in the Polars documentation.
+
+## Transforming Data
+
+These methods return a subset of the rows from the original dataset:
+
+```{python}
+#| eval: false
+.head(n=<i64>)          # take the first n rows from the top
+.tail(n=<i64>)          # take the last n rows from the bottom
+.sample(n=<i64>)        # take a random selection of n rows
+.sample(fraction=<f64>) # take a random selection of frac proportion of rows
+.drop_nulls()           # remove any rows that have missing data
+.drop_nans()            # remove any rows that have invalid numbers
+```
+
+The `.filter` method allows for selecting rows based on one or more conditions:
+
+```{python}
+#| eval: false
+.filter(c.col1 > 0.1)        # select rows where col1 is bigger than 0.1 
+.filter(c["col1"] > 0.1)     # select rows where col1 is bigger than 0.1
+.filter(c.col1.is_in(["A", "B"]))   # select rows if col1 is "A" or "B"
+.filter(~c.col1.is_in(["A", "B"]))  # select if col1 is neither "A" nor "B"
+```
+
+These sort the rows of the dataset without changing their contents:
+
+```{python}
+#|eval: false
+.sort(c.col1)            # sort in ascending order by col1
+.sort(c.col1, c.col2)    # sort as above; break ties with col2
+.sort(c.col1, descending=True)  # sort in descending order by col1
+```
+
+The `.with_columns` method allows for creating or modifying one or more columns.
+
+```{python}
+#| eval: false
+.with_columns(
+    new = c.col1 + c.col2,     # create a new column as sum of col1 and col2
+    new2 = c.col3.sqrt(),      # create a new column from square root of col1
+)
+```
+
+The `.over` method on a column allows us to group by a column when creating or modifying another column.
+
+```{python}
+#| eval: false
+.with_columns(
+    new = c.col1 - c.col1.over("col2").min(),    # diff to smallest value
+    new = c.col1 - c.col1.over("col2").shift(-1) # rolling difference
+)
+```
+
+There is a special `pl.when` function that allows for using conditional statements when creating or modifying a column.
+
+```{python}
+#| eval: false
+.with_columns(
+    new = pl.when(c.col1 > 0).then(c.col1).otherwise(0)
+)
+```
+
+There is also a special method called `cast` that converts data between different types. This is most useful for converting strings into numbers after string processing.
+
+```{python}
+#| eval: false
+c.col1.cast(pl.Int64)
+c.col1.cast(pl.Float64)
+```
+
+We can also group by one or more columns and then compute one or more aggregations of the columns (or transformations of them). 
+
+```{python}
+#| eval: false
+.group_by(c.col1, c.col2)
+.agg(
+    col1_mean = c.col1.mean(),          # compute the average of col1
+    col1_1st = c.col1.first(),          # get the first value of col1
+)
+```
+
+Common aggregation methods include the following:
+
+- `.mean()`, `.median()`, `.min()`, `.max()`, `.sum()`, `.quantile(<f64>)` - `.first()`, `.last()` - `.any()`, `.all()` - `.n_unique()`, `.count()`, `.len()`  - `pl.concat_str(c.col1, separator="<str>")`
+
+
+## Restructuring Data
+
+To join on one or more keys between two tables, we can use the `.join` method. There are several options that control how it works, most of which can be combined with one another in various ways
+
+```{python}
+#| eval: false
+.join(df_r, on="col1", how="left")             # left join on col1
+.join(df_r, on=["col1", "col2"], how="left")   # left join on col1 and col2
+.join(df_r, left_on="col1", right_on="col2" how="left") # join col1 == col2
+
+.join(df_r, on="col1", how="right")            # right join on col1
+.join(df_r, on="col1", how="inner")            # inner join on col1
+.join(df_r, on="col1", how="full")             # full join on col1
+.join(df_r, on="col1", how="cross")            # cross join on col1
+.join(df_r, on="col1", how="semi")             # semi join on col1
+.join(df_r, on="col1", how="anti")             # anti join on col1
+```
+
+More complex joins can use the `.join_where` method.
+
+```{python}
+#| eval: false
+.join_where(df_r, c.col1 > c.col2)   # all combinations where col1 > col2
+.join_where(                
+    df_r, c.col1 > c.col2_right      # append suffix if col2 is in both tables 
+)   
+```
+
+We can make a table wider using the `.pivot` method.
+
+```{python}
+#| eval: false
+.pivot(
+    values="col1",
+    index="col2",
+    columns="col3",
+)
+```
+
+Or, make it longer using the `.unpivot` method. We simply indicate which column(s) to use as the index in the output and all the other values becom unpivoted into the resulting rows.
+
+```{python}
+#| eval: false
+.unpivot(
+    index="col1"
+)
+```
+
+## Visualization
+
+Here is an example of a simple scatter plot of two columns from the DataFrame `df`.
+
+```{python}
+#|eval: false
+(
+    df
+    .to_ggplot(aes(x="col1", y="col2"))
+    + geom_point()
+)
+```
+
+Geometries can be modified by adding optional aesthetics such as color and size or an alternative DataFrame `df_r`. Any or all of these can be added and mixed with different geometries.
+
+```{python}
+#|eval: false
++ geom_point(aes(color="col3"), size=<i64>, data=df_r.to_pandas())
+```
+
+Here are some of the most common geometries that were introduced in the text along with their additional required aesthetics beyond `x` and `y`. The second set at the bottom have statistics applied before creating the plot.
+
+```{python}
+#|eval: false
++ geom_col()
++ geom_line()
++ geom_path()
++ geom_barplot()
++ geom_violin()
++ geom_text(aes(label="col3"))
++ geom_segment(aes(xend="col3", xend="col4"))
+
++ geom_smooth(method="lm", se=False)
++ geom_boxplot()
++ geom_bar()
++ geom_histogram(binwidth=<f64>, boundary=<f64>)   # has no y-aesthetic
++ geom_histogram(bins=<i64>)                       # has no y-aesthetic
++ geom_density(adjust=<f64>)                       # has no y-aesthetic
+```
+
+Scales can be added to the plot to control how visual elements are mapped from the specific values in the data. See the full examples in Chapter 3 for how to further customize these.
+
+```{python}
+#|eval: false
++ scale_color_cmap()            # continuous color-blind friendly colors
++ scale_color_cmap_d()          # discrete color-blind friendly colors
++ scale_fill_cmap()             # continuous color-blind friendly colors
++ scale_fill_cmap_d()           # discrete color-blind friendly colors
++ scale_size_area(max_size=<f64>)  # makes zero size correspond to zero value
++ scale_x_log10()               # set a log-scale for the x-axis
++ scale_y_log10()               # set a log-scale for the y-axis
++ scale_x_continuous(limits=[<f64>, <f64>])   # set range of the x axis
++ scale_y_continuous(limits=[<f64>, <f64>])   # set range of the y axis
+```
+
+We can also add labels, facets, and coordinate systems to further modify the look of the plot.
+
+```{python}
+#|eval: false
++ labs(
+    title="Main title",
+    subtitle="Subtitle",
+    caption="Label at the bottom",
+    x="x-axis label",
+    y="y-axis label",
+    color="color legend title"
+)
+
+
++ facet_wrap("col1")
++ facet_grid("col1", "col2")
+
++ coord_flip()
+```
+
+Consult the full [plotnine documentation](https://plotnine.org/reference/) for the complete set of possible elements and options that can be used to create rich data visualizations in Python.
+
+## Strings
+
+There are many different string operations supplied by polars that allow us to work with the content of the values within a string column. Many of these allow us to search for patterns of strings using regular expressions. In the examples below `<pattern>` describes a regular expression (described at the end of the section). Set `literal=False` to treat the search string as a literal value.
+
+The method `contains` can be used inside of a `.filter()` method to select rows in a dataset.
+
+```{python}
+#| eval: false
+c.col1.str.contains("<pattern>")
+```
+
+The `.join` function can be used within an aggregation to combine the values of a string column with a seperator value. It is often useful to use `.unique()`  and/or `.sort()` before doing the joining.
+
+```{python}
+#| eval: false
+c.col1.str.join("<str>")
+```
+
+All of the other string functions are used inside of `with_columns` to create or modify a column in the data. These are the functions that we use throughout the text, with notes for those that may not be clear from the context. They are grouped by the kind of data they return: the first set return a new string, the second an integer, and the final one a list. 
+
+```{python}
+#| eval: false
+c.col1.str.extract("<pattern>")
+c.col1.str.extract("<pattern>", <i64>)   # extract group number <i64>
+c.col1.str.extract_all("<pattern>")
+c.col1.str.replace("<pattern>", "<str>")
+c.col1.str.replace_all("<pattern>", "<str>")
+c.col1.str.slice(<i64>, <i64>)   # substring from the first index to the last
+c.col1.str.strip_chars()         # removes leading and trailing whitespace
+c.col1.str.to_lowercase()
+c.col1.str.to_uppercase()
+c.col1.str.to_titlecase()
+
+c.col1.str.count_matches("<pattern>")
+c.col1.str.find("<pattern>")             # returns starting index of pattern
+c.col1.str.len_chars()
+
+c.col1.str.split("<str>")  # split by <str> into a list; use with .explode()
+```
+
+The polars library uses Rust-based regular expressions. The full documentation can be found on the [regex syntax](https://docs.rs/regex/latest/regex/#syntax) page. Here are examples of some of the most common patterns:
+
+- `.` any character except new line
+- `[0-9]` any digit
+- `[...]` (where ... is another expression) one element from `...`
+- `(...)` (where ... is another expression) captures the value of `...`
+- `x*` zero or more values of x
+- `x+` one or more values of x
+- `^` start of a line
+- `$` end of a line
+- `\w` any word character
+- `\W` any non-word character
+- `\s` any whitespace
+- `\W` any non-whitespace
+- `\p{Greek}` a Unicode character class; here "Greek"
+
+Note that starting a string with the letter "r" (i.e., `r"\d+"`) makes a literal string that avoids treating the slash as an escape character. It is commonly used for regular expressions to make the code easier to read. It is, however, only the creation of the string that is different. There is no magical marker that this has been created as a regular expression.
+
+## Inference
+
+To run statistical inference using the columns from a DataFrame, using the helper function `fit_statsmodels` as follows:
+
+```{python}
+#| eval: false
+
+.pipe(fit_statsmodels, "ttest1", "col1 ~ 1")     # col1 num.
+.pipe(fit_statsmodels, "ttest2", "col1 ~ col2")  # col1 num. ; col2 2 groups
+.pipe(fit_statsmodels, "anova", "col1 ~ col2")   # col1 num. ; col2 3+ groups
+.pipe(fit_statsmodels, "chi2", "col1 ~ col2")    # col1 + col2 categorical
+.pipe(fit_statsmodels, "gtest", "col1 ~ col2")   # col1 + col2 categorical
+.pipe(fit_statsmodels, "ols", "col1 ~ col2")     # col1 num.
+.pipe(fit_statsmodels, "logit", "col1 ~ col2")   # col1 is 0/1
+```
+
+The "ols" and "logit" models can accept any number of numeric and categorical variables on the right-hand side. They also accept the option `raw=True` to return the full statsmodels model object, which has methods such as `.describe()`.
+
+## Sklearn Helpers
+
+The `DSSklearn` class provides wrappers for fitting supervised, dimensionality reduction, and clustering models directly from a DataFrame. Supervised models split the data into train/test sets automatically.
+
+```{python}
+#| eval: false
+DSSklearn.linear_regression(df, target=c.col1, drop=c.id)
+DSSklearn.elastic_net(df, target=ccol1, features=[c.col2, c.col3])
+DSSklearn.elastic_net_cv(df, target=c.col1, drop=c.id)
+DSSklearn.gradient_boosting_regressor(df, target=c.col1, drop=c.id)
+DSSklearn.random_forest_regressor(df, target=c.col1, drop=c.id)
+
+DSSklearn.logistic_regression(df, target=c.col1, drop=c.id)
+DSSklearn.logistic_regression_cv(df, target=c.col1, drop="id)
+DSSklearn.gradient_boosting_classifier(df, target=c.col1, drop=c.id)
+DSSklearn.random_forest_classifier(df, target=c.col1, drop=c.id)
+
+DSSklearn.pca(df, drop=c.id, n_components=2)
+DSSklearn.tsne(df, drop=c.id, n_components=2)
+DSSklearn.umap(df, drop=c.id, n_components=2)
+
+DSSklearn.kmeans(df, drop=c.id, n_clusters=5)
+DSSklearn.dbscan(df, drop=c.id, eps=0.5)
+```
+
+All models accept `test_size`, `random_state`, and `stratify` options. The fitted model returns a wrapper object with the following methods:
+
+```{python}
+#| eval: false
+model.predict()              # returns DataFrame with target_, prediction_
+model.predict(full=True)     # includes original columns
+model.predict_proba()        # classifiers only; adds probability columns
+model.score()                # returns dict with train/test accuracy or RMSE
+model.coef()                 # linear/logistic; returns DataFrame of coefficients
+model.coef(raw=True)         # coefficients on original (unscaled) features
+model.importance()           # tree models; returns feature importances
+model.alpha()                # CV models; returns selected regularization
+model.confusion_matrix()     # classifiers; displays confusion matrix
+```
+
+The `DSSklearnText` class works similarly but builds a document-term matrix from token-level data:
+
+```{python}
+#| eval: false
+DSSklearnText.logistic_regression(
+    df, doc_id="doc_id", term_id="lemma", target="label",
+    min_df=0.01, max_df=0.9, max_vocab_size=5000
+)
+```
+
+It supports all the same model types and methods as `DSSklearn`.
+
+## PyTorch Helpers
+
+The `DSTorch` class provides utilities for loading data and training neural network classifiers.
+
+```{python}
+#| eval: false
+X, X_train, X_test, y, y_train, y_test, cn = DSTorch.load_image(
+    df, scale=True
+)
+
+X, X_train, X_test, y, y_train, y_test, cn = DSTorch.load_text(
+    df, model=w2v_model, tokens_expr=c.tokens, label_expr=c.label, max_length=200
+)
+
+DSTorch.train(model, optimizer, X_train, y_train, num_epochs=18, batch_size=32)
+
+DSTorch.score_image(model, X_test, y_test, cn)   # returns accuracy
+DSTorch.score_text(model, X_test, y_test)        # returns accuracy
+DSTorch.predict(model, X_test, y_test, cn)       # returns DataFrame
+DSTorch.predict_proba(model, X_test, y_test, cn) # includes probabilities
+DSTorch.confusion_matrix(model, X_test, y_test, cn)
+```
+
+## Transformer Embedders
+
+Three classes provide pre-trained embeddings from transformer models. Each returns a normalized numpy vector.
+
+```{python}
+#| eval: false
+vit = ViTEmbedder()
+vec = vit("path/to/image.jpg")
+
+siglip = SigLIPEmbedder()
+img_vec = siglip.embed_image("path/to/image.jpg")
+txt_vec = siglip.embed_text("a photo of a cat")
+
+e5 = E5TextEmbedder()
+vec = e5("some text to embed")
+vecs = e5(["text1", "text2"])
+```
+
+Use `dot_product(c.vec1, c.vec2)` to compute similarity between embedding columns.
+
+## Network Data
+
+The `DSNetwork.process` function converts an edge list into node and edge DataFrames suitable for visualization, along with centrality measures.
+
+```{python}
+#| eval: false
+node_df, edge_df, G = DSNetwork.process(edges_df, directed=False)
+```
+
+Input `edges_df` must have columns `doc_id` and `doc_id2`. The returned `node_df` contains: `id`, `x`, `y` (layout coordinates), `component`, `cluster`, `degree` (or `degree_in`/`degree_out` if directed), `eigen`, `between`, and `close` (closeness, undirected only). The `edge_df` contains `x`, `y`, `xend`, `yend` for plotting with `geom_segment`. The igraph object `G` is also returned for further analysis.
+
+## Text Data
+
+The `DSText.process` function applies a spaCy NLP pipeline to a document DataFrame and returns a token-level DataFrame.
+
+```{python}
+#| eval: false
+import spacy
+nlp = spacy.load("en_core_web_sm")
+
+tokens_df = DSText.process(docs_df, nlp)
+```
+
+Input `docs_df` must have columns `doc_id` and `text`. The output contains one row per token with columns: `doc_id`, `sid` (sentence id), `tid` (token id), `token`, `token_with_ws`, `lemma`, `upos`, `tag`, `is_alpha`, `is_stop`, `is_punct`, `dep`, `head_idx`, `ent_type`, `ent_iob`.
+
+## Image Data
+
+The `DSImage` class provides utilities for working with image files.
+
+```{python}
+#| eval: false
+DSImage.plot_image_grid(df, ncol=10, label_name="label", filepath="filepath", limit=100)
+```
+
+The `compute_colors` method returns color percentages from an HSV image array (used internally for color analysis).

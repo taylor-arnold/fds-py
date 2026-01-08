@@ -1,0 +1,710 @@
+# Programming {#sec-programming}
+
+```{python}
+#| include: false
+import warnings
+warnings.filterwarnings('ignore')
+```
+
+::: {.callout-tip collapse="true"}
+## Practice Notebooks
+
+- Notebook06a [[Colab↗](https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook06a.ipynb?hl=en)]
+- Notebook06b [[Colab↗](https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook06b.ipynb?hl=en)]
+
+:::
+
+## Setup
+
+Load all of the modules and datasets needed for the chapter.
+
+```{python}
+#| output: false
+import numpy as np
+import polars as pl
+
+from funs import *
+from plotnine import *
+from polars import col as c
+theme_set(theme_minimal())
+```
+
+## Introduction
+
+The majority of the functions and methods that have been introduced throughout the first two parts of this text are provided by user-contributed packages. Most of these come from a core set of packages that together comprise the modern Python data science ecosystem. Included in this set of packages are Polars, numpy, matplotlib, and plotnine. Benefits of using these libraries include consistent APIs, excellent documentation, and the fact that they are often built to express theoretical models for data analysis (for example, relational database techniques encoded in Polars and vectorized operations in numpy). Downsides can include their computational overhead for simple operations and the learning curve required to understand their abstractions.
+
+There are various opinions about the best approaches to data science in Python, from pure Polars workflows to functional programming approaches to object-oriented designs. We will avoid a lengthy discussion of these debates here. As should be clear at this point, this text has been written with the opinion that Polars and the broader scientific Python ecosystem provide an excellent way to do data analysis and an ideal starting point for learning data science in Python. However, eventually it will be useful to learn the underlying built-in methods available within the Python programming language itself.
+
+The functions and data structures available directly from Python without importing any third-party packages, commonly known as built-in Python or core Python, will become particularly important as we learn how to do more complex programming and data scraping within this part of the book. In this chapter we will restart from the very basics by describing the fundamental data types and objects within Python. These topics will be made easier by the fact that we have seen many of them indirectly in the preceding chapters. We will also provide an overview of introductory computer science concepts such as control flow and function definition. The material is intended for readers who had no prior programming experience.
+
+## Core Data Types 
+
+In this and following section we will briefly explore the basic building blocks that are part of the Python programming language. These are used internally by every module that we work with in order to build the higher-level functions that we use in our data science work. It's important to understand these because we often use them as inputs to functions from Python modules.
+
+To start, let's consider what are called scalar types. These are values that store a single piece of information in an object and we have already talked about them in terms of the kinds of objects stored in a single cell in a DataFrame object. 
+
+Python has two common ways of storing numeric data: integers (whole numbers) and floats (numbers with a fractional part). Python will create an integer when there is no decimal point and a float when there is, even if the decimal point is zero. For example, here are two values where the first is created as an integer and the second as float. 
+
+```{python}
+val1 = 2
+val2 = 2.0
+val1 + val2
+```
+
+For the most part we do not need to worry too much about the difference between integers and floats. As we see in the above example, Python can do mathematics with a mixture of integers and floats by converting them as needed. Here, adding an integer and a float produces a float object to preserve the decimal value in the second element.
+
+Another common scalar type are Boolean values, which only have two possible values: True and False. We can create these in Python by typing the words True and False without quotes. These objects have special operators for combining two values: the `&` (and) operator, which returns True only if both elements are True, and the `|` (or) operator, which returns True if either element is True. Here is an example:
+
+```{python}
+val1 = True
+val2 = False
+print(f"`And` operator: {val1 & val2}")
+print(f"`Or` operator: {val1 | val2}")
+```
+
+There is a special scalar type called `NoneType` which has only a single value. We can create it in Python by typing `None` without quotes. It's often used to indicate that something is missing. For example, if a modelling function has an option for a pre-processing step of the data, the function may expect `None` as the argument to use when we do not have any pre-processing that we want to run.
+
+Finally, we have a data type of string for storing a sequence of characters. We frequently use these as arguments in data science work, such as specifying the columns to use in a DataFrame or defining the color to set in a plot. We can create a string by putting a sequence of any characters inside quotes. As with numbers, there are a large number of functions and operators that we can apply to strings depending on our goals.
+
+```{python}
+val1 = "apple"
+val2 = "sauce"
+val1 + val2
+```
+
+For all of the data types mentioned here, in addition to creating them directly with specific constants, we can also create them using special functions that try to turn one object type into another: `int()`, `float()`, `bool()`, and `str()`. Here is a small example showing how this works to change the way that adding 2 and 2 works:
+
+```{python}
+val1 = 2
+val2 = 2
+print(f"String addition: {str(val1) + str(val2)}")
+```
+
+There are several other scalar types, including complex, bytes, and memoryview. However, these rarely are needed in user-facing code, so its best to focus on the five types mentioned above: integers, floats, Booleans, NoneType, and strings.
+
+## Core Collections
+
+In order to build more complex objects, Python has several different kinds of collections that allow us to combine individual scalar values. Collections can additionally contain other collections in a recursive way in order to create rich, complex data structures.
+
+A list is an ordered sequence of elements. The elements can be of any other type. This arise frequently when passing options to data science functions, such as setting the breaks in a plot. The format for constructing a list directly is to use square brackets, with the elements seperated by commas. Here are examples of lists, one containing only scalar values and another with a list inside of a list:
+
+```{python}
+var1 = [1, 1, 2, 3, 5, 8, 13]
+var2 = [1, 2, [0, 1, 2]]
+```
+
+There are a number of functions, operators, and methods for working with lists. There are also a variety of special methods for selecting subsets of lists and creating new lists. For example, we can add two lists together to create a larger list with the first list and the second list combined with one another. Here is an example:
+
+```{python}
+var1 + var2
+```
+
+A tuple is a collection type that is closely related to a list. The main difference between a tuple and list is that a tuple cannot be changed after it is created. For performance reasons, some functions require us to create tuples as inputs. For examples, the `.agg` method of a DataFrame can be given a tuple of arguments describing how to summarize a data set. A tuple can be created by using parentheses with the elements seperated by commas: 
+
+```{python}
+var1 = (1, 2)
+var2 = (2, 2, 3)
+```
+
+A set stores and unordered collection of unique values. It is closely related to the mathematical definition of a set. The best way to create a set is to provide a list to the `set()` function. Here is example showing how the set ignores the ordering of the values and removes duplicate values: 
+
+```{python}
+var1 = set([5, 1, 1, 1, 1, 2])
+var1
+```
+
+The final collection type that we will commonly see are dictionaries. These consist of mappings from keys to values. We can create a new dictionary by using a syntax with curly braces, the keys in quotation marks, and the values following a colon:
+
+```{python}
+val1 = {
+    "first": "Taylor",
+    "middle": "B.",
+    "last": "Arnold"
+}
+val1
+```
+
+We can select or change a value in a dictionary by putting square brackets after the name of the dictionary and using the key name inside of the brackets. For example, here is how to get the last name from the dictionary we made above:
+
+```{python}
+val1["last"]
+```
+
+It is important to be able to recognize all four of the collection types described in this section because they come up as arguments to functions and methods. In our own code, we will see that lists and dictionaries are by far the most commonly used in data science work.
+
+## Conditional Statements
+
+Now that we have the basic building blocks of Python, we can turn to how to use them to write code that makes decisions. A conditional statement allows us to run different blocks of code depending on whether a condition is true or false. The simplest form uses the `if` keyword followed by a condition that evaluates to a Boolean value.
+
+```{python}
+x = 10
+if x > 5:
+    print("x is greater than 5")
+```
+
+Notice the structure: the `if` keyword is followed by a condition (`x > 5`), then a colon. The code that runs when the condition is true is indented on the following lines. This indentation is not optional in Python; it defines which code belongs to the conditional block.
+
+We can extend this with `else` to specify what happens when the condition is false:
+
+```{python}
+x = 3
+if x > 5:
+    print("x is greater than 5")
+else:
+    print("x is not greater than 5")
+```
+
+For more than two possibilities, we use `elif` (short for "else if") to check additional conditions:
+
+```{python}
+x = 5
+if x > 5:
+    print("x is greater than 5")
+elif x == 5:
+    print("x is exactly 5")
+else:
+    print("x is less than 5")
+```
+
+Python evaluates these conditions from top to bottom and runs only the first block whose condition is true. The `else` block at the end catches anything not matched by the earlier conditions.
+
+Conditions can be combined using `and` and `or`. The `and` operator requires both conditions to be true, while `or` requires at least one:
+
+```{python}
+x = 7
+if x > 5 and x < 10:
+    print("x is between 5 and 10")
+```
+
+The `not` operator inverts a Boolean value:
+
+```{python}
+x = 3
+if not x > 5:
+    print("x is not greater than 5")
+```
+
+Conditional statements become particularly useful when combined with loops and functions, which we explore in the following sections.
+
+## Loops
+
+A loop allows us to repeat a block of code multiple times. This is essential when we need to perform the same operation on many items, such as processing each file in a directory or each row in a dataset.
+
+The most common type of loop in Python is the `for` loop, which iterates over a sequence of values. Here is a simple example that prints each item in a list:
+
+```{python}
+fruits = ["apple", "banana", "cherry"]
+for fruit in fruits:
+    print(fruit)
+```
+
+The structure mirrors what we saw with conditionals: the `for` keyword, followed by a variable name (`fruit`), the keyword `in`, the sequence to iterate over, and a colon. The indented code runs once for each item in the sequence, with the variable taking on each value in turn.
+
+We can loop over many types of sequences. The `range()` function is particularly useful for generating sequences of numbers:
+
+```{python}
+for i in range(5):
+    print(i)
+```
+
+Notice that `range(5)` produces numbers from 0 to 4, not 1 to 5. This zero-indexing is consistent throughout Python. We can also specify a starting point and step size:
+
+```{python}
+for i in range(2, 10, 2):
+    print(i)
+```
+
+Often we need both the index of an item and the item itself. The `enumerate()` function provides both:
+
+```{python}
+fruits = ["apple", "banana", "cherry"]
+for i, fruit in enumerate(fruits):
+    print(f"Item {i}: {fruit}")
+```
+
+The syntax `for i, fruit in enumerate(fruits)` unpacks two values on each iteration: the index and the item. This is cleaner than manually tracking an index variable.
+
+A common pattern is to build up a result by appending to a list inside a loop:
+
+```{python}
+numbers = [1, 2, 3, 4, 5]
+squares = []
+for n in numbers:
+    squares.append(n**2)
+
+squares
+```
+
+The `.append()` method adds a single element to the end of a list. We start with an empty list and add to it on each iteration.
+
+When working with Polars DataFrames, we sometimes need to iterate over rows. The `.iter_rows()` method provides this capability:
+
+```{python}
+import polars as pl
+
+df = pl.DataFrame({
+    "name": ["Alice", "Bob", "Carol"],
+    "age": [25, 30, 35]
+})
+
+for row in df.iter_rows(named=True):
+    print(f"{row['name']} is {row['age']} years old")
+```
+
+Setting `named=True` returns each row as a dictionary, making it easy to access values by column name. Without this option, rows are returned as tuples.
+
+We can also enumerate rows when we need the index:
+
+```{python}
+for i, row in enumerate(df.iter_rows(named=True)):
+    print(f"Row {i}: {row['name']}")
+```
+
+That said, iterating over DataFrame rows should generally be a last resort. Polars is optimized for operations that work on entire columns at once. When possible, use Polars expressions rather than row-by-row iteration.
+
+Python also has `while` loops, which continue as long as a condition remains true:
+
+```{python}
+count = 0
+while count < 3:
+    print(count)
+    count = count + 1
+```
+
+While loops are useful when we don't know in advance how many iterations we need. However, they require care to avoid infinite loops (forgetting to update the condition so it eventually becomes false).
+
+## List Comprehensions
+
+List comprehensions provide a concise way to create lists. They combine the loop and the list-building pattern into a single expression. Compare this traditional loop:
+
+```{python}
+numbers = [1, 2, 3, 4, 5]
+squares = []
+for n in numbers:
+    squares.append(n**2)
+
+squares
+```
+
+With the equivalent list comprehension:
+
+```{python}
+numbers = [1, 2, 3, 4, 5]
+squares = [n**2 for n in numbers]
+squares
+```
+
+The list comprehension puts the expression (`n**2`) before the `for` clause, all enclosed in square brackets. This reads almost like English: "n squared for each n in numbers."
+
+We can add a condition to filter which items are included:
+
+```{python}
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+even_squares = [n**2 for n in numbers if n % 2 == 0]
+even_squares
+```
+
+The `if` clause at the end filters the input: only numbers where `n % 2 == 0` (even numbers) are processed.
+
+List comprehensions can also include an `else` clause, though the syntax changes. When we want to transform all items but differently based on a condition, we put the conditional expression before the `for`:
+
+```{python}
+numbers = [1, 2, 3, 4, 5]
+labels = ["even" if n % 2 == 0 else "odd" for n in numbers]
+labels
+```
+
+Similar syntax works for creating dictionaries:
+
+```{python}
+numbers = [1, 2, 3, 4, 5]
+square_dict = {n: n**2 for n in numbers}
+square_dict
+```
+
+The curly braces and `key: value` syntax indicate we're building a dictionary rather than a list.
+
+List comprehensions are more than just a shortcut. They often run faster than equivalent loops and make code more readable once you're familiar with the pattern. However, for complex logic, a traditional loop may be clearer.
+
+## Working with Files
+
+When doing data science work, we frequently need to work with files: reading data, saving results, and processing multiple files in a directory. Python's `pathlib` module provides an elegant, object-oriented approach to file system operations. A `Path` object represents a location in the file system. We create one by passing a string:
+
+```{python}
+data_path = Path("data")
+data_path
+```
+
+Path objects understand the structure of file paths. We can access different parts:
+
+```{python}
+file_path = Path("data/countries.csv")
+print(f"Name: {file_path.name}")
+print(f"Stem (name without extension): {file_path.stem}")
+print(f"Suffix (extension): {file_path.suffix}")
+print(f"Parent directory: {file_path.parent}")
+```
+
+One of pathlib's most useful features is the `/` operator for joining paths:
+
+```{python}
+base = Path("data")
+full_path = base / "countries.csv"
+full_path
+```
+
+This is cleaner than string concatenation and handles differences between operating systems (forward slashes on Mac/Linux, backslashes on Windows) automatically.
+
+Before working with files, we often need to check whether they exist:
+
+```{python}
+data_dir = Path("data")
+print(f"Directory exists: {data_dir.exists()}")
+print(f"Is a directory: {data_dir.is_dir()}")
+print(f"Is a file: {data_dir.is_file()}")
+```
+
+The `.iterdir()` method returns all items in a directory:
+
+```{python}
+data_dir = Path("data")
+for item in data_dir.iterdir():
+    print(item.name)
+```
+
+To find files matching a pattern, use `.glob()`. This is particularly powerful for finding all files of a certain type:
+
+```{python}
+csv_files = list(data_dir.glob(".csv"))
+print(f"Found {len(csv_files)} CSV files")
+```
+
+The `` is a wildcard that matches any sequence of characters. So `.csv` matches any file ending in `.csv`. For recursive searching through subdirectories, use ``:
+
+```{python}
+#| eval: false
+# Find all CSV files in data/ and any subdirectories
+all_csvs = list(data_dir.glob("/.csv"))
+```
+
+Pathlib provides simple methods for reading and writing text files. To read the contents of a file:
+
+```{python}
+#| eval: false
+file_path = Path("data/sample.txt")
+content = file_path.read_text()
+```
+
+To write content to a file:
+
+```{python}
+output_path = Path("examples/output.txt")
+output_path.write_text("Hello, world!\nThis is line 2.")
+```
+
+For line-by-line processing, we can split the text:
+
+```{python}
+content = output_path.read_text()
+lines = content.splitlines()
+for line in lines:
+    print(f"Line: {line}")
+```
+
+To write multiple lines, join them with newline characters:
+
+```{python}
+lines = ["First line", "Second line", "Third line"]
+output_path.write_text("\n".join(lines))
+```
+
+To create a new directory:
+
+```{python}
+new_dir = Path("results")
+new_dir.mkdir(exist_ok=True)
+```
+
+The `exist_ok=True` argument prevents an error if the directory already exists. To create nested directories, add `parents=True`:
+
+```{python}
+nested = Path("results/experiment1/plots")
+nested.mkdir(parents=True, exist_ok=True)
+```
+
+Let's put these pieces together with a practical example. Suppose we have a directory of image files and want to build a DataFrame containing information about each file. We'll use the `media/birds10` directory, which contains PNG images of birds.
+
+```{python}
+from PIL import Image
+
+image_dir = Path("media/birds10")
+```
+
+First, we find all PNG files in the directory:
+
+```{python}
+png_files = list(image_dir.glob(".png"))
+print(f"Found {len(png_files)} PNG files")
+```
+
+Now we iterate through the files, loading each image to get its dimensions:
+
+```{python}
+file_info = []
+for file_path in png_files:
+    img = Image.open(file_path)
+    width, height = img.size
+    file_info.append({
+        "filename": file_path.name,
+        "width": width,
+        "height": height
+    })
+```
+
+Finally, we convert this list of dictionaries into a Polars DataFrame:
+
+```{python}
+image_df = pl.DataFrame(file_info)
+image_df
+```
+
+This pattern of listing files, processing each one in a loop, collecting results, and building a DataFrame is extremely common in data science workflows. The same approach works for any type of file: CSVs, JSON files, text documents, or any other data format.
+
+## NumPy Arrays
+
+While Polars handles tabular data beautifully, many scientific computing and machine learning tasks require a different data structure: the NumPy array. NumPy (Numerical Python) provides efficient storage and operations for homogeneous numerical data, particularly matrices and higher-dimensional arrays.
+
+```{python}
+import numpy as np
+```
+
+The simplest way to create a NumPy array is from a Python list:
+
+```{python}
+arr = np.array([1, 2, 3, 4, 5])
+arr
+```
+
+Unlike Python lists, NumPy arrays require all elements to be the same type. NumPy will convert elements to a common type if needed:
+
+```{python}
+mixed = np.array([1, 2.5, 3])
+print(f"Array: {mixed}")
+print(f"Data type: {mixed.dtype}")
+```
+
+Here, the integer `1` and `3` were converted to floats to match `2.5`.
+
+Two-dimensional arrays (matrices) are created from nested lists:
+
+```{python}
+matrix = np.array([[1, 2, 3], [4, 5, 6]])
+matrix
+```
+
+NumPy provides convenient functions for creating common arrays:
+
+```{python}
+zeros = np.zeros((3, 4))      # 3x4 array of zeros
+ones = np.ones((2, 3))        # 2x3 array of ones
+seq = np.arange(0, 10, 2)     # sequence from 0 to 10 by 2
+linear = np.linspace(0, 1, 5) # 5 evenly spaced values from 0 to 1
+
+print(f"Zeros:\n{zeros}\n")
+print(f"Sequence: {seq}")
+print(f"Linear space: {linear}")
+```
+
+Arrays have attributes describing their structure:
+
+```{python}
+matrix = np.array([[1, 2, 3], [4, 5, 6]])
+print(f"Shape: {matrix.shape}")     # (rows, columns)
+print(f"Number of dimensions: {matrix.ndim}")
+print(f"Total elements: {matrix.size}")
+print(f"Data type: {matrix.dtype}")
+```
+
+NumPy arrays support Python's indexing syntax, extended to multiple dimensions:
+
+```{python}
+arr = np.array([10, 20, 30, 40, 50])
+print(f"First element: {arr[0]}")
+print(f"Last element: {arr[-1]}")
+print(f"Elements 1-3: {arr[1:4]}")
+```
+
+For two-dimensional arrays, we specify row and column indices separated by a comma:
+
+```{python}
+matrix = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+print(f"Element at row 0, col 2: {matrix[0, 2]}")
+print(f"First row: {matrix[0, :]}")
+print(f"First column: {matrix[:, 0]}")
+print(f"Submatrix:\n{matrix[0:2, 1:3]}")
+```
+
+The colon `:` by itself means "all elements along this dimension."
+
+The real power of NumPy comes from vectorized operations, which apply to entire arrays at once without explicit loops:
+
+```{python}
+arr = np.array([1, 2, 3, 4, 5])
+print(f"Add 10: {arr + 10}")
+print(f"Multiply by 2: {arr * 2}")
+print(f"Square: {arr**2}")
+```
+
+Operations between arrays of the same shape work element-wise:
+
+```{python}
+a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+print(f"Sum: {a + b}")
+print(f"Product: {a * b}")
+```
+
+NumPy includes many mathematical functions that operate on entire arrays:
+
+```{python}
+arr = np.array([1, 4, 9, 16, 25])
+print(f"Square root: {np.sqrt(arr)}")
+print(f"Sum: {np.sum(arr)}")
+print(f"Mean: {np.mean(arr)}")
+print(f"Standard deviation: {np.std(arr)}")
+```
+
+Vectorized operations are not just convenient; they are dramatically faster than equivalent Python loops. NumPy achieves this by implementing operations in optimized C code and processing data in contiguous memory blocks. For large arrays, the speed difference can be a factor of 100 or more.
+
+Most scientific Python libraries, including machine learning frameworks like scikit-learn and PyTorch, use NumPy arrays as their primary data exchange format. Images are typically represented as NumPy arrays (height × width × color channels). Time series, audio signals, and neural network weights all use NumPy arrays. Understanding the basics of NumPy is therefore essential for working with these tools.
+
+Polars and NumPy interoperate smoothly. To convert a Polars Series to a NumPy array:
+
+```{python}
+import polars as pl
+
+df = pl.DataFrame({"values": [1, 2, 3, 4, 5]})
+arr = df["values"].to_numpy()
+arr
+```
+
+To convert a NumPy array to a Polars Series:
+
+```{python}
+arr = np.array([10, 20, 30])
+series = pl.Series("numbers", arr)
+series
+```
+
+This interoperability means we can use whichever tool is most appropriate for each task: Polars for data manipulation and aggregation, NumPy for numerical computation and interfacing with machine learning libraries.
+
+## Defining Functions
+
+As our code becomes more complex, we benefit from organizing it into reusable pieces. A function packages a block of code that we can call by name, optionally passing in values and getting results back.
+
+We define a function using the `def` keyword:
+
+```{python}
+def greet(name):
+    return f"Hello, {name}!"
+
+greet("World")
+```
+
+The function definition has several parts: `def` indicates we're defining a function, `greet` is the function's name, `name` in parentheses is a parameter (a variable that will receive the input), and the indented block is the function's body. The `return` statement specifies what value the function produces.
+
+Functions can have multiple parameters:
+
+```{python}
+def add_numbers(a, b):
+    return a + b
+
+add_numbers(3, 5)
+```
+
+We can provide default values for parameters, making them optional:
+
+```{python}
+def greet(name, greeting="Hello"):
+    return f"{greeting}, {name}!"
+
+print(greet("World"))
+print(greet("World", "Hi"))
+```
+
+When calling a function, we can specify arguments by name for clarity:
+
+```{python}
+greet(name="World", greeting="Welcome")
+```
+
+Not all functions need to return a value. Some perform actions like printing output or modifying files:
+
+```{python}
+def print_summary(values):
+    print(f"Count: {len(values)}")
+    print(f"Sum: {sum(values)}")
+    print(f"Mean: {sum(values) / len(values)}")
+
+print_summary([1, 2, 3, 4, 5])
+```
+
+If a function doesn't have a `return` statement, it implicitly returns `None`.
+
+Functions are particularly useful for tasks we perform repeatedly. Consider our earlier example of processing image files. We could package that logic into a function:
+
+```{python}
+def get_image_info(file_path):
+    """Return a dictionary with image file information."""
+    img = Image.open(file_path)
+    width, height = img.size
+    return {
+        "filename": file_path.name,
+        "width": width,
+        "height": height
+    }
+```
+
+The triple-quoted text after the function definition is a docstring, which documents what the function does. Now we can use this function in a list comprehension:
+
+```{python}
+image_dir = Path("media/birds10")
+png_files = list(image_dir.glob(".png"))
+file_info = [get_image_info(f) for f in png_files]
+image_df = pl.DataFrame(file_info)
+```
+
+This is more readable than the loop version because the function name documents the purpose of the code.
+
+## Putting It Together
+
+Let's conclude with a more complete example that combines several concepts from this chapter. We'll write a function that processes a directory of CSV files, reads each one, adds a column indicating the source file, and combines them into a single DataFrame.
+
+```{python}
+def combine_csv_files(directory):
+    """
+    Read all CSV files in a directory and combine them into one DataFrame.
+    Adds a 'source_file' column with the original filename.
+    """
+    dir_path = Path(directory)
+    csv_files = list(dir_path.glob(".csv"))
+    
+    if len(csv_files) == 0:
+        print(f"No CSV files found in {directory}")
+        return None
+    
+    dataframes = []
+    for file_path in csv_files:
+        df = pl.read_csv(file_path)
+        df = df.with_columns(pl.lit(file_path.name).alias("source_file"))
+        dataframes.append(df)
+    
+    combined = pl.concat(dataframes)
+    return combined
+```
+
+This function demonstrates several key concepts: using pathlib to work with directories and files, looping with a for loop, building a list with append, using conditional statements to handle edge cases, and defining a reusable function with a clear purpose.
+
+The same pattern of combining multiple files appears constantly in data science work. Raw data often arrives as multiple files (one per day, one per region, one per experiment), and our first task is to combine them into a single dataset for analysis.
+
+## References {-}

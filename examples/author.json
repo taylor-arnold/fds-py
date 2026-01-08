@@ -1,0 +1,30 @@
+{
+  "data": [
+    {
+      "name": "Charlotte Brontë",
+      "age_at_death": 38,
+      "date": {
+        "born": "21 April 1816",
+        "died": "31 March 1855"
+      },
+      "profession": [
+        "novelist",
+        "poet",
+        "governess"
+      ]
+    },
+    {
+      "name": "Virginia Woolf",
+      "age_at_death": 59,
+      "date": {
+        "born": "25 January 1882",
+        "died": "28 March 1941"
+      },
+      "profession": [
+        "novelist",
+        "essayist",
+        "critic"
+      ]
+    }
+  ]
+}

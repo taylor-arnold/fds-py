@@ -1,0 +1,290 @@
+# EDA III: Restructuring Data {#sec-restructure}
+
+```{python}
+#| include: false
+import warnings
+warnings.filterwarnings('ignore')
+```
+
+::: {.callout-tip collapse="true"}
+## Practice Notebooks
+
+- Notebook04a [[Colab↗](https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook04a.ipynb?hl=en)]
+- Notebook04b [[Colab↗](https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook04b.ipynb?hl=en)]
+- Notebook04c [[Colab↗](https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook04c.ipynb?hl=en)]
+- Notebook04d [[Colab↗](https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook04d.ipynb?hl=en)]
+
+:::
+
+## Setup
+
+Load all of the modules and datasets needed for the chapter.
+
+```{python}
+#| output: false
+import numpy as np
+import polars as pl
+
+from funs import *
+from plotnine import *
+from polars import col as c
+theme_set(theme_minimal())
+
+country = pl.read_csv("data/countries.csv")
+```
+
+## Introduction
+
+In @sec-organize, we learned to use data operations to modify a dataset in Python. These modifications included taking a subset of a DataFrame, such as filtering rows or selecting a reduced set of columns. We saw how to add new columns and how to rearrange rows by sorting on one or more columns. We also explored grouping and summarizing our data to create a new set of summary statistics that aggregate the original dataset at different levels of granularity. Along the way, we saw how these modifications can help create informative data visualizations, particularly when there is too much data to label every row as a point on a single plot.
+
+In this chapter, we'll continue exploring how to modify data using increasingly advanced techniques. First, we'll examine how to combine information from two different data tables. Then we'll move on to pivots, a relatively complex but powerful method for reshaping data. 
+
+## Primary and Foreign Keys
+
+Primary keys are a core concept we need to understand to combine two datasets in Python. A *primary key* consists of one or more columns that can uniquely and minimally identify a row of data. For example, in our `country` dataset the column `iso` is a primary key. The column `full_name` is also a primary key. In database theory a distinction is made between *candidate keys* (any set of one or more columns that could serve as a primary key) and the specific primary key chosen for a table. This distinction is less applicable to data science work, where we will use the term primary key to refer to any possible way of identifying a row in our dataset.
+
+A *foreign key* is a primary key from one table that appears in another table. For example, we might have a dataset of customers, with one column indicating the `iso` of the country in which they live. We join multiple tables by associating the primary key in one table with the matching foreign key in another. Notice that the difference between primary and foreign is the table in which the key appears, not the information itself. The value `iso` is both a primary key in the countries dataset and a foreign key in the customers dataset. The connection between these two tables is called a *relation*. This is where the term *relational database* comes from.
+
+## Joining by Relation
+
+We will start with an abstract example before turning to a specific example using actual DataFrames in Python. Assume we have two tables, `table_one` and `table_two`. The column `key_col` appears in both tables: it is a primary key in `table_two` and a foreign key in `table_one`. This means it has a single unique row associated with it in `table_two` but possibly many instances in `table_one`.
+
+To join the information in these two tables, we use the `.join()` method of the table containing the foreign key. The arguments include the second dataset and the name of the key used to combine the tables.
+
+```{python}
+#| eval: false
+(
+    table_one
+    .join(table_two, on=c.key_col)
+)
+```
+
+Assuming our data are correctly organized, the output will be a dataset with the same number of rows as `table_one`, where the first set of columns will also match `table_one`. After the original columns, there will be a version of all the columns from `table_two` that correspond to the matching values of our key.
+
+Often some of the values in `table_one` will not have a matching value in `table_two`. In that case, the default behavior is to remove rows without matches; this is called an *inner join*. Alternatively, you can fill missing columns with `null` values, which results in a *left join*. We can indicate this to Python as follows:
+
+```{python}
+#| eval: false
+(
+    table_one
+    .join(table_two, on=c.key_col, how="left")
+)
+```
+
+::: {.callout-note collapse="true"}
+## Left and right tables
+
+The terminology of "left" and "right" tables comes from thinking about how the join would look when written on a single line. Consider the code `table_one.join(table_two)`; the first table is to the left of the join function and the second table is to the right of the join function. As a rule of thumb, we try to place the table with the foreign key on the left and the table with the primary key on the right. The reason for this is that the output should match the number of observations in the table with the foreign key, so it typically makes it easier to reason about treating it as a method of the foreign-key table. Note that usually the table with the foreign key will be much larger than the table with the primary key.
+:::
+
+::: {.callout-note collapse="true"}
+## Equi-joins: inner, left, right, full, semi, anti, cross
+
+There are six different options that we can assign to the `how` parameter in the table join method. The default, `inner`, returns only rows that match in both tables. `Left` joins return all rows from the left DataFrame; `right` joins return all rows from the right DataFrame. `Full` joins (rarely used) return all rows from both tables. A `semi` join returns only rows from the left table that have a match in the right table; no additional columns are added. An `anti` join returns only rows in the left table that do not match any rows in the right table. These six options are called equi-joins because they work by finding where the key(s) in one table are equal to the key(s) in another table.
+
+A cross join returns all combinations of rows from the two tables, with no key required. It has several interesting applications, which we will see in later chapters.
+:::
+
+There are several other modifications that we can apply to the basic syntax. For example, if our key has multiple columns, we can pass a list to `on` instead of a single value. Here is the code to join on two matching columns from the two DataFrames.
+
+```{python}
+#| eval: false
+(
+    table_one
+    .join(table_two, on=[c.key_col1, c.key_col2])
+)
+```
+
+Or, if the key has different names in the two tables, we can describe them with `on_left` (the first table) and `on_right` (the second table). These can be individual values or lists, where each element in one list corresponds to the element in the other.
+
+```{python}
+#| eval: false
+(
+    table_one
+    .join(table_two, on_left=c.key_col1, on_left=c.key_col1)
+)
+```
+
+Note that Python will let you join on any set of columns that match between the two tables. The results can be surprising, and possibly very large, if we are not sure that the join column(s) are a primary key in one of the tables. Avoid joins that do not follow the pattern here (foreign key in the left table and a primary key in the right table).
+
+## Join Examples
+
+The code outline in the previous section should make more sense once we see examples using actual datasets. To do this, we need multiple datasets that we can join together. We will create a smaller version of the `country` dataset that contains only two columns, which makes it easier to view the results without scrolling. We also load a dataset of country borders, where each row shows the relationship between a country and one of its neighbors.
+
+```{python}
+c_sml = country.select(c.iso, c.gini)
+border = pl.read_csv("data/countries_borders.csv")
+border
+```
+
+We can use a relational join to add the Gini coefficient for the country referenced in the border data. Note that `iso` is present in both tables; it's a primary key in `c_sml` and a foreign key in `border`. We can join them using the code below.
+
+```{python}
+(
+    border
+    .join(c_sml, on=c.iso)
+)
+```
+
+Notice that the Gini coefficient of the base country has been added to the data. The first five rows all correspond to borders with Afghanistan and therefore the same value of the Gini coefficient (27.8) is duplicated for each of the rows. Similarly, the last four rows correspond to Zimbabwe and repeat the Gini coefficient value of 50.3 in each. As with other data methods we use, the `.join()` method returns a new dataset without modifying the original data. We would need to save the output if we wanted to work further with the results.
+
+The DataFrame after the join has only 641 observations compared to the 829 observations in the original. The reason is that our `country` data only contains those countries for which we have full economic data. This means that some of the countries in `border` do not have an entry in `c_sml`. The default relational join is an inner join, so these missing corresponding rows are removed from the result. Changing to a left join restores the DataFrame to the same number of observations as the original `border` data.
+
+```{python}
+(
+    border
+    .join(c_sml, on=c.iso, how="left")
+)
+```
+
+So far, we have added the Gini coefficient of the base country. We could also add the coefficient of the bordering country by associating the column `iso_neighbor` with the column `iso` in our countries DataFrame. Here is the code to add the neighboring Gini coefficient.
+
+```{python}
+(
+    border
+    .join(c_sml, left_on=c.iso_neighbor, right_on=c.iso)
+)
+```
+
+What if we wanted to add the Gini coefficient to both countries in each row? This requires doing two separate joins, one after the other. In the second join, we add the suffix `_neighbor` to the Gini coefficient to distinguish the two scores in the output.
+
+```{python}
+(
+    border
+    .join(c_sml, on=c.iso)
+    .join(c_sml, left_on=c.iso_neighbor, right_on=c.iso, suffix="_neighbor")
+)
+```
+
+As noted above, we can add the option `how=` with the values `inner` (default), `left`, `right`, or `outer` to indicate what should happen when keys appear only in one table. Left joins retain all keys from the first (left) table, right joins retain all keys from the second (right) table, and outer joins retain all keys. When there is no matching value in the other table, `null` values are filled in. The default, `inner`, is often a good choice to avoid missing values.
+
+Another use of a key-based join is to determine which elements match between one table and another without adding any extra columns. These are called filtering joins because they act like the `.filter` method in that they select a subset of rows. There are two variants: a semi-join retains only those rows that have a match in the second table, and an anti-join retains only those rows that do not. When there is only a single key, semi- and anti-joins can be replaced by a call to `isin`. The real power comes when there are multiple keys and we want to know whether a specific combination of keys matches (or does not match) those found in another table.
+
+## Conditional Joins
+
+In this section, we introduce two additional kinds of joins that are helpful when working with certain types of complex data. Both of these allow us to join by relationships between keys that do not require values to be exactly equal. To start, let's create two subsets of our `countries` data, separating out countries in Africa and in Asia, and sorting by the Gini coefficient. We remove any missing values from the output.
+
+```{python}
+africa = (
+    country
+    .filter(c.region == "Africa")
+    .select(c.full_name, c.gini)
+    .sort(c.gini)
+    .drop_nulls()
+)
+asia = (
+    country
+    .filter(c.region == "Asia")
+    .select(c.full_name, c.gini)
+    .sort(c.gini)
+    .drop_nulls()
+)
+```
+
+The function `.join_asof` combines two datasets by matching each row in the first (left) dataset to the nearest value in the second (right) dataset based on numeric values in a specified pair of columns. It always returns a dataset with the same number of rows as the first (left) dataset. The function is optimized to do this quickly even for large datasets; to achieve this, it requires that both datasets be sorted by the join key before being called. Below is an example where we associate each African country with the nearest Asian country in terms of their Gini coefficient. We set `coalesce=False` to ensure the matching country's Gini coefficient is retained in the output.
+
+```{python}
+(
+    africa
+    .join_asof(asia, on=c.gini, strategy="nearest", coalesce=False)
+)
+```
+
+The original motivation for the `.join_asof` method was to join two time-series datasets. The idea is that we might want the current (most recent) value from one table relative to another. Hence the function's name and the fact that it uses the `backward` strategy by default to find the nearest value in the second dataset that is less than (i.e., earlier than) the value in the first. You can set the strategy to `forward` to look in the other direction, or to `nearest` to find the closest value. You can also add additional keys with the `by`, `by_left`, or `by_right` options; these keys must match exactly before performing the nearest search. The tables must be pre-sorted by the join key(s) for the function to work.
+
+If we need to do more exotic joins between two tables, we can use the `.join_where` method. It takes one or more expressions in the same format used by the `.filter` method to specify exactly which pairs of rows to keep in the joined dataset. To refer to columns that share the same name in both datasets, use the `_right` suffix to indicate the second dataset. Below is an example that finds all pairs of countries in Africa and Asia where the difference in the Gini coefficient is less than 5.
+
+```{python}
+(
+    africa
+    .join_where(
+        asia,
+        (c.gini - c.gini_right).abs() < 5
+    )
+)
+```
+
+This method can be slow because it needs to manually check every combination of rows in the two datasets. However, it is very powerful and useful when combining two reasonably sized datasets in a complex way. Notice that we could obtain the same result by starting with a cross join (which returns every combination of rows) and then applying a filter. The benefit of the `.join_where` is that it avoids having to store in memory all combinations of non-matching rows by effectively combining the cross join and filtering into a single step.
+
+## Units of Observation
+
+When designing a way to store tabular data, we often must decide whether to favor many rows and few columns or many columns and few rows. A related decision, particularly when choosing a format with more columns, is what information to store in columns versus rows. In some cases the answers are clear and obvious. In others, there are trade-offs about which types of analyses will be easiest or hardest to perform with the data. Let's work through an example.
+
+Assume that you are a biologist tracking the heights of 100 plants over the next 14 days. There are several different ways that this data could be collected. We could have each day's measurements in a column and each plant as a row. We could have each plant as a column and each day as a row. Or we could have a row for each combination of plant and day, with `100*14 = 1,400` rows and three columns (plant ID, day ID, and height).
+
+A core data-science concept will help us distinguish the three cases above. A *unit of observation* is the entity about which data are collected and recorded in a dataset. In other words, it is the “who” or “what” that each row of the table represents. In the example with one row for each plant and one column for each day, the unit of observation is a *plant*. In the example with one row for each day and one column for each plant, the unit of observation is a *day*. In the final example, the one with 1,400 rows, we call the unit of observation *plant × day* (read “plant crossed with day”), which means each row corresponds to a unique combination of one plant and one day. The key takeaway is that once we have picked the unit of observation, there is only a single way to construct our data table. Choosing the right unit of observation for our data will be a central concern in the next chapter.
+
+Note that the concept of a unit of observation is closely linked to that of a primary key. By definition, a primary key must uniquely identify the "what" of the unit of observation. For example, a primary key for a table whose unit of observation is a plant must uniquely identify each plant. Likewise, a table with a *plant × day* unit of observation needs a key that uniquely identifies both the plant and the day.
+
+## Pivot and Unpivot
+
+Sometimes the unit of observation in which a data table is stored does not match the unit needed for our analysis. If the stored format uses a compound unit of observation, we can simplify it by using an aggregation to remove one or more components. For example, we could group a *plant × day* table by plant ID and calculate summary statistics (such as the maximum height over all days) to generate a dataset with *plant* as the unit of observation. While aggregations are useful, by design they remove information present in the original dataset. Other times, we want to restructure the unit of observation without losing or adding any information—we simply need the data in a different shape for a particular analysis or visualization. To do this, we can use one of two additional data manipulation functions.
+
+Consider the `cellphone` dataset; we show its first few rows below. The unit of observation is *year × country*: each row gives the number of cellphones per 100 people for that year and country.
+
+```{python}
+cellphone = pl.read_csv("data/countries_cellphone.csv")
+cellphone
+```
+
+We could have stored this dataset in a format where the unit of observation was *year* and each country had its own column. What if we want to work with the data in that format? For example, if we wanted to compute the difference in cellphone ownership between the United States and Canada, we would need the data in this format. We can convert our dataset using the `.pivot()` method, which requires indicating which column will be used to index the output (this becomes the unit of observation), which column will be used to create the new columns, and which column contains the values that will fill the table.
+
+```{python}
+cell_wide = (
+    cellphone
+    .pivot(index="year", on="iso", values="cell")
+)
+cell_wide
+```
+
+Now, what if we want to go the other way? That is, suppose we stored the data originally in the format above (`cell_wide`) but want to return to the version we started with. This can be achieved by using the `.unpivot()` method, which requires specifying the index column to use. The new columns created to store the data are given the default names `variable` and `value`. These can be changed by setting the `variable_name` and `value_name` arguments.
+
+```{python}
+(
+  cell_wide
+  .unpivot(index="year")
+)
+```
+
+::: {.callout-warning collapse="true"}
+## Pivot and unpivot syntax
+
+The current version of Polars on Google Colab does not allow using the `c.` notation when specifying columns as we do with other Polars methods. Instead, you must specify the column as a string, similar to how we do it in plotnine graphics. This has already been changed in the development version of Polars for `pivot` and will likely change for `unpivot` in the near future. For now, remember that both `pivot` and `unpivot` require a different way of specifying columns compared to other Polars methods.
+:::
+
+The `.pivot()` and `.unpivot()` methods are powerful tools for data manipulation and constitute the final major methods we need for manipulating tabular datasets. Although they may at first glance seem straightforward (and should be, at least in theory), care is needed when using them to reshape data, because they can easily introduce subtle errors. The best practice is to decide on the unit of observation up front and structure your data accordingly. Use these reshaping functions when necessary, but avoid unnecessary back-and-forth transformations that can introduce mistakes.
+
+## Expand List Columns
+
+A final type of transformation arises when multiple elements occupy a single cell in a table. This usually occurs only after a data-cleaning step we've performed, rather than as raw input from a CSV file. For example, the function `str.split`, which we'll learn more about in @sec-strings, can split the text in a DataFrame column into parts. We can use this to split the multiple language codes found in the `lang` column of our data.
+
+```{python}
+(
+    country
+    .select(c.full_name, c.lang)
+    .with_columns(
+        lang_codes = c.lang.str.split("|")
+    )
+)
+```
+
+It is hard to work directly with the embedding list structure. Often the easiest way to simplify a data frame that contains list elements is to unravel the lists, duplicating the other columns. Use the `.explode()` method, passing the column(s) you want to unravel.
+
+```{python}
+(
+    country
+    .select(c.full_name, c.lang)
+    .with_columns(
+        lang_codes = c.lang.str.split("|")
+    )
+    .explode(c.lang_codes)
+)
+```
+
+The term "explode" warns us that the resulting dataset can become very large, particularly if we unravel multiple columns simultaneously.
+
+## Coming from R or Pandas
+
+If you are familiar with joins and pivots in R's `dplyr` or in Pandas, the code here should be relatively familiar, except for the specific defaults and argument names. What makes these operations difficult are the concepts, not the code, and those do not change across implementations.
+
+## References {-}

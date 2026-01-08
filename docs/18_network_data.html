@@ -1,0 +1,2119 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Taylor Arnold">
+
+<title>18&nbsp; Network Data – Foundations of Data Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./19_textual_data.html" rel="next">
+<link href="./17_temporal_data.html" rel="prev">
+<link href="./img/owl_explore.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-25064e4154141e7ea34817c6f1220590.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./16_spatial_data.html">Part IV: Applications</a></li><li class="breadcrumb-item"><a href="./18_network_data.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Network Data</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Foundations of Data Science</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/taylor-arnold/fds-py" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part I: Core</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_modify.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">EDA I: Organizing Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">EDA II: Visualizing Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_combine.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">EDA III: Restructuring Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_collect.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">EDA IV: Collecting Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part II: Programming</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_program.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Programming</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_strings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Strings</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_dataformats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Data Formats</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_requests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Requests</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part III: Models</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Inference</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_supervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Supervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_unsupervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Unsupervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13_deeplearning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Deep Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_cnnwordvec.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">CNNs and Word2Vec</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15_transferlearn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Transfer Learning</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part IV: Applications</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16_spatial_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Spatial Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17_temporal_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Temporal Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18_network_data.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Network Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19_textual_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Textual Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20_image_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Image Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">Part V: Notes</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./21_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Notes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./22_datasets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Datasets</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup"><span class="header-section-number">18.1</span> Setup</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction"><span class="header-section-number">18.2</span> Introduction</a></li>
+  <li><a href="#creating-a-network-object" id="toc-creating-a-network-object" class="nav-link" data-scroll-target="#creating-a-network-object"><span class="header-section-number">18.3</span> Creating a Network Object</a></li>
+  <li><a href="#centrality" id="toc-centrality" class="nav-link" data-scroll-target="#centrality"><span class="header-section-number">18.4</span> Centrality</a></li>
+  <li><a href="#clusters" id="toc-clusters" class="nav-link" data-scroll-target="#clusters"><span class="header-section-number">18.5</span> Clusters</a></li>
+  <li><a href="#co-citation-networks" id="toc-co-citation-networks" class="nav-link" data-scroll-target="#co-citation-networks"><span class="header-section-number">18.6</span> Co-citation Networks</a></li>
+  <li><a href="#directed-networks" id="toc-directed-networks" class="nav-link" data-scroll-target="#directed-networks"><span class="header-section-number">18.7</span> Directed Networks</a></li>
+  <li><a href="#distance-networks" id="toc-distance-networks" class="nav-link" data-scroll-target="#distance-networks"><span class="header-section-number">18.8</span> Distance Networks</a></li>
+  <li><a href="#nearest-neighbor-networks" id="toc-nearest-neighbor-networks" class="nav-link" data-scroll-target="#nearest-neighbor-networks"><span class="header-section-number">18.9</span> Nearest Neighbor Networks</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">18.10</span> Summary</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./16_spatial_data.html">Part IV: Applications</a></li><li class="breadcrumb-item"><a href="./18_network_data.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Network Data</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-networks" class="quarto-section-identifier"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Network Data</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Practice Notebooks
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>Notebook18a [<a href="https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook18a.ipynb?hl=en">Colab↗</a>]</li>
+<li>Notebook18b [<a href="https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook18b.ipynb?hl=en">Colab↗</a>]</li>
+</ul>
+</div>
+</div>
+</div>
+<section id="setup" class="level2" data-number="18.1">
+<h2 data-number="18.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">18.1</span> Setup</h2>
+<p>Load all of the modules and datasets needed for the chapter.</p>
+<div id="1b7a4f38" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funs <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plotnine <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polars <span class="im">import</span> col <span class="im">as</span> c</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>theme_set(theme_minimal())</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>page_citation <span class="op">=</span> pl.read_csv(<span class="st">"data/wiki_uk_citations.csv"</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>page_cocitation <span class="op">=</span> pl.read_csv(<span class="st">"data/wiki_uk_cocitations.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="introduction" class="level2" data-number="18.2">
+<h2 data-number="18.2" class="anchored" data-anchor-id="introduction"><span class="header-section-number">18.2</span> Introduction</h2>
+<p>A <em>network</em> consists of a set of objects and a collection of links identifying relationships between pairs of these objects <span class="citation" data-cites="newman2018networks">[<a href="#ref-newman2018networks" role="doc-biblioref">1</a>]</span>. Networks form a very generic data model with extensive applications across the humanities and social sciences <span class="citation" data-cites="wasserman1994social">[<a href="#ref-wasserman1994social" role="doc-biblioref">2</a>]</span>. They can be a powerful way to understand connections and relationships between a wide range of entities. For example, one might want to explore friendship relationships between people, citations between books, or connections between computers. Whenever there exists a set of relationships that connects objects to each other, a network can be a useful tool for visualization and data exploration.</p>
+<p>A critical step in interpreting network data is deciding exactly what elements correspond to the <em>nodes</em> (the objects) and the <em>edges</em> (links between the nodes). For example, consider a study of citations. A node might be an author and an edge may connect two authors when one cites the other. The SignsAt40 project is a great example: they examine 40 years of feminist scholarship through network and text analysis, including co-citation networks. Being very clear about how nodes and edges are defined is key to exploring networks.</p>
+<p>In this chapter, we start by working with network data taken from Wikipedia using the same set of pages we saw in the previous chapter. Wikipedia pages contain many internal links between pages; we collected information about each time one of the pages in our dataset provided a link to another page in our collection. Only links within the main body of the text were used.</p>
+<p>The <code>DSNetwork.process</code> function is a helper that takes an edge list and returns node and edge DataFrames suitable for visualization, along with network metrics. We will use it throughout this chapter.</p>
+</section>
+<section id="creating-a-network-object" class="level2" data-number="18.3">
+<h2 data-number="18.3" class="anchored" data-anchor-id="creating-a-network-object"><span class="header-section-number">18.3</span> Creating a Network Object</h2>
+<p>We can describe a network structure with a tabular dataset. Specifically, we can create a dataset with one row for each edge in the network. This dataset needs one column giving an identifier for the starting node of the edge and another column giving the ending node. The set of links between the Wikipedia pages is read into Python and displayed by the following block of code. Notice that we are using the same values in the <code>doc_id</code> column that were used as unique identifiers for each page text in <a href="19_textual_data.html" class="quarto-xref"><span>Chapter 19</span></a>.</p>
+<div id="afd6bb5f" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>page_citation</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (377, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">doc_id2</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>"Geoffrey Chaucer"</td>
+</tr>
+<tr class="even">
+<td>"Geoffrey Chaucer"</td>
+<td>"William Langland"</td>
+</tr>
+<tr class="odd">
+<td>"Geoffrey Chaucer"</td>
+<td>"John Gower"</td>
+</tr>
+<tr class="even">
+<td>"Geoffrey Chaucer"</td>
+<td>"John Dryden"</td>
+</tr>
+<tr class="odd">
+<td>"Geoffrey Chaucer"</td>
+<td>"Philip Sidney"</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Rex Warner"</td>
+<td>"Stephen Spender"</td>
+</tr>
+<tr class="even">
+<td>"Seamus Heaney"</td>
+<td>"W. B. Yeats"</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>"George Bernard Shaw"</td>
+</tr>
+<tr class="even">
+<td>"Seamus Heaney"</td>
+<td>"Samuel Beckett"</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>"Mary Robinson"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Looking at the first few rows, we see that Marie de France has only one link (to Geoffrey Chaucer). Chaucer, on the other hand, has links to six other authors. As a starting way to analyze the data, we can see how many pages link into each author’s page. Arranging the data by the count will give a quick understanding of how central each author’s page is to the other authors.</p>
+<div id="5ba423a1" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    page_citation</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .group_by(c.doc_id2)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    .agg(count <span class="op">=</span> pl.<span class="bu">len</span>())</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    .sort(c.count, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (64, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id2</th>
+<th data-quarto-table-cell-role="th">count</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>u32</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"William Shakespeare"</td>
+<td>25</td>
+</tr>
+<tr class="even">
+<td>"William Wordsworth"</td>
+<td>23</td>
+</tr>
+<tr class="odd">
+<td>"T. S. Eliot"</td>
+<td>19</td>
+</tr>
+<tr class="even">
+<td>"W. H. Auden"</td>
+<td>13</td>
+</tr>
+<tr class="odd">
+<td>"John Keats"</td>
+<td>12</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Thomas More"</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>"Rex Warner"</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>"Beatrix Potter"</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>"Christina Rossetti"</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>"George Herbert"</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>By summarizing links <em>into</em> each page rather than <em>out</em> of each page, we avoid a direct bias towards focusing on longer author pages.</p>
+<p>Looking at the counts, we see that there are more links into the Shakespeare page than any other in our collection. While that is perhaps not surprising, it is interesting to see that Wordsworth is only two links short of Shakespeare, with 23 links. While raw counts are a useful starting point, they can only get us so far. These say nothing, for example, about how easily we can hop between two pages by following 2, 3, or 4 links. In order to understand the dataset we need a way of visualizing and modelling all of the connections at once. This requires considering the entire network structure of our dataset.</p>
+<p>Before we create a network structure from a dataset, we need to decide on what kind of network we will create. Specifically, networks can be either <em>directed</em>, in which case we distinguish between the starting and ending vertex, or <em>undirected</em>, in which we do not. For example, in our counts above, we took the direction into account for the links. Next, let’s start by treating our dataset of Wikipedia page links as undirected; all we want to consider is whether there is at least one way to click on a link and go between the two pages. Later in the chapter, we will show what changes when we add direction into the data. Any directed network can be considered undirected by ignoring the direction; undirected networks cannot in general be converted into a directed format. So, it will be a good starting point to consider approaches that can be applied to any network dataset.</p>
+<p>The dataset that we have in Python is called an <em>edge list</em> <span class="citation" data-cites="kolaczyk2014statistical">[<a href="#ref-kolaczyk2014statistical" role="doc-biblioref">3</a>]</span>. It consists of a dataset where each observation is an edge. We can use the igraph library to create network objects and compute various network metrics <span class="citation" data-cites="igraph">[<a href="#ref-igraph" role="doc-biblioref">4</a>]</span>. Let’s create our network using our wrapper method <code>DSNetwork.process</code>.</p>
+<div id="daeb2e86" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>node, edge, G <span class="op">=</span> DSNetwork.process(page_citation, directed<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>node</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (72, 10)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">id</th>
+<th data-quarto-table-cell-role="th">x</th>
+<th data-quarto-table-cell-role="th">y</th>
+<th data-quarto-table-cell-role="th">component</th>
+<th data-quarto-table-cell-role="th">component_size</th>
+<th data-quarto-table-cell-role="th">cluster</th>
+<th data-quarto-table-cell-role="th">degree</th>
+<th data-quarto-table-cell-role="th">eigen</th>
+<th data-quarto-table-cell-role="th">between</th>
+<th data-quarto-table-cell-role="th">close</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>f64</th>
+<th>f64</th>
+<th>i64</th>
+<th>i64</th>
+<th>str</th>
+<th>i64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>-4.263111</td>
+<td>3.372464</td>
+<td>1</td>
+<td>72</td>
+<td>"0"</td>
+<td>1</td>
+<td>0.024402</td>
+<td>0.0</td>
+<td>0.324201</td>
+</tr>
+<tr class="even">
+<td>"Geoffrey Chaucer"</td>
+<td>-1.502634</td>
+<td>1.226799</td>
+<td>1</td>
+<td>72</td>
+<td>"1"</td>
+<td>16</td>
+<td>0.409418</td>
+<td>147.136045</td>
+<td>0.47651</td>
+</tr>
+<tr class="odd">
+<td>"William Langland"</td>
+<td>-1.646499</td>
+<td>3.489365</td>
+<td>1</td>
+<td>72</td>
+<td>"1"</td>
+<td>3</td>
+<td>0.062166</td>
+<td>4.723756</td>
+<td>0.375661</td>
+</tr>
+<tr class="even">
+<td>"John Gower"</td>
+<td>-2.405299</td>
+<td>2.25174</td>
+<td>1</td>
+<td>72</td>
+<td>"1"</td>
+<td>5</td>
+<td>0.11872</td>
+<td>7.74378</td>
+<td>0.408046</td>
+</tr>
+<tr class="odd">
+<td>"John Dryden"</td>
+<td>-1.184651</td>
+<td>-0.964939</td>
+<td>1</td>
+<td>72</td>
+<td>"1"</td>
+<td>25</td>
+<td>0.730764</td>
+<td>197.454422</td>
+<td>0.5546875</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Cecil Day-Lewis"</td>
+<td>1.196528</td>
+<td>2.918454</td>
+<td>1</td>
+<td>72</td>
+<td>"6"</td>
+<td>11</td>
+<td>0.209379</td>
+<td>20.181833</td>
+<td>0.415205</td>
+</tr>
+<tr class="even">
+<td>"Christopher Isherwood"</td>
+<td>0.482429</td>
+<td>3.715233</td>
+<td>1</td>
+<td>72</td>
+<td>"6"</td>
+<td>9</td>
+<td>0.149254</td>
+<td>0.893551</td>
+<td>0.364103</td>
+</tr>
+<tr class="odd">
+<td>"Louis MacNeice"</td>
+<td>0.1685</td>
+<td>2.338921</td>
+<td>1</td>
+<td>72</td>
+<td>"6"</td>
+<td>12</td>
+<td>0.259567</td>
+<td>26.553664</td>
+<td>0.435583</td>
+</tr>
+<tr class="even">
+<td>"Rex Warner"</td>
+<td>1.626705</td>
+<td>4.246521</td>
+<td>1</td>
+<td>72</td>
+<td>"6"</td>
+<td>4</td>
+<td>0.072261</td>
+<td>0.0</td>
+<td>0.356784</td>
+</tr>
+<tr class="odd">
+<td>"Edward Upward"</td>
+<td>0.849803</td>
+<td>4.341071</td>
+<td>1</td>
+<td>72</td>
+<td>"6"</td>
+<td>6</td>
+<td>0.094188</td>
+<td>0.0</td>
+<td>0.358586</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The node dataset contains extracted information about each of the objects in our collection. We will describe each of these throughout the remainder of this chapter. Note that we also have metadata about the nodes, which is something that we can join into the data to help deepen our understanding of subsequent analyses.</p>
+<p>The first column gives a label for the row. In the next two columns, named <code>x</code> and <code>y</code>, is a computed way to layout the objects in two-dimensions that maximizes linked pages being close to one another while minimizing the amount that all of the nodes are bunched together <span class="citation" data-cites="fruchterman1991graph">[<a href="#ref-fruchterman1991graph" role="doc-biblioref">5</a>]</span>. This is an example of a <em>network drawing</em> (also known as <em>graph drawing</em> in mathematics) algorithm. As with the PCA and UMAP dimensions in <a href="19_textual_data.html" class="quarto-xref"><span>Chapter 19</span></a>, there is no exact meaning of the individual variables. Rather, its the relationships that they show that are interesting. Using the first three variables, we could plot the pages as a scatter plot with labels to see what pages appear to be closely related to one another.</p>
+<p>Before actually looking at this plot, it will be useful to first make some additions. The relationships that would be shown in this plot generally try to put pages that have links between them close to one another. It would be helpful to additionally put these links onto the plot as well. This is where the <code>edge</code> dataset becomes useful. The edge dataset contains one row for each edge in the dataset. The dataset has four columns. These describe the <code>x</code> and <code>y</code> values of one node in the edge and variables <code>xend</code> and <code>yend</code> to indicate where in the scatter plot the ending point of the edge is.</p>
+<div id="c037dfb0" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>edge</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (377, 4)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">x</th>
+<th data-quarto-table-cell-role="th">y</th>
+<th data-quarto-table-cell-role="th">xend</th>
+<th data-quarto-table-cell-role="th">yend</th>
+</tr>
+<tr class="even">
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>-4.263111</td>
+<td>3.372464</td>
+<td>-1.502634</td>
+<td>1.226799</td>
+</tr>
+<tr class="even">
+<td>-1.502634</td>
+<td>1.226799</td>
+<td>-1.646499</td>
+<td>3.489365</td>
+</tr>
+<tr class="odd">
+<td>-1.502634</td>
+<td>1.226799</td>
+<td>-2.405299</td>
+<td>2.25174</td>
+</tr>
+<tr class="even">
+<td>-1.502634</td>
+<td>1.226799</td>
+<td>-1.184651</td>
+<td>-0.964939</td>
+</tr>
+<tr class="odd">
+<td>-1.502634</td>
+<td>1.226799</td>
+<td>-3.085943</td>
+<td>0.370972</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>0.805632</td>
+<td>2.779148</td>
+<td>1.626705</td>
+<td>4.246521</td>
+</tr>
+<tr class="even">
+<td>0.117072</td>
+<td>0.712036</td>
+<td>2.048141</td>
+<td>1.877652</td>
+</tr>
+<tr class="odd">
+<td>1.329381</td>
+<td>1.277749</td>
+<td>2.048141</td>
+<td>1.877652</td>
+</tr>
+<tr class="even">
+<td>2.941337</td>
+<td>2.589308</td>
+<td>2.048141</td>
+<td>1.877652</td>
+</tr>
+<tr class="odd">
+<td>2.052589</td>
+<td>-0.301879</td>
+<td>2.048141</td>
+<td>1.877652</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>We can include edges into the plot by adding a geom layer of type <code>geom_segment</code>. This geometry takes four aesthetics, named exactly the same as the names in the <code>edge</code> dataset. The plot gets busy with all of these lines, so we will set the opacity (<code>alpha</code>) of them lower so as to not clutter the visual space with the connections.</p>
+<div id="13f22645" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    node</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"x"</span>, <span class="st">"y"</span>))</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_segment(</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        aes(x<span class="op">=</span><span class="st">"x"</span>, y<span class="op">=</span><span class="st">"y"</span>, xend<span class="op">=</span><span class="st">"xend"</span>, yend<span class="op">=</span><span class="st">"yend"</span>),</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        data<span class="op">=</span>edge,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        alpha<span class="op">=</span><span class="fl">0.1</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point(alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_text(aes(label<span class="op">=</span><span class="st">"id"</span>), size<span class="op">=</span><span class="dv">6</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> theme_void()</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> labs(title<span class="op">=</span><span class="st">"Wikipedia Page Link Network"</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div>
+<figure class="figure">
+<p><a href="18_network_data_files/figure-html/cell-8-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="18_network_data_files/figure-html/cell-8-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The output of the plot shows the underlying data that describes the plot as well as the relationships between the pages. Notice that the relationship between the pages is quite different than the textual-based ones in the previous chapter. When using textual distances, we saw a clustering based on the time period in which each author wrote and the formats that they wrote in. Here, the pattern is driven much more strongly by the general popularity of each author. The most well-known authors of each era—Shakespeare, Chaucer, Jonathan Swift—are clustered in the middle of the plot. Lesser known authors, such as Daphne du Maurier and Samuel Pepys, are pushed to the exterior. In the next section, we will see if we can more formally study the centrality of different pages in our collection.</p>
+</section>
+<section id="centrality" class="level2" data-number="18.4">
+<h2 data-number="18.4" class="anchored" data-anchor-id="centrality"><span class="header-section-number">18.4</span> Centrality</h2>
+<p>One of the core questions that arises when working with network data is trying to identify the relative centrality of each node in the network. Several of the derived measurements in the <code>node</code> dataset capture various forms of centrality. Let’s move through each of these measurements to see how they reveal different aspects of our network’s centrality.</p>
+<p>A <em>component</em> of a network is a collection of all the nodes that can be reached by following along the edges. The <code>node</code> dataset contains a variable called <code>component</code> describing each of the components in the network. These are ordered in descending order of size, so component 1 will always be the largest (or at least, tied for the largest) component of the network. The total size of each component is the first measurement of the centrality of a node. Those nodes that are in the largest component can, in some sense, be said to have a larger centrality than other nodes that are completely cut-off from this cluster. All of the nodes on our network are contained in one large cluster, so this measurement is not particularly helpful in this specific case. Networks that have a single component are known as <em>connected</em> networks. All of the other metrics for centrality are defined in terms of a connected network. In order to apply them to networks with multiple components, each algorithm is applied separately to each component.</p>
+<p>Another measurement of centrality is a node’s <em>degree</em>. The degree of a node is the number of neighbors it has. In other words, it counts how many edges the node is a part of. The degree of each node has been computed in the <code>node</code> table. This is similar to the counts that were produced in the first section by counting occurrences in the raw edge list. The difference here is that we are counting all edges, not just those edges going into a node. As a visualization technique, we can plot the degree centrality scores on a plot of the network to show that the nodes with the highest degree do seem to sit in the middle of the plot and correspond to having a large number of edges.</p>
+<div id="1ff17b9e" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    node</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"x"</span>, <span class="st">"y"</span>))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_segment(</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        aes(x<span class="op">=</span><span class="st">"x"</span>, y<span class="op">=</span><span class="st">"y"</span>, xend<span class="op">=</span><span class="st">"xend"</span>, yend<span class="op">=</span><span class="st">"yend"</span>),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        data<span class="op">=</span>edge,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        alpha<span class="op">=</span><span class="fl">0.1</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point(aes(color<span class="op">=</span><span class="st">"degree"</span>), size<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> scale_color_cmap(cmap_name<span class="op">=</span><span class="st">"viridis"</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> theme_void()</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> labs(</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">"Network Colored by Degree Centrality"</span>,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        color<span class="op">=</span><span class="st">"Degree"</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<div>
+<figure class="figure">
+<p><a href="18_network_data_files/figure-html/cell-9-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="18_network_data_files/figure-html/cell-9-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The degree of a node only accounts for direct neighbors. A more holistic measurement is given by a quantity called the <em>eigenvalue centrality</em>. This metric is provided in the <code>node</code> table. It provides a centrality score for each node that is proportional to the sum of the scores of its neighbors. Mathematically, it assigns a set of scores <span class="math inline">\(s_j\)</span> for each node such that:</p>
+<p><span class="math display">\[ s_j = \lambda \cdot \sum_{i \in \text{Neighbors}(j)} s_i \]</span></p>
+<p>The eigenvalue score, by convention, scales so that the largest score is 1. It is only possible to describe the eigenvalue centrality scores for a connected set of nodes on a network, so the computation is done individually for each component. For comparison, we will use the following code to plot the eigenvalue centrality scores of our network.</p>
+<div id="99333d9a" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    node</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"x"</span>, <span class="st">"y"</span>))</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_segment(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        aes(x<span class="op">=</span><span class="st">"x"</span>, y<span class="op">=</span><span class="st">"y"</span>, xend<span class="op">=</span><span class="st">"xend"</span>, yend<span class="op">=</span><span class="st">"yend"</span>),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        data<span class="op">=</span>edge,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        alpha<span class="op">=</span><span class="fl">0.1</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point(aes(color<span class="op">=</span><span class="st">"eigen"</span>), size<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> scale_color_cmap(cmap_name<span class="op">=</span><span class="st">"viridis"</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> theme_void()</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> labs(</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">"Network Colored by Eigenvalue Centrality"</span>,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>        color<span class="op">=</span><span class="st">"Eigenvalue</span><span class="ch">\n</span><span class="st">Centrality"</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<div>
+<figure class="figure">
+<p><a href="18_network_data_files/figure-html/cell-10-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="18_network_data_files/figure-html/cell-10-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The visualization shows a slightly different pattern compared to the degree centrality scores. The biggest difference is that the eigenvalue centrality is more concentrated on the most central connections, whereas degree centrality is more spread out. We will see in the next few sections that this is primarily a result of using a linear scale to plot the colors. If we transform the eigenvalue centrality scores with another function first, we would see that the pattern more gradually shows differences across the entire network.</p>
+<p>Another measurement of centrality is given by the <em>closeness centrality</em> score. For each node in the network, consider the minimum number of edges that are needed to go from this node to any other node within its component. Adding the reciprocal of these scores together gives a measurement of how close a node is to all of the other nodes in the network. The closeness centrality score for a node is given as the variable <code>close</code> in our <code>node</code> table. Again, we will plot these scores with the following code to compare to the other types of centrality scores.</p>
+<div id="3936e50e" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    node</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.component <span class="op">==</span> <span class="dv">1</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"x"</span>, <span class="st">"y"</span>))</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_segment(</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        aes(x<span class="op">=</span><span class="st">"x"</span>, y<span class="op">=</span><span class="st">"y"</span>, xend<span class="op">=</span><span class="st">"xend"</span>, yend<span class="op">=</span><span class="st">"yend"</span>),</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        data<span class="op">=</span>edge,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        alpha<span class="op">=</span><span class="fl">0.1</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point(aes(color<span class="op">=</span><span class="st">"close"</span>), size<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> scale_color_cmap(cmap_name<span class="op">=</span><span class="st">"viridis"</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> theme_void()</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> labs(</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">"Network Colored by Closeness Centrality"</span>,</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        color<span class="op">=</span><span class="st">"Closeness</span><span class="ch">\n</span><span class="st">Centrality"</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<div>
+<figure class="figure">
+<p><a href="18_network_data_files/figure-html/cell-11-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="18_network_data_files/figure-html/cell-11-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The output of the closeness centrality scores shows different patterns than the eigenvalue centrality scores. Here we see a much smoother transition from the most central to the least central nodes. We will look at different kinds of networks later in the chapter that illustrate further differences between each type of centrality score.</p>
+<p>The final measurement of centrality we have in our table, <em>betweenness centrality</em>, also comes from considering minimal paths. For every two nodes in a connected component, consider all of the possible ways to go from one to the other along edges in the network. Then, consider all of the paths (there may be only one) between the two nodes that require a minimal number of hops. The betweenness centrality score measures how many of these minimal paths go through each node (there is some normalization to account for the case when there are many minimal paths, so the counts are not exact integers). This score is stored in the variable <code>between</code>. A plot of the betweenness score is given by the following code.</p>
+<div id="89ed55b9" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    node</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"x"</span>, <span class="st">"y"</span>))</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_segment(</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        aes(x<span class="op">=</span><span class="st">"x"</span>, y<span class="op">=</span><span class="st">"y"</span>, xend<span class="op">=</span><span class="st">"xend"</span>, yend<span class="op">=</span><span class="st">"yend"</span>),</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        data<span class="op">=</span>edge,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        alpha<span class="op">=</span><span class="fl">0.1</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point(aes(color<span class="op">=</span><span class="st">"between"</span>), size<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> scale_color_cmap(cmap_name<span class="op">=</span><span class="st">"viridis"</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> theme_void()</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> labs(</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">"Network Colored by Betweenness Centrality"</span>,</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>        color<span class="op">=</span><span class="st">"Betweenness</span><span class="ch">\n</span><span class="st">Centrality"</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<div>
+<figure class="figure">
+<p><a href="18_network_data_files/figure-html/cell-12-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="18_network_data_files/figure-html/cell-12-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The betweenness score often tends to have a different pattern than the other centrality scores. It gives a high score to bridges between different parts of the network, rather than giving high weight to how central a node is within a particular cluster. One challenge with the page link network over this small set of pages is that we need to create a different kind of network in order to really see the differences between the betweenness centrality and the other types of centrality that we’ve discussed so far. To better understand the centrality scores, we will delve further into another set of networks such as co-citation and nearest neighbor networks.</p>
+</section>
+<section id="clusters" class="level2" data-number="18.5">
+<h2 data-number="18.5" class="anchored" data-anchor-id="clusters"><span class="header-section-number">18.5</span> Clusters</h2>
+<p>The centrality of a node is not the only thing that we can measure when looking at networks. Another algorithm that we can perform is that of clustering. Here, we try to split the nodes into groups such that a large number of the edges are between nodes within a group rather than across groups. When we created our network, a clustering of the nodes based on the edges was automatically performed. The identifiers for the clusters are in the column called <code>cluster</code>. We can visualize the clusters defined on our Wikipedia-page network using the following code.</p>
+<div id="12a3948c" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    node</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"x"</span>, <span class="st">"y"</span>))</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_segment(</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        aes(x<span class="op">=</span><span class="st">"x"</span>, y<span class="op">=</span><span class="st">"y"</span>, xend<span class="op">=</span><span class="st">"xend"</span>, yend<span class="op">=</span><span class="st">"yend"</span>),</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        data<span class="op">=</span>edge,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>        alpha<span class="op">=</span><span class="fl">0.1</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point(aes(color<span class="op">=</span><span class="st">"cluster"</span>), size<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> theme_void()</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> labs(</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">"Network Colored by Cluster"</span>,</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>        color<span class="op">=</span><span class="st">"Cluster"</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<div>
+<figure class="figure">
+<p><a href="18_network_data_files/figure-html/cell-13-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="18_network_data_files/figure-html/cell-13-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The output of the cluster visualization shows the different communities detected in the network. We are running out of space to put labels on the plot. This is one major consideration when thinking of networks as a form of visual exploration and communication; bigger is not necessarily better. Even on a large screen, networks with hundreds of nodes or more become unwieldy to plot. As an alternative, we can summarize the network data in the form of tables. For example, we can paste together the nodes within a cluster to try to further understand the internal structure of the relationships.</p>
+<div id="7645a66d" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    node</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    .group_by(c.cluster)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    .agg(members <span class="op">=</span> c.<span class="bu">id</span>.<span class="bu">str</span>.concat(<span class="st">"; "</span>))</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (8, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">cluster</th>
+<th data-quarto-table-cell-role="th">members</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"0"</td>
+<td>"Marie de France"</td>
+</tr>
+<tr class="even">
+<td>"5"</td>
+<td>"Samuel Pepys"</td>
+</tr>
+<tr class="odd">
+<td>"2"</td>
+<td>"Charles Dickens; T. S. Eliot; …</td>
+</tr>
+<tr class="even">
+<td>"3"</td>
+<td>"William Wordsworth; John Keats…</td>
+</tr>
+<tr class="odd">
+<td>"4"</td>
+<td>"George Herbert; Henry Vaughan"</td>
+</tr>
+<tr class="even">
+<td>"1"</td>
+<td>"Geoffrey Chaucer; William Lang…</td>
+</tr>
+<tr class="odd">
+<td>"6"</td>
+<td>"W. H. Auden; Stephen Spender; …</td>
+</tr>
+<tr class="even">
+<td>"7"</td>
+<td>"Daphne du Maurier"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Network clusters can be very insightful for understanding the structure of a large network. The example data that we have been working with so far is relatively small and forms a larger single cluster around a few well-known authors. Because of the length and richness of the textual information, this set of 75 authors produced interesting results on its own in the previous chapter. It is also a great size to visualize and illustrate the core computed metrics associated with network analysis since it is small enough to plot every node and edge. To go farther and show the full power of these methods as analytic tools, we need to expand our collection.</p>
+</section>
+<section id="co-citation-networks" class="level2" data-number="18.6">
+<h2 data-number="18.6" class="anchored" data-anchor-id="co-citation-networks"><span class="header-section-number">18.6</span> Co-citation Networks</h2>
+<p>The network structure we have been working with is a form called a <em>citation network</em>. Pages are joined whenever one page links to another. This is a popular method in understanding academic articles, friendship networks on social media (i.e., tracking mentions on Twitter), or investigating the relative importance of court cases. There are some drawbacks of using citation counts, however. They are sensitive to the time-order of publication, they are affected by the relative length of each document, and they are easily affected by small changes. Wikipedia articles are continually edited, so there is no clear temporal ordering of the pages, and there is relatively little benefit for someone to artificially inflate the network centrality of an article. The length of Wikipedia articles, though, are highly variable and not always well correlated with the notoriety of the subject matter. So, partially to avoid biasing our results due to page length, and more so to illustrate the general concept when applying these techniques to other sets of citation data, let’s look at an alternative that helps to avoid all of these issues.</p>
+<p>A <em>co-citation network</em> is a method of showing links across a citation network while avoiding some of the pitfalls that arise when using direct links. A co-citation is formed between two pages whenever a third entry cites <em>both</em> of them. The idea is that if a third source talks about two sources in the same reference, there is likely a relationship between the documents. We can create a co-citation dataset from Wikipedia by first downloading all of the pages linked to from any of the author pages in our collection. We can then count how often any pair of pages in our dataset were both linked <em>into</em> from the same source. Here, we will load the dataset into Python as a structured table. Co-citations are, by definition, undirected. In the dataset below, we have sorted the edges so that <code>doc_id</code> always comes alphabetically before <code>doc_id_out</code>. The column <code>count</code> tells how many third pages cite both of the respective articles.</p>
+<div id="a9247a6e" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>page_cocitation</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (2_114, 3)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">doc_id</th>
+<th data-quarto-table-cell-role="th">doc_id_out</th>
+<th data-quarto-table-cell-role="th">count</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+<th>i64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>"Matthew Arnold"</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>"Marie de France"</td>
+<td>"Oscar Wilde"</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>"Samuel Pepys"</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>"Marie de France"</td>
+<td>"T. S. Eliot"</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>"Thomas Malory"</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>"Virginia Woolf"</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td>"Seamus Heaney"</td>
+<td>"W. B. Yeats"</td>
+<td>4</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>"W. H. Auden"</td>
+<td>5</td>
+</tr>
+<tr class="even">
+<td>"Seamus Heaney"</td>
+<td>"William Shakespeare"</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>"Seamus Heaney"</td>
+<td>"William Wordsworth"</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>When working with co-citations, it is useful to only include links between two pages when the count is above some threshold. In the code below, we will filter our new edge list to include only the links that have a count of at least 6 different citations. We then create a new network, node, and edge set.</p>
+<div id="6cf87c54" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>filtered_cocitations <span class="op">=</span> (</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    page_cocitation</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.count <span class="op">&gt;</span> <span class="dv">6</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    .rename({<span class="st">"doc_id_out"</span>: <span class="st">"doc_id2"</span>})</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>cocite_node, cocite_edge, cocite_G <span class="op">=</span> DSNetwork.process(</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    filtered_cocitations, </span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    directed<span class="op">=</span><span class="va">False</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In the code block below, we will look at the nodes with the largest eigenvalue centrality scores, with the top ten printed in the text. As with the previous network, there is only one component in this network; otherwise, we would want to filter the data such that we are looking at pages in the largest component, which will always be component number <code>1</code>.</p>
+<div id="e94b53b4" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    cocite_node</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    .sort(c.eigen, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">10</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    .select(c.<span class="bu">id</span>, c.eigen, c.degree)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (10, 3)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">id</th>
+<th data-quarto-table-cell-role="th">eigen</th>
+<th data-quarto-table-cell-role="th">degree</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>f64</th>
+<th>i64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"John Milton"</td>
+<td>1.0</td>
+<td>36</td>
+</tr>
+<tr class="even">
+<td>"Charles Dickens"</td>
+<td>0.890534</td>
+<td>30</td>
+</tr>
+<tr class="odd">
+<td>"John Dryden"</td>
+<td>0.772376</td>
+<td>23</td>
+</tr>
+<tr class="even">
+<td>"George Orwell"</td>
+<td>0.769806</td>
+<td>25</td>
+</tr>
+<tr class="odd">
+<td>"William Shakespeare"</td>
+<td>0.769678</td>
+<td>23</td>
+</tr>
+<tr class="even">
+<td>"William Blake"</td>
+<td>0.768104</td>
+<td>23</td>
+</tr>
+<tr class="odd">
+<td>"Samuel Johnson"</td>
+<td>0.766416</td>
+<td>21</td>
+</tr>
+<tr class="even">
+<td>"T. S. Eliot"</td>
+<td>0.730718</td>
+<td>23</td>
+</tr>
+<tr class="odd">
+<td>"Samuel Taylor Coleridge"</td>
+<td>0.695994</td>
+<td>21</td>
+</tr>
+<tr class="even">
+<td>"John Keats"</td>
+<td>0.60477</td>
+<td>16</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The most central nodes in the co-citation network show a similar set of pages showing up in the top-10 list but with some notable differences in the relative ordering. Shakespeare is no longer at the top of the list. Focusing on the first name on the list, there are at least 36 other authors in our relatively small set that are cited at least six times in the same page as John Milton. Looking into the example links, we see that this is because Milton is associated with most other figures of the 17th Century, poets, and writers that have religious themes in their works. These overlapping sets creates a relatively large number of other pages that Milton is connected to. As mentioned at the start of the section, the differences between citation and co-citation are somewhat muted with the Wikipedia pages because they are constantly being modified and edited, making it possible for pages to directly link to other pages even if they were originally created before them. When working with other citation networks, such as scholarly citations or court records, the differences between the two are often striking.</p>
+</section>
+<section id="directed-networks" class="level2" data-number="18.7">
+<h2 data-number="18.7" class="anchored" data-anchor-id="directed-networks"><span class="header-section-number">18.7</span> Directed Networks</h2>
+<p>At the start of the chapter, we noted that networks can be given edges that are either directed or undirected. The algorithms and metrics we have looked at so far all work on undirected networks and so even in the case of the original links, which do have a well-defined direction, we have been treating the links as undirected. It is possible to create a network object that takes this relationship into account by setting the <code>directed</code> argument to <code>True</code>.</p>
+<div id="f751b614" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>directed_node, directed_edge, directed_G <span class="op">=</span> DSNetwork.process(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    page_citation, </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    directed<span class="op">=</span><span class="va">True</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>directed_node</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (72, 11)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">id</th>
+<th data-quarto-table-cell-role="th">x</th>
+<th data-quarto-table-cell-role="th">y</th>
+<th data-quarto-table-cell-role="th">component</th>
+<th data-quarto-table-cell-role="th">component_size</th>
+<th data-quarto-table-cell-role="th">cluster</th>
+<th data-quarto-table-cell-role="th">degree_out</th>
+<th data-quarto-table-cell-role="th">degree_in</th>
+<th data-quarto-table-cell-role="th">degree_total</th>
+<th data-quarto-table-cell-role="th">eigen</th>
+<th data-quarto-table-cell-role="th">between</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>f64</th>
+<th>f64</th>
+<th>i64</th>
+<th>i64</th>
+<th>str</th>
+<th>i64</th>
+<th>i64</th>
+<th>i64</th>
+<th>f64</th>
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Marie de France"</td>
+<td>-5.304269</td>
+<td>0.899412</td>
+<td>9</td>
+<td>1</td>
+<td>"0"</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>null</td>
+<td>null</td>
+</tr>
+<tr class="even">
+<td>"Geoffrey Chaucer"</td>
+<td>-1.768798</td>
+<td>0.03087</td>
+<td>10</td>
+<td>60</td>
+<td>"1"</td>
+<td>6</td>
+<td>10</td>
+<td>16</td>
+<td>0.526894</td>
+<td>143.911999</td>
+</tr>
+<tr class="odd">
+<td>"William Langland"</td>
+<td>-3.678949</td>
+<td>-2.082204</td>
+<td>12</td>
+<td>1</td>
+<td>"1"</td>
+<td>0</td>
+<td>3</td>
+<td>3</td>
+<td>null</td>
+<td>null</td>
+</tr>
+<tr class="even">
+<td>"John Gower"</td>
+<td>-2.42493</td>
+<td>-1.906466</td>
+<td>10</td>
+<td>60</td>
+<td>"1"</td>
+<td>3</td>
+<td>2</td>
+<td>5</td>
+<td>0.194129</td>
+<td>27.454978</td>
+</tr>
+<tr class="odd">
+<td>"John Dryden"</td>
+<td>0.702185</td>
+<td>0.917999</td>
+<td>10</td>
+<td>60</td>
+<td>"1"</td>
+<td>13</td>
+<td>12</td>
+<td>25</td>
+<td>0.588326</td>
+<td>282.521198</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"Cecil Day-Lewis"</td>
+<td>-3.113829</td>
+<td>-0.527775</td>
+<td>10</td>
+<td>60</td>
+<td>"6"</td>
+<td>5</td>
+<td>6</td>
+<td>11</td>
+<td>0.129866</td>
+<td>104.32109</td>
+</tr>
+<tr class="even">
+<td>"Christopher Isherwood"</td>
+<td>-3.780268</td>
+<td>-0.992886</td>
+<td>10</td>
+<td>60</td>
+<td>"6"</td>
+<td>5</td>
+<td>4</td>
+<td>9</td>
+<td>0.104236</td>
+<td>8.040945</td>
+</tr>
+<tr class="odd">
+<td>"Louis MacNeice"</td>
+<td>-2.537765</td>
+<td>-1.069581</td>
+<td>10</td>
+<td>60</td>
+<td>"6"</td>
+<td>9</td>
+<td>3</td>
+<td>12</td>
+<td>0.097687</td>
+<td>34.675758</td>
+</tr>
+<tr class="even">
+<td>"Rex Warner"</td>
+<td>-4.502915</td>
+<td>-1.13831</td>
+<td>10</td>
+<td>60</td>
+<td>"6"</td>
+<td>3</td>
+<td>1</td>
+<td>4</td>
+<td>0.016511</td>
+<td>0.35</td>
+</tr>
+<tr class="odd">
+<td>"Edward Upward"</td>
+<td>-4.417505</td>
+<td>-0.460991</td>
+<td>10</td>
+<td>60</td>
+<td>"6"</td>
+<td>3</td>
+<td>3</td>
+<td>6</td>
+<td>0.05806</td>
+<td>0.85</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The <code>node</code> table contains a slightly different set of measurements. Closeness centrality is no longer available; eigenvalue and betweenness centrality are still computed, but are done so without using the directions of the edges. There are now three different degree counts: the out-degree (number of links on the page), the in-degree (number of links into a page), and the total of these two.</p>
+<p>We can, if desired, use the directed structure in our plot. To visualize a directed network, we add an <code>arrow</code> argument to the <code>geom_segment</code> layer.</p>
+<div id="d86fa185" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    directed_node</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"x"</span>, <span class="st">"y"</span>))</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_segment(</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>        aes(x<span class="op">=</span><span class="st">"x"</span>, y<span class="op">=</span><span class="st">"y"</span>, xend<span class="op">=</span><span class="st">"xend"</span>, yend<span class="op">=</span><span class="st">"yend"</span>),</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        data<span class="op">=</span>directed_edge,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        alpha<span class="op">=</span><span class="fl">0.7</span>,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>        arrow<span class="op">=</span>arrow(length<span class="op">=</span><span class="fl">0.02</span>)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point()</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> theme_void()</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> labs(title<span class="op">=</span><span class="st">"Directed Page Link Network"</span>)</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<div>
+<figure class="figure">
+<p><a href="18_network_data_files/figure-html/cell-19-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="18_network_data_files/figure-html/cell-19-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Visualizing the direction of the arrows can be helpful for illustrating concepts in smaller networks.</p>
+<p>An interesting analysis that we can do with a directed network is to look at the in-degree as a function of the out-degree. The code below creates a plot that investigates the relationship between these two degree counts. We have highlighted a set of six authors that show interesting relationships between the two variables.</p>
+<div id="81f1f8af" class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>highlight_authors <span class="op">=</span> [</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"William Shakespeare"</span>, <span class="st">"William Wordsworth"</span>, <span class="st">"T. S. Eliot"</span>, </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Lord Byron"</span>, <span class="st">"W. H. Auden"</span>, <span class="st">"George Orwell"</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>directed_highlight <span class="op">=</span> (</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    directed_node</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.<span class="bu">id</span>.is_in(highlight_authors))</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    directed_node</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.component <span class="op">==</span> <span class="dv">1</span>)</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"degree_out"</span>, <span class="st">"degree_in"</span>))</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point()</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_text(</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>        aes(label<span class="op">=</span><span class="st">"id"</span>),</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>        data<span class="op">=</span>directed_highlight,</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>        nudge_y<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>        nudge_x<span class="op">=-</span><span class="dv">1</span></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_abline(slope<span class="op">=</span><span class="dv">1</span>, intercept<span class="op">=</span><span class="dv">0</span>, linetype<span class="op">=</span><span class="st">"dashed"</span>)</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> labs(</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">"In-degree vs Out-degree in British Authors Network"</span>,</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>        x<span class="op">=</span><span class="st">"Out-degree"</span>,</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>        y<span class="op">=</span><span class="st">"In-degree"</span></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="19">
+<div>
+<figure class="figure">
+<p><a href="18_network_data_files/figure-html/cell-20-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="18_network_data_files/figure-html/cell-20-output-1.png" width="672" height="480" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This plot reveals some interesting details about all of the citation networks that we have seen so far. It was probably not surprising to see Shakespeare as the node with the highest centrality score. Here, we see that this is only partially because many other author’s pages link into his. A parallel reason is that the Shakespeare page also has more links <em>out</em> to other authors than any other page. While the two metrics largely mirror one another, it is insightful to identify pages that have an unbalanced number of in or out citations. George Orwell, for example, is not referenced by many other pages in our collection, but has many outgoing links. It’s possible that this is partially a temporal effect of Orwell being a later author in the set; the page cites his literary influences and it’s not hard to see why those influences would not cite back into him. Wordsworth and Lord Byron show the opposite pattern, with more links into them than might be expected given their number of out links. Both of these are interesting observations that merit further study.</p>
+</section>
+<section id="distance-networks" class="level2" data-number="18.8">
+<h2 data-number="18.8" class="anchored" data-anchor-id="distance-networks"><span class="header-section-number">18.8</span> Distance Networks</h2>
+<p>For a final common type of network found in humanities research, we return to a task that we saw in <a href="19_textual_data.html" class="quarto-xref"><span>Chapter 19</span></a>. After having built a table of textual annotations, recall that we were able to create links between two documents whenever they are sufficiently close to one another based on the angle distance between their term-frequency scores. By choosing a suitable cutoff score for the maximal distance between pages, we can create an edge list between the pages. These edges, along with the <code>DSNetwork.process</code> function, can be used to construct what is called a <em>distance network</em>. As with co-citations, the network here has no notion of direction and therefore we will create another undirected network.</p>
+<p>Distance networks are particularly useful when we want to explore relationships that are not explicitly encoded in the data. For example, in our Wikipedia corpus, the citation links tell us about explicit references between pages, but the distance network can reveal implicit similarities based on the content of the pages themselves.</p>
+</section>
+<section id="nearest-neighbor-networks" class="level2" data-number="18.9">
+<h2 data-number="18.9" class="anchored" data-anchor-id="nearest-neighbor-networks"><span class="header-section-number">18.9</span> Nearest Neighbor Networks</h2>
+<p>We finish this chapter by looking at one final network type that we can apply to our Wikipedia corpus. The example here generates a network structure that is designed to avoid a small set of central nodes by balancing the degree of the network across all of the nodes. This approach can be applied to any set of distance scores defined between pairs of objects.</p>
+<p>The idea behind a <em>symmetric nearest neighbors network</em> is straightforward. For each document, we find its k nearest neighbors based on some distance metric. We then create an edge between two documents only if they are <em>mutually</em> in each other’s nearest neighbor set. This constraint ensures that the resulting network is symmetric and avoids the problem of popular documents accumulating too many connections.</p>
+<p>The network we create this way can never have a degree larger than k (the number of neighbors we consider). This stops the network from focusing on lots of weak connections to popular pages and focuses on links between pages that go both ways.</p>
+<p>The structure of the symmetric nearest neighbors network is quite different from the other networks we have explored. One way to see this is by looking at the relationship between eigenvalue centrality and betweenness centrality. In most of the other networks, these were highly correlated to one another, but in symmetric nearest neighbor networks that is often not the case. There can be several nodes that have a high betweenness score despite having a lower eigenvalue centrality score. These are the gatekeeper nodes that link other, more densely connected parts of the plot.</p>
+<p>Since the symmetric nearest neighbors plot avoids placing too many nodes all at the center of the network, the clusters resulting from the network are also often more interesting and uniform in size than other kinds of networks. While all of the network types here have their place, when given a set of distances, using symmetric nearest neighbors is often a good choice to get interesting results that show the entire structure of the network rather than focusing on only the most centrally located nodes.</p>
+</section>
+<section id="summary" class="level2" data-number="18.10">
+<h2 data-number="18.10" class="anchored" data-anchor-id="summary"><span class="header-section-number">18.10</span> Summary</h2>
+<p>In this chapter, we explored several fundamental concepts in network analysis. We began by understanding how to represent network data as edge lists and how to compute basic statistics about network connectivity. We then examined various measures of centrality, including degree, eigenvalue, closeness, and betweenness centrality, each of which captures different aspects of a node’s importance within a network.</p>
+<p>We also explored network clustering, which allows us to identify communities of closely connected nodes. Different types of networks—citation networks, co-citation networks, directed networks, distance networks, and nearest neighbor networks—each offer unique perspectives on the relationships within our data. The choice of which network type to use depends on the specific questions we want to answer and the nature of our underlying data.</p>
+<p>Network analysis is particularly powerful when combined with the textual analysis techniques from the previous chapter. Together, these methods provide complementary views of the relationships between documents in a corpus.</p>
+</section>
+<section id="references" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+
+
+<div id="refs" class="references csl-bib-body" role="list">
+<div id="ref-newman2018networks" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">Newman, M (2018 ). <em>Networks</em>. Oxford University Press</div>
+</div>
+<div id="ref-wasserman1994social" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">Wasserman, S and Faust, K (1994 ). Social network analysis: Methods and applications. Cambridge university press</div>
+</div>
+<div id="ref-kolaczyk2014statistical" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">Kolaczyk, E D and Csárdi, G (2014 ). <em>Statistical Analysis of Network Data with r</em>. Springer</div>
+</div>
+<div id="ref-igraph" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[4] </div><div class="csl-right-inline">Csárdi, G, Nepusz, T, Traag, V, Horvát, S, Zanini, F, Noom, D and Müller, K (2023 ). <em><span class="nocase">igraph</span>: Network Analysis and Visualization in r</em>. <a href="https://CRAN.R-project.org/package=igraph">https://CRAN.R-project.org/package=igraph</a></div>
+</div>
+<div id="ref-fruchterman1991graph" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[5] </div><div class="csl-right-inline">Fruchterman, T M and Reingold, E M (1991 ). Graph drawing by force-directed placement. <em>Software: Practice and experience</em>. Wiley Online Library. <strong>21</strong> 1129–64</div>
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/taylor-arnold\.github\.io\/fds-py");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./17_temporal_data.html" class="pagination-link" aria-label="Temporal Data">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Temporal Data</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./19_textual_data.html" class="pagination-link" aria-label="Textual Data">
+        <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Textual Data</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Taylor Arnold</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>A <a href="https://distantviewing.org/">Distant Viewing Lab</a> project</p>
+</div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>

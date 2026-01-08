@@ -1,0 +1,874 @@
+# Datasets {#sec-datasets}
+
+```{python}
+#| include: false
+import warnings
+import gc
+
+warnings.filterwarnings('ignore')
+```
+
+## Setup
+
+Load all of the modules and datasets needed for the chapter. In each of the sections below we briefly present the datasets used in this text and the supplemental materials. The `glimpse` method is used to show all of the column names, data types, and the first few rows of the dataset. 
+
+```{python}
+#| output: false
+import numpy as np
+import polars as pl
+
+from funs import *
+from plotnine import *
+from polars import col as c
+theme_set(theme_minimal())
+```
+
+## Countries
+
+Sourced from GapMinder and WikiData, the countries dataset provides a snapshot of 135 nations, identifying each by its full standard name and three-letter ISO code. Geographically, entries are categorized into broad regions and specific subregions, accompanied by precise latitude and longitude coordinates. The data captures essential socioeconomic health through metrics such as total population (in millions), life expectancy, and the Human Development Index (HDI). Economic conditions are represented by GDP figures and the Gini coefficient, which measures income inequality, while broader well-being is gauged via a happiness index. Additionally, the dataset includes infrastructure and cultural details, specifically tracking cellphone adoption rates, the percentage of the population with access to improved water sources, and the primary languages spoken.
+
+```{python}
+countries = pl.read_csv("data/countries.csv")
+countries.glimpse()
+```
+
+Also sourced from GapMinder, the cellphone dataset is a longitudinal record containing 3,480 observations that track the adoption of mobile technology over time. Unlike the previous cross-sectional dataset, this table uses a time-series format, recording data for specific nations identified by their three-letter iso codes across multiple years. The primary metric, cell, quantifies mobile phone subscriptions (expressed per 100 people), allowing for the analysis of growth trends and technological saturation within different countries over the recorded period.
+
+```{python}
+cellphone = pl.read_csv("data/countries_cellphone.csv")
+cellphone.glimpse()
+```
+
+Sourced from Wikidata, the borders dataset provides a relational map of international boundaries, containing 829 entries that define connections between nations. Each row represents a single land border, linking a primary country (iso) to one of its adjacent neighbors (iso_neighbor) using their three-letter ISO codes. Because a single country often shares borders with multiple neighbors, the iso column contains repeated values, effectively creating an adjacency list that allows for the analysis of geographic clustering, continent connectivity, and geopolitical relationships.
+
+```{python}
+borders = pl.read_csv("data/countries_borders.csv")
+borders.glimpse()
+```
+
+```{python}
+#| include: false
+
+del countries
+del cellphone
+del borders
+gc.collect()
+```
+
+## Food Items
+
+The food dataset profiles 61 common culinary items, providing a comprehensive nutritional and descriptive breakdown for each. It categorizes items into broad food_group classifications (such as fruits, vegetables, grains, and meats) and details their dietary composition through macronutrients—including total and saturated fats, carbohydrates, sugar, fiber, and protein—as well as cholesterol and calorie counts. The dataset also tracks micronutrient content, specifically sodium, iron, and vitamins A and C. Beyond nutritional metrics, the table includes metadata sourced from WikiData, such as a URL slug (wiki), a textual description defining the item, and its primary visual color.
+
+```{python}
+food = pl.read_csv("data/food.csv")
+food.glimpse()
+```
+
+The diet dataset is a small reference table containing 6 rows that define dietary compliance for major food groups. It links broad food_group categories (such as fruit, vegetable, grains, meat, fish, and dairy) to specific restrictive diets. Boolean-style columns (yes/no) indicate whether each group is permissible within vegan, vegetarian, and pescatarian lifestyles, effectively serving as a lookup table for filtering food items based on dietary restrictions.
+
+```{python}
+diet = pl.read_csv("data/food_diet_restrictions.csv")
+diet.glimpse()
+```
+
+The recipe dataset provides a structural breakdown of culinary dishes, listing the specific components required to prepare them. Organized in a "long" format, each row represents a single ingredient for a given recipe, rather than a single row per dish. This means complex recipes like "Pot Roast" or "Guacamole" appear across multiple lines, each detailing a constituent item and its corresponding amount (in grams). This granular structure facilitates the aggregation of nutritional data by allowing individual ingredients to be linked back to detailed food profiles.
+
+```{python}
+recipe = pl.read_csv("data/food_recipes.csv")
+recipe.glimpse()
+```
+
+```{python}
+#| include: false
+
+del food
+del diet
+del recipe
+gc.collect()
+```
+
+## Majors and Salary
+
+Sourced from the U.S. Bureau of Labor Statistics, the major dataset offers a high-resolution profile of the earnings distribution for various undergraduate fields of study. Unlike summary tables that report only a median income, this dataset uses a long-format structure to trace the entire salary curve, containing 8,316 rows that correspond to 99 percentile ranks for roughly 84 distinct majors. For each major, the data lists the percentile (from 1 to 99) and the associated earnings value at that rank. This granular approach allows for a deeper analysis of financial outcomes, enabling comparisons of income inequality within fields and assessing the risk-reward profiles—such as the reliable "floor" versus the potential "ceiling" of wages—across different career paths.
+
+```{python}
+major = pl.read_csv("data/majors.csv")
+major.glimpse()
+```
+
+```{python}
+#| include: false
+
+del major
+gc.collect()
+```
+
+## Criterion Films
+
+The film dataset contains 1,479 entries from the Criterion Collection, a prestigious home-video distribution company dedicated to preserving and publishing "important classic and contemporary films" from around the world. Often regarded as a canon of cinema as an art form, the collection includes technically restored and historically significant works.
+
+The dataset identifies each film by its standard title, release year, and unique imdb_id. It captures the creative backbone of each work through columns for directors, writers, and genre classifications, alongside production details like the country of origin, primary languages, and runtime. Critical reception is well-documented with aggregated scores from IMDb (including vote counts), Rotten Tomatoes, and Metacritic. Additionally, the table is enriched with encyclopedic context via Wikipedia extracts and descriptions, and occasionally includes financial metrics like production budgets and box office returns.
+
+```{python}
+film = pl.read_csv("data/criterion.csv")
+film.glimpse()
+```
+
+```{python}
+#| include: false
+
+del film
+gc.collect()
+```
+
+## Fifty Years of Movies
+
+The movie dataset serves as the central hub, containing 5,000 observations that represent the top-100 grossing U.S. films for each year from 1970 to 2020. It captures essential metadata such as the film's title, release year, MPA rating, and runtime, alongside measures of commercial and critical success like gross revenue, IMDb user ratings/vote counts, and Metacritic scores. Uniquely, it also includes computer vision metrics derived from the film's promotional poster, quantifying visual attributes such as poster_brightness, saturation, and edgeness (a measure of visual complexity).
+
+```{python}
+movie = pl.read_csv("data/movies_50_years.csv")
+movie.glimpse()
+```
+
+The color dataset provides a detailed breakdown of the color palettes used in the film posters. Structured in a long format, it links each movie to multiple rows representing specific color categories—spanning hues like "red" or "blue" and greyscale tones like "black" or "white." The percentage column quantifies the dominance of each color, enabling the analysis of visual trends in movie marketing over the last half-century (such as the rise of darker or more saturated poster designs).
+
+```{python}
+color = pl.read_csv("data/movies_50_years_color.csv")
+color.glimpse()
+```
+
+The genre dataset acts as a mapping table to handle the one-to-many relationship between films and their narrative categories. Since a single movie often fits into multiple classifications (e.g., a film that is both "Action" and "Sci-Fi"), this table lists each genre tag on a separate row. This structure allows for precise filtering and aggregation, facilitating analysis of how genre popularity—like the decline of Westerns or the rise of Superhero films—has shifted over the 50-year period.
+
+```{python}
+genre = pl.read_csv("data/movies_50_years_genre.csv")
+genre.glimpse()
+```
+
+The people dataset details the key creative talent behind each film, listing the director and the top four billed actors ("starring") ranked by prominence. Beyond simply naming the individuals, this table enriches the data with demographic inference: it includes predicted gender classifications and a confidence score (gender_conf) for each name. These predictions are derived from U.S. Social Security name data, allowing for longitudinal studies of gender representation in top-tier Hollywood productions.
+
+```{python}
+people = pl.read_csv("data/movies_50_years_people.csv")
+people.glimpse()
+```
+
+```{python}
+#| include: false
+
+del movie
+del color
+del genre
+del people
+gc.collect()
+```
+
+## RVA Flights
+
+Sourced from the U.S. Bureau of Transportation, these five datasets provide a comprehensive record of commercial aviation activity departing from Richmond International Airport (RIC) during its record-breaking year of 2019.
+
+The rva dataset is the central fact table, containing 24,808 rows that represent the complete set of commercial departures from Richmond for the year. It captures the pulse of daily operations, logging scheduling data (planned vs. actual departure/arrival times), delays, and routing information (origin to dest). It also serves as the connector for the other tables, linking to them via keys like carrier, tailnum, and time_hour.
+
+```{python}
+rva = pl.read_csv("data/flightsrva_flights.csv.gz", null_values=["NA"])
+rva.glimpse()
+```
+
+The weather dataset offers an hourly meteorological log for the airport, containing 8,735 observations. It tracks environmental conditions—such as wind speed, visibility, and humidity—that are critical for analyzing flight delays. The time_hour column allows this data to be precisely joined with flight departures to assess the impact of weather on airport performance.
+
+```{python}
+weather = pl.read_csv("data/flightsrva_weather.csv.gz", null_values=["NA"])
+weather.glimpse()
+```
+
+The airport dataset acts as a geospatial lookup table for the 1,251 US destinations accessible from Richmond. It maps three-letter FAA codes (like "ATL" or "ORD") to their full names, time zones, and exact latitude/longitude coordinates, enabling the mapping of flight paths and the calculation of distance-based metrics.
+
+```{python}
+airport = pl.read_csv("data/flightsrva_airports.csv.gz", null_values=["NA"])
+airport.glimpse()
+```
+
+The airline dataset is a small reference table linking the 14 unique two-letter carrier codes found in the flight logs (e.g., "AA", "DL") to their full corporate names (e.g., "American Airlines Inc.", "Delta Air Lines Inc.").
+
+```{python}
+airline = pl.read_csv("data/flightsrva_airlines.csv.gz", null_values=["NA"])
+airline.glimpse()
+```
+
+The plane dataset provides a technical registry for the aircraft used in these flights. Indexed by unique tail numbers, it details the hardware specifications for 3,120 individual planes, including their manufacturer, model year, engine type, and seating capacity, allowing for analysis of fleet modernization and equipment usage.
+
+```{python}
+plane = pl.read_csv("data/flightsrva_planes.csv.gz", null_values=["NA"])
+plane.glimpse()
+```
+
+```{python}
+#| include: false
+
+del rva
+del weather
+del airport
+del airline
+del plane
+gc.collect()
+```
+
+
+
+## What We Eat in America
+
+The `wweia` dataset serves as a granular log of dietary intake events, containing over 173,000 observations where each row represents a specific food item consumed by a participant. It captures the "what, when, and where" of eating habits: identifying the item via a standard food_code, pinpointing the occasion with temporal markers (time, day_of_week, meal_name), and noting the origin (food_source) and location (at_home). Crucially, this transactional table details the nutritional impact of each specific portion, recording the mass in grams and providing a breakdown of energy (kcal), macronutrients (protein, carbs, fat, sugar), and other constituents like caffeine and alcohol.
+
+```{python}
+wweia = pl.read_csv("data/wweia_food.csv", ignore_errors=True)
+wweia.glimpse()
+```
+
+The `demo` dataset provides the socioeconomic and demographic context for the 13,724 survey participants, linked to the food log by a unique id. It constructs a profile for each individual, tracking fundamental attributes such as age, gender, and race, alongside indicators of social status like education level (edu_level) and family structure. Economic wellbeing is quantified by the ratio_to_poverty (the ratio of family income to the federal poverty threshold), allowing researchers to analyze how diet quality varies across different income brackets and population segments.
+
+```{python}
+demo = pl.read_csv("data/wweia_demo.csv")
+demo.glimpse()
+```
+
+The `meta` dataset acts as the definitive taxonomy for the survey, containing 7,444 entries that map the numeric food_code found in the consumption logs to human-readable definitions. It organizes the vast array of food items into a hierarchical structure, linking specific descriptions (e.g., "Milk, low sodium, whole") to broader category_descriptions (e.g., "Milk, whole") and high-level food_group classifications (e.g., "Milk and Dairy"). This reference table is essential for aggregating granular food data into meaningful dietary patterns consistent with nutritional guidelines.
+
+```{python}
+meta = pl.read_csv("data/wweia_meta.csv")
+meta.glimpse()
+```
+
+```{python}
+#| include: false
+
+del wweia
+del demo
+del meta
+gc.collect()
+```
+
+## Inference Data
+
+Derived from the CDC’s 2010 National Survey of Family Growth (NSFG), the `marriage` dataset is a focused univariate collection regarding family formation trends. It consists of a single column, age, which records the age in years at which 5,534 U.S. women entered into their first marriage. This simple numeric vector serves as a foundational sample for estimating population parameters—such as the median age of first marriage—and analyzing shifts in nuptiality over time.
+
+```{python}
+marriage = pl.read_csv("data/inference_age_at_mar.csv")
+marriage.glimpse()
+```
+
+Originating from a study in rural New South Wales, Australia, the `absent` dataset investigates the factors influencing school attendance among 146 primary school students. The target variable, days, counts the total days a student was absent during the school year. These figures are contextualized by categorical demographic and academic indicators, including ethnicity (eth), gender (sex), age group (age), and lrn, a classification of the student's learning status.
+
+```{python}
+absent = pl.read_csv("data/inference_absenteeism.csv")
+absent.glimpse()
+```
+
+The `sulph` dataset captures the results of a clinical control trial testing the efficacy of the drug sulphinpyrazone in post-heart attack care. It tracks 1,475 patients, dividing them into experimental and placebo arms via the group column. The primary endpoint is recorded in the binary outcome column ("lived" or "died"), creating a classic contingency structure used to calculate odds ratios and determine if the drug provides a statistically significant survival benefit compared to the control.
+
+```{python}
+sulph = pl.read_csv("data/inference_sulphinpyrazone.csv")
+sulph.glimpse()
+```
+
+Sourced from a survey of 1,325 UCLA students, the `speed` dataset combines physiological metrics with self-reported risk behavior. It logs the student's sex and height (in inches), alongside a behavioral metric: speed, representing the fastest speed the student has ever driven a vehicle (presumably in mph). This combination allows for inference tasks such as testing for gender-based differences in driving habits or exploring correlations between physical stature and risk-taking.
+
+```{python}
+speed = pl.read_csv("data/inference_speed_sex_height.csv")
+speed.glimpse()
+```
+
+The `possum` dataset provides a morphometric profile of 104 brushtail possums captured across Australia and New Guinea. Aside from sex and age estimates, the data tracks geographic provenance through site codes and population regions (pop, e.g., "Vic" for Victoria). The dataset is defined by its precise biological measurements in millimeters—specifically head_l (head length), skull_w (skull width), total_l (total body length), and tail_l (tail length)—which are often used to classify subspecies or study regional physical variations.
+
+```{python}
+possum = pl.read_csv("data/inference_possum.csv")
+possum.glimpse()
+```
+
+```{python}
+#| include: false
+
+del marriage
+del absent
+del sulph
+del speed
+del possum
+gc.collect()
+```
+
+## Keylogging
+
+The klog dataset is a high-resolution behavioral log capturing the precise keystroke dynamics of students writing in English. With over 1.1 million observations, each row represents a single key press or input event. The data records the temporal flow of writing through timestamps (t0 for press, t1 for release) and calculated durations (dur), offering insight into motor processing and cognitive hesitation. The input and code columns differentiate between the resulting character (e.g., "I") and the physical key actuated (e.g., "KeyI" or "Space"), allowing for the reconstruction of the text and the analysis of editing behaviors like backspacing or pausing.
+
+```{python}
+klog = pl.read_csv("data/keylog.csv.gz")
+klog.glimpse()
+```
+
+The meta dataset provides the demographic and linguistic context for the 823 participants tracked in the keylogs. It links each unique session id to the writer's age and, crucially, their native language background (lang). The dataset also includes a cefr rating (Common European Framework of Reference for Languages) , which categorizes their English proficiency into standard levels such as "B1/B2" (independent user) or "C1/C2" (proficient user). This metadata enables comparative analysis of how L1 background and L2 proficiency manifest in low-level typing patterns.
+
+```{python}
+meta = pl.read_csv("data/keylog-meta.csv.gz")
+meta.glimpse()
+```
+
+```{python}
+#| include: false
+
+del klog
+del meta
+gc.collect()
+```
+
+## Paris Metro <img style="height:0.8em; width: auto" src="img/spatial.png">
+
+The pmetro dataset captures the geospatial layout of the Paris Métro system, containing 371 entries that represent individual station stops or track segments. Each row identifies a station by name and links it to its specific line number and official branding line_color (provided as a hex code). Uniquely, the dataset is structured to facilitate network visualization rather than just point plotting: in addition to the station's own coordinates (lat, lon), it includes lat_end and lon_end columns. This "start-to-end" structure effectively defines the edges between stations, allowing for the reconstruction of the connected path of each subway line.
+
+```{python}
+pmetro = pl.read_csv("data/paris_metro_stops.csv")
+pmetro.glimpse()
+```
+
+```{python}
+#| include: false
+
+del pmetro
+gc.collect()
+```
+
+## US City Population <img style="height:0.8em; width: auto" src="img/spatial.png">
+
+The us_pop dataset traces the demographic evolution of the United States through a historical record of urban growth. Spanning from the first census in 1790 through 2010, it logs the population (measured in thousands) for distinct cities identified by name and state. The data appears to track modern cities backward in time, showing values of 0.0 for years prior to a city's founding or incorporation (e.g., Anchorage in 1790). Enriched with geospatial coordinates (lat and lon), this longitudinal collection facilitates the analysis of urbanization patterns, capturing the country's westward expansion and the explosive growth of metropolitan hubs over two centuries.
+
+```{python}
+us_pop = pl.read_csv("data/us_city_population.csv")
+us_pop.glimpse()
+```
+
+```{python}
+#| include: false
+
+del us_pop
+gc.collect()
+```
+
+## US Metropolitan Regions <img style="height:0.8em; width: auto" src="img/spatial.png">
+
+Sourced from the Census Bureau's American Community Survey, this collection of datasets provides a multi-dimensional view of U.S. demographics and economics, centered on Metropolitan Statistical Areas (CBSAs).
+
+The metro dataset is the primary analytic table, profiling 934 metropolitan areas identified by a unique geoid. It aggregates key socioeconomic indicators, including population size (pop), population density, and the median age of residents. Economic health is captured through median household income and housing metrics like home ownership rates (percent_own) and the median cost of a one-bedroom rental. Geographically, each metro is assigned to a broad census region (quad) and division, and is precisely located via latitude/longitude coordinates. The accompanying metro_geo dataset provides the corresponding polygon geometries for these areas, enabling choropleth mapping and spatial analysis.
+
+```{python}
+metro = pl.read_csv("data/acs_cbsa.csv")
+metro.glimpse()
+```
+
+The next several datasets handle the higher-level state geography. The state table serves as a reference for the 50 U.S. states, providing names, abbreviations, and total populations, while state_geo contains their boundaries. 
+
+```{python}
+state = pl.read_csv("data/acs_state.csv")
+state.glimpse()
+```
+
+The metro_cw (crosswalk) table bridges the two geographic levels, handling the complexity of metropolitan areas that span multiple state lines (e.g., the New York metro area covering parts of NY, NJ, and PA). It uses the prop column to indicate what fraction of a metro area's footprint or population falls within a specific state.
+
+```{python}
+metro_cw = pl.read_csv("data/acs_cbsa_to_state.csv")
+metro_cw.glimpse()
+```
+
+The transit dataset provides a breakdown of transportation modes, listing the percentage of the population that commutes via car, public transportation, bicycle, or other means, as well as those who work from home. 
+
+```{python}
+transit = pl.read_csv("data/acs_cbsa_commute_type.csv")
+transit.glimpse()
+```
+
+Complementing this, the commute dataset uses a "long" format to capture the distribution of travel times. Instead of a single average, it breaks commute durations into specific time bins (defined by time_min and time_max), with the per column indicating the percentage of commuters falling into each interval.
+
+```{python}
+commute = pl.read_csv("data/acs_cbsa_commute_time.csv")
+commute.glimpse()
+```
+
+The hh dataset offers a granular look at economic disparity by mapping the full distribution of household income for each metro area. Like the commute data, it is structured in a long format, where each row represents a specific income bracket (bounded by band_min and band_max). The per column quantifies the share of households within that bracket, allowing for a more nuanced analysis of wealth distribution—such as identifying the "middle class" squeeze or poverty rates—than a simple median value could provide.
+
+```{python}
+hh = pl.read_csv("data/acs_cbsa_hh_income.csv")
+hh.glimpse()
+```
+
+A geographic file that contains the polygons for each of the US states. There are keys to join to the other structured datasets above.
+
+```{python}
+state_geo = DSGeo.read_file("data/acs_state.geojson")
+state_geo.drop(c.geometry).glimpse()
+```
+
+And another geographic file that contains the polygons for each of the metro regions. There are keys to join to the other structured datasets above.
+
+```{python}
+metro_geo = DSGeo.read_file("data/acs_cbsa_geo.geojson")
+metro_geo.drop(c.geometry).glimpse()
+```
+
+```{python}
+#| include: false
+
+del metro
+del state
+del metro_cw
+del transit
+del commute
+del hh
+del state_geo
+del metro_geo
+gc.collect()
+```
+
+## COVID <img style="height:0.8em; width: auto" src="img/spatial.png">
+
+The covid dataset is a longitudinal record tracking the daily impact of the COVID-19 pandemic across France's administrative departments. It uses a time-series structure where each row represents the status of a specific department (departement) on a given date. The metrics capture the strain on the healthcare system and the severity of the outbreak, recording cumulative statistics for deceased patients and recovered cases, as well as real-time snapshots of patients currently hospitalised or in intensive care (reanimation). Additionally, some columns track daily flows, such as new hospital admissions (hospitalised_new), allowing for analysis of infection waves and healthcare capacity over time.
+
+```{python}
+covid = pl.read_csv("data/france_departement_covid.csv")
+covid.glimpse()
+```
+
+The pop dataset is a concise demographic reference table listing the total resident population for each of the 101 French departments. Indexed by the standard two-character departement code (e.g., "01" for Ain, "75" for Paris), this table serves as a critical normalization tool. It allows researchers to convert raw counts from the COVID-19 or economic datasets into standardized rates (such as cases per 100,000 inhabitants), enabling fair comparisons between densely populated urban areas and rural regions.
+
+```{python}
+pop = pl.read_csv("data/france_departement_population.csv")
+pop.glimpse()
+```
+
+The fr_city dataset focuses on the country's major urban centers, providing geospatial and demographic details for 58 significant cities. It identifies each city by name and links it to its broader administrative region (admin_name), such as "Ile-de-France" or "Nouvelle-Aquitaine." The data includes precise lat and lon coordinates for mapping and a population figure that represents the broader urban or metropolitan area (agglomeration) rather than just the municipal limits. This dataset allows for spatial analysis of city-level hubs distinct from the broader departmental data.
+
+```{python}
+fr_city = pl.read_csv("data/france_cities.csv")
+fr_city.glimpse()
+```
+
+The gdp dataset provides an economic profile of the country at the departmental level. It maps each departement (identified by both code and name) to its Gross Domestic Product (GDP) per capita in Euros. This metric serves as a proxy for regional standard of living and economic productivity, allowing for correlations with health outcomes or infrastructure availability.
+
+```{python}
+gdp = pl.read_csv("data/france_departement_gdp.csv")
+gdp.glimpse()
+```
+
+The dep dataset serves as the geospatial backbone for mapping French administrative divisions. It contains the boundaries for the 101 departments, linking the standard departement codes and names to a hidden geometry column (polygons). By joining this spatial file with the covid, pop, or gdp tables, users can visualize data through choropleth maps, revealing geographic patterns such as regional economic clusters or the spatial spread of the pandemic.
+
+```{python}
+dep = DSGeo.read_file("data/france_departement_sml.geojson")
+dep.drop(c.geometry).glimpse()
+```
+
+```{python}
+#| include: false
+
+del covid
+del pop
+del fr_city
+del gdp
+del dep
+gc.collect()
+```
+
+We have a second covid dataset consisting of a granular time-series record tracking the spread of the virus across Italy's administrative landscape. Unlike national or regional summaries, this table drills down to the provincial level (roughly equivalent to U.S. counties), providing a daily count of total cases for each province and its parent region. With over 68,000 observations, it allows for the analysis of local outbreaks and the specific trajectory of the pandemic within distinct geographic pockets from February 2020 onwards.
+
+```{python}
+covid = pl.read_csv("data/it_province_covid.csv")
+covid.glimpse()
+```
+
+The it_city dataset serves as a geospatial reference for 388 distinct Italian urban centers. It identifies cities by name—ranging from major metropolises like Rome and Milan to smaller regional hubs—and provides their precise latitude (lat) and longitude (lon) coordinates. Additionally, the pop column lists the resident population for each city, enabling analysis that correlates population density or urban size with other socioeconomic or health indicators.
+
+```{python}
+it_city = pl.read_csv("data/it_cities.csv")
+it_city.glimpse()
+```
+
+The prov dataset provides the essential spatial geometry required to map the provincial data. It contains the administrative boundaries for Italy's 107 provinces, identifying each by its standard name (e.g., "Torino", "Firenze"). By linking this geospatial file with the covid dataset via the province column, users can construct choropleth maps to visualize the spatial distribution and evolution of case counts across the peninsula.
+
+```{python}
+prov = DSGeo.read_file("data/it_province.geojson")
+prov.drop(c.geometry).glimpse()
+```
+
+```{python}
+#| include: false
+
+del covid
+del it_city
+del prov
+gc.collect()
+```
+
+## U.S. Storms <img style="height:0.8em; width: auto" src="img/spatial.png">
+
+Sourced from NOAA's National Hurricane Center, these three datasets provide a historical record of North Atlantic tropical cyclones. The storm dataset records the comprehensive trajectory and intensity history of tropical cyclones since 1950. It contains over 25,000 timestamped observations, logging the status of a storm every six hours. The data captures the storm's precise geographic position (lat, lon), its maximum sustained wind speed (wind) in knots, and its Saffir-Simpson category (ranging from 0 for tropical storms/depressions to 5 for catastrophic hurricanes).
+
+```{python}
+storm = pl.read_csv("data/storms.csv")
+storm.glimpse()
+```
+
+The gender dataset classifies 262 distinct storm names by gender. It provides the name, the assigned gender (male or female), and a prob score reflecting the confidence of that assignment based on U.S. naming conventions. This table supports behavioral research, such as investigations into whether the gender of a storm's name psychologically impacts public risk perception and preparedness levels.
+
+```{python}
+gender = pl.read_csv("data/storm_gender.csv")
+gender.glimpse()
+```
+
+The storm_type dataset acts as a lookup table for the meteorological classifications found in the main tracking data. It maps the two-letter status codes (like 'HU' or 'TD') to their full descriptions (e.g., 'hurricane' or 'tropical depression'), clarifying the specific developmental stage or physical nature of the cyclone at each observation point.
+
+```{python}
+storm_type = pl.read_csv("data/storm_codes.csv")
+storm_type.glimpse()
+```
+
+```{python}
+#| include: false
+
+del storm
+del gender
+del storm_type
+gc.collect()
+```
+
+## Shakespeare Plays <img style="height:0.8em; width: auto" src="img/text.png">
+
+A catalog of Shakespeare's 37 plays, capturing each work's identity and publication metadata. This serves as the metadata reference table, with each play assigned a short identifier (like "ham" for Hamlet) that links to all other tables. The data comes from the Folger Shakespeare Library's scholarly editions.
+
+```{python}
+play = pl.read_csv("data/shakespeare_plays.csv")
+play.glimpse()
+```
+
+The dramatis personae across all plays—1,126 characters from Hamlet to Puck to Lady Macbeth. Each character is tied to their play and includes role descriptions where available (e.g., "duke of Athens" for Theseus, "father to Hermia" for Egeus). This table enables analysis of character networks, naming patterns, and the social structures Shakespeare constructed.
+
+```{python}
+char = pl.read_csv("data/shakespeare_characters.csv")
+char.glimpse()
+```
+
+The spoken text of the plays, segmented into 80,592 individual lines of verse or prose. Each line is attributed to a specific character and located within the play's structure (act, scene, line number). This is the core table for literary analysis—studying who speaks, how much, in what style (verse vs. prose), and how dialogue flows through each scene.
+
+```{python}
+line = pl.read_csv("data/shakespeare_lines.csv.gz")
+line.glimpse()
+```
+
+A granular, linguistically-annotated word table with nearly 600,000 tokens. Each word is linked back to its line, character, and play, and includes its lemma (base form) and part-of-speech tag. This enables computational stylistics: vocabulary richness, word frequency analysis, grammatical patterns, and comparative studies of how different characters or plays use language.
+
+```{python}
+word = pl.read_csv("data/shakespeare_words.csv.gz")
+word.glimpse()
+```
+
+There are also versions with other early-modern British playwrights: `emed_plays.csv`, `emed_characters.csv`, `emed_lines.csv` and `emed_words.csv`.
+
+```{python}
+#| include: false
+
+del play
+del char
+del line
+del word
+gc.collect()
+```
+
+## Wikipedia Authors <img style="height:0.8em; width: auto" src="img/text.png">
+
+Sourced from Wikipedia, these six datasets provide a multi-faceted view of 75 prominent British authors, ranging from medieval poets like Chaucer to modern literary figures.
+
+The wiki dataset serves as the biographical master table for the collection. It anchors each author (doc_id) with key vital statistics, including their years of birth and death, assigned literary era (e.g., "Early", "Sixteenth C"), and gender. To facilitate linking with the other tables, it includes the URL slug for their Wikipedia page (link) and a shortened name (short) for cleaner visualization.
+
+```{python}
+wiki = pl.read_csv("data/wiki_uk_meta.csv.gz", ignore_errors=True)
+wiki.glimpse()
+```
+
+The ptext dataset contains the full text of each of the Wikipedia pages for each of the authors.
+
+```{python}
+ptext = pl.read_csv("data/wiki_uk_authors_text.csv", ignore_errors=True)
+ptext.drop(c.text).glimpse()
+```
+
+The anno dataset is a large, token-level linguistic corpus derived from the text of the authors' Wikipedia biographies. With over 400,000 rows, it breaks down every sentence into individual words (token), providing deep grammatical analysis including the lemma, part-of-speech tags (upos, xpos), and morphological features (feats). It also captures dependency parsing relationships (relation, tid_source), enabling syntactic analysis of how these figures are described in encyclopedic text.
+
+```{python}
+anno = pl.read_csv("data/wiki_uk_authors_anno.csv.gz", ignore_errors=True)
+anno.glimpse()
+```
+
+The cite dataset maps the direct "knowledge graph" between these authors within Wikipedia. It functions as a directed adjacency list, where each row represents a hyperlink connecting one author's page (doc_id) to another's (doc_id2). This structure allows researchers to construct a citation network, revealing which authors are explicitly referenced in the biographies of their peers—for example, showing how Geoffrey Chaucer is linked to later writers like Charles Dickens or William Shakespeare.
+
+```{python}
+cite = pl.read_csv("data/wiki_uk_citations.csv", ignore_errors=True)
+cite.glimpse()
+```
+
+The cocite dataset captures latent connections between authors by tracking how often they appear together in other Wikipedia articles. Rather than direct links, it counts the co-occurrences (count) between a primary author (doc_id) and another figure (doc_id_out).
+
+```{python}
+cocite = pl.read_csv("data/wiki_uk_cocitations.csv", ignore_errors=True)
+cocite.glimpse()
+```
+
+The rev dataset provides a longitudinal history of the Wikipedia articles themselves, logging over 35,000 individual edits. Each row records a specific revision, detailing the user who made the change, the timestamp (datetime), and the resulting file size. It also captures the editor's comment, offering a window into the community collaboration and content disputes that shape the public narrative around these literary figures.
+
+```{python}
+rev = pl.read_csv("data/wiki_uk_page_revisions.csv", ignore_errors=True)
+rev.glimpse()
+```
+
+The views dataset tracks the public interest in these authors through daily page view statistics. It records the number of visits (views) to each author's Wikipedia page for every day in August 2023. This time-series data allows for the analysis of current popularity trends, revealing how historical figures maintain relevance or experience spikes in attention due to news, anniversaries, or cultural events.
+
+```{python}
+views = pl.read_csv("data/wiki_uk_page_views.csv", ignore_errors=True)
+views.glimpse()
+```
+
+We also have a dataset ptext_fr, which is a version of the French Wikipedia pages for the same authors. Here are the texts.
+
+```{python}
+ptext_fr = pl.read_csv("data/wiki_uk_authors_text_fr.csv", ignore_errors=True)
+ptext_fr.drop(c.text).glimpse()
+```
+
+And likewise, anno_fr captures the French-language specific annotations.
+
+```{python}
+anno_fr = pl.read_csv("data/wiki_uk_authors_anno_fr.csv.gz", ignore_errors=True)
+anno_fr.glimpse()
+```
+
+```{python}
+#| include: false
+
+del wiki
+del ptext
+del anno
+del cite
+del cocite
+del rev
+del views
+del ptext_fr
+del anno_fr
+gc.collect()
+```
+
+## IMDb Reviews <img style="height:0.8em; width: auto" src="img/text.png">
+
+The imdb5k dataset is a curated, 5,000-observation subset of the classic IMDb movie review corpus, designed for rapid prototyping and lightweight sentiment analysis experiments. Each row represents a single review, categorized by a binary sentiment label ("positive" or "negative") and assigned to a specific data partition (index, e.g., "train" or "test"). Although hidden from the preview for brevity, the dataset is fully equipped for modern NLP tasks: it includes the raw text of the critique and e5, a pre-computed 1024-dimensional embedding vector.
+
+```{python}
+imdb5k = pl.read_parquet("data/imdb5k_pca.parquet")
+imdb5k.drop(c.e5, c.text).glimpse()
+```
+
+The imdb dataset represents the complete, 50,000-row standard benchmark for binary sentiment classification. Balanced between positive and negative polarities, it provides the robust volume of data necessary for training deep learning models. Like the smaller version, it contains metadata for experimental reproducibility (id and index). Crucially, it pairs the unstructured content of the reviews (text) with high-fidelity, 1024-dimensional vector representations (e5), enabling advanced machine learning applications—such as semantic search or clustering—straight out of the box.
+
+```{python}
+imdb = pl.read_parquet("data/imdb_pca.parquet")
+imdb.drop(c.e5, c.text).glimpse()
+```
+
+```{python}
+#| include: false
+
+del imdb
+gc.collect()
+```
+
+## AG News <img style="height:0.8em; width: auto" src="img/text.png">
+
+The agnews dataset is a widely used benchmark for multiclass topic classification, comprising 127,600 news articles harvested from more than 2,000 sources. Unlike the binary sentiment datasets, this corpus challenges models to distinguish between four distinct thematic categories: World, Sports, Business, and Sci/Tech. Each entry is assigned a specific label and partitioned into training or testing sets via the index column. While the preview displays only the metadata, the dataset is fully enriched with the raw article text and pre-computed, 1024-dimensional e5 embeddings, streamlining the workflow for developing and evaluating advanced NLP models.
+
+```{python}
+agnews = pl.read_parquet("data/agnews_pca.parquet")
+agnews.drop(c.e5, c.text).glimpse()
+```
+
+```{python}
+#| include: false
+
+del agnews
+gc.collect()
+```
+
+## Amazon Reviews <img style="height:0.8em; width: auto" src="img/text.png">
+
+The amazon dataset is a specialized subset of the massive Amazon Product Reviews corpus, containing 10,000 observations selected for the task of product category classification. Unlike standard sentiment analysis datasets, the challenge here is to predict the correct product department (e.g., "All Beauty") based solely on the content of the review. The dataset includes standard metadata columns—a unique id, the target label, and an index assigning rows to training or testing partitions. Like the previous NLP collections, it comes fully prepared with both the raw text and pre-computed, 1024-dimensional e5 embeddings, enabling immediate experimentation with dense vector-based classification models.
+
+```{python}
+amazon = pl.read_parquet("data/amazon_pca.parquet")
+amazon.drop(c.e5, c.text).glimpse()
+```
+
+```{python}
+#| include: false
+
+del amazon
+gc.collect()
+```
+
+## BBC Headlines <img style="height:0.8em; width: auto" src="img/text.png">
+
+The bbc dataset is a concise benchmark for multiclass document classification, derived from a collection of 2,225 articles published by BBC News. It organizes content into five distinct thematic categories: business, entertainment, politics, sport, and tech. Each row represents a single article, tagged with its ground-truth label and assigned to a specific partition (index) for training or evaluation. Designed for modern NLP workflows, the dataset comes enriched with both the raw text and pre-computed, 1024-dimensional e5 embeddings, allowing researchers to immediately apply vector-based machine learning techniques like clustering or topic modeling.
+
+```{python}
+bbc = pl.read_parquet("data/bbc_pca.parquet")
+bbc.drop(c.e5, c.text).glimpse()
+```
+
+```{python}
+#| include: false
+
+del bbc
+gc.collect()
+```
+
+## Sentiment Treebank <img style="height:0.8em; width: auto" src="img/text.png">
+
+The sst dataset contains the Stanford Sentiment Treebank (SST-5), a premier benchmark for fine-grained sentiment analysis. Unlike binary classification tasks, this corpus of 11,855 movie review excerpts challenges models to discern subtle emotional gradations across a five-point scale: "very negative", "negative", "neutral", "positive", and "very positive". The dataset includes standard metadata columns for row identification (id) and data partitioning (index). Consistent with the other NLP collections in this series, it is provided with both the raw text and pre-computed, 1024-dimensional e5 embeddings, enabling nuanced research into how vector models capture intensity and neutrality in language.
+
+```{python}
+sst = pl.read_parquet("data/sst5_pca.parquet")
+sst.drop(c.e5, c.text).glimpse()
+```
+
+```{python}
+#| include: false
+
+del sst
+gc.collect()
+```
+
+## GoEmotions <img style="height:0.8em; width: auto" src="img/text.png">
+
+The goemo dataset represents GoEmotions, a large-scale, fine-grained corpus designed to capture the complexity of human emotional expression. Sourced from Reddit comments, this collection of over 54,000 observations moves far beyond simple positive/negative sentiment, categorizing text into a rich taxonomy of 27 distinct emotions—such as "admiration," "remorse," "curiosity," and "confusion"—plus a "neutral" state. The data is structured for multi-label classification, with separate columns indicating the presence or absence of each specific emotion. As with the other NLP datasets in this series, it comes enriched with both the raw text and pre-computed, 1024-dimensional e5 embeddings, facilitating advanced research into the vector-space relationships between subtle emotional concepts.
+
+```{python}
+goemo = pl.read_parquet("data/goemotions_pca.parquet")
+goemo.drop(c.e5, c.text).glimpse()
+```
+
+```{python}
+#| include: false
+
+del goemo
+gc.collect()
+```
+
+## FSA-OWI Color Images <img style="height:0.8em; width: auto" src="img/vision.png">
+
+Sourced from the Library of Congress, the fsac dataset contains a sample of 500 color photographs from the Farm Security Administration - Office of War Information (FSA-OWI) collection. This historic government project was originally established to document rural poverty during the Great Depression and later expanded to capture American mobilization for World War II. While the collection is famous for its iconic black-and-white imagery, this dataset highlights the less common, vibrant color work shot on early Kodachrome film. Each row represents a single photograph, accessible via the filepath, and includes rich provenance details such as the photographer (e.g., Russell Lee, Jack Delano) and a descriptive caption. The data is geocoded with city, state, and lat/lon coordinates.
+
+```{python}
+fsac = pl.read_csv("data/fsac.csv")
+fsac.glimpse()
+```
+
+```{python}
+#| include: false
+
+del fsac
+gc.collect()
+```
+
+## MNIST <img style="height:0.8em; width: auto" src="img/vision.png">
+
+The mnist dataset is a 1,000-sample subset of the classic MNIST database, widely considered the "Hello World" of computer vision. It consists of grayscale images of handwritten digits ranging from 0 to 9. The table links the ground-truth numeric label to the corresponding image file via the filepath column and assigns each observation to a specific data partition (index) for training or testing purposes.
+
+```{python}
+mnist = pl.read_csv("data/mnist_1000.csv")
+mnist.glimpse()
+```
+
+The emnist dataset is a 10,000-sample subset of EMNIST (Extended MNIST), a more challenging dataset that expands the original digit recognition task to include handwritten letters. Unlike the standard MNIST, the label column here is alphanumeric, containing a mix of digits and both uppercase and lowercase characters (e.g., 'g', 'P', '4'), reflecting the greater complexity of the classification problem.
+
+```{python}
+emnist = pl.read_csv("data/emnist_10000.csv")
+emnist.glimpse()
+```
+
+The fmnist dataset represents a 10,000-sample subset of Fashion-MNIST, designed by Zalando Research as a modern, more difficult drop-in replacement for the original digit dataset. Instead of abstract numbers, the images depict distinct articles of clothing and accessories. The label column provides the text description of the class—such as "dress," "pullover," or "ankle boot"—making it intuitive to interpret model errors (e.g., confusing a "shirt" with a "t-shirt").
+
+```{python}
+fmnist = pl.read_csv("data/fashionmnist_10000.csv")
+fmnist.glimpse()
+```
+
+```{python}
+#| include: false
+
+del mnist
+del emnist
+del fmnist
+gc.collect()
+```
+
+## ImageNet <img style="height:0.8em; width: auto" src="img/vision.png">
+
+The inet dataset is a 1,000-sample subset of Imagenette, a corpus derived from the massive ImageNet database but restricted to ten distinct, easily distinguishable classes (e.g., "church," "gas_pump," "garbage_truck"). Designed as a lightweight benchmark for rapid prototyping, it links each ground-truth label to its source image via filepath. Crucially, this version comes pre-packaged with two state-of-the-art embedding vectors (vit and siglip), allowing researchers to immediately compare how different vision transformer architectures represent these visually distinct objects without needing to run heavy inference tasks.
+
+```{python}
+inet = pl.read_parquet("data/imagenette_1000.parquet")
+inet.drop(c.vit, c.siglip).glimpse()
+```
+
+The woof dataset is a 1,000-sample subset of Imagewoof, a significantly harder classification challenge also drawn from ImageNet. Unlike the broad categories in Imagenette, this dataset focuses exclusively on ten specific dog breeds (e.g., "shih_tzu," "border_terrier," "dingo"), forcing models to discern fine-grained features rather than gross structural differences. Like its sibling dataset, it includes standard metadata (label, filepath, index) and is enriched with pre-computed vit and siglip embeddings, making it an ideal testbed for evaluating the discriminative power of modern vision models on subtle, fine-grained tasks.
+
+```{python}
+woof = pl.read_parquet("data/imagewoof_1000.parquet")
+woof.drop(c.vit, c.siglip).glimpse()
+```
+
+```{python}
+#| include: false
+
+del woof
+del inet
+gc.collect()
+```
+
+## Oxford Flowers <img style="height:0.8em; width: auto" src="img/vision.png">
+
+The flowers dataset is a 1,000-sample subset of the Oxford Flowers dataset, a standard benchmark for fine-grained image classification. Unlike general object recognition, this dataset focuses on distinguishing between closely related floral species, with label entries such as "foxglove," "clematis," and "bishop of llandaff." Each row links the specific flower class to its image via filepath and assigns it to a training or testing partition (index). Consistent with the previous vision datasets, it is enriched with pre-computed vit and siglip embedding vectors, enabling researchers to immediately apply clustering or similarity search to explore how different models encode botanical features.
+
+```{python}
+flowers = pl.read_parquet("data/flowers_1000.parquet")
+flowers.drop(c.vit, c.siglip).glimpse()
+```
+
+```{python}
+#| include: false
+
+del flowers
+gc.collect()
+```
+
+## Caltech-UCSD Birds <img style="height:0.8em; width: auto" src="img/vision.png">
+
+The birds dataset is a curated subset of the Caltech-UCSD Birds-200-2011 (CUB-200-2011) dataset, a renowned benchmark for fine-grained visual categorization. While the full collection covers 200 species, this version (birds10) likely restricts the task to 10 distinct classes (e.g., "canary"), making it more accessible for rapid model testing. Each entry links the species label to its image filepath and assigns it to a data partition (index). Like the other classification datasets in this series, it comes ready-to-use with pre-computed vit and siglip embeddings, allowing for immediate exploration of how transformer models distinguish between subtle avian features.
+
+```{python}
+birds = pl.read_parquet("data/birds10.parquet")
+birds.drop(c.vit, c.siglip).glimpse()
+```
+
+The birds_bbox dataset complements the classification data by focusing on object detection and localization. Also derived from the CUB-200-2011 collection, it contains 1,000 observations where the primary task is not just naming the bird, but locating it within the frame. In addition to the label and filepath, this dataset provides precise coordinates for a bounding box: bbox_x0 and bbox_y0 define the top-left corner, while bbox_x1 and bbox_y1 mark the bottom-right. This granular spatial data is essential for training models to separate the subject from complex natural backgrounds.
+
+```{python}
+birds_bbox = pl.read_csv("data/birds_1000.csv")
+birds_bbox.glimpse()
+```
+
+```{python}
+#| eval: false
+#| include: false
+
+del birds
+del birds_bbox
+gc.collect()
+```
