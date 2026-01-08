@@ -65,7 +65,7 @@ You can reverse the sorting order of `sort` by setting its `descending` paramete
 )
 ```
 
-Now the countries with the highest population burden appear first. This descending order is often useful when we want to focus on the most extreme cases or identify outliers in our data. For example, the code below sorts by region (alphabetical order) and then, within each region, by population.
+Now the countries with the highest population appear first. This descending order is often useful when we want to focus on the most extreme cases or identify outliers in our data. For example, the code below sorts by region (alphabetical order) and then, within each region, by population.
 
 ```{python}
 (

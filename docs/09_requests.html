@@ -412,7 +412,7 @@ Practice Notebooks
 <section id="setup" class="level2" data-number="9.1">
 <h2 data-number="9.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">9.1</span> Setup</h2>
 <p>Load all of the modules and datasets needed for the chapter. We will also use requests and the requests-cache modules to make API requests and lxml to parse the results.</p>
-<div id="5f79269d" class="cell" data-execution_count="2">
+<div id="467581be" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -439,7 +439,7 @@ Practice Notebooks
 <p>There are many APIs available online for accessing a variety of different types of data. Some require setting up an account and obtaining an API key—a unique identifier that authenticates your requests. Some APIs require payment for each request, while others offer free access or a free tier for occasional users. Most frequently, APIs provide access to data that changes frequently, such as news stories, weather forecasts, or stock prices. Increasingly, though, even static datasets are being put behind API access rather than allowing straightforward downloads. Fortunately, Python’s <code>requests</code> library makes it relatively easy to make and parse API calls. For more details on the <code>requests</code> library, see its excellent documentation at <a href="https://requests.readthedocs.io/">https://requests.readthedocs.io/</a>.</p>
 <p>We will demonstrate API calls using the MediaWiki API that powers Wikipedia. This API is particularly nice for learning because it is freely available and requires no signup or authentication. Anyone can call the API directly and retrieve data related to Wikipedia and other Wikimedia projects. For comprehensive documentation on this API, see <a href="https://www.mediawiki.org/wiki/API:Main_page">https://www.mediawiki.org/wiki/API:Main_page</a>.</p>
 <p>Before we get started, let’s build a local cache that stores the results of our API calls. This is important for two reasons. First, it avoids overwhelming the server with repeated requests for the same data—a courtesy that many APIs require and all appreciate. Second, it speeds up our code during development, since cached responses return instantly without network latency.</p>
-<div id="3e1c19ac" class="cell" data-execution_count="3">
+<div id="d02e372f" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>session <span class="op">=</span> requests_cache.CachedSession(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    cache_name<span class="op">=</span><span class="st">"examples/requests_cache"</span>,</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    backend<span class="op">=</span><span class="st">"sqlite"</span>,</span>
@@ -449,7 +449,7 @@ Practice Notebooks
 </div>
 <p>The <code>requests_cache</code> library creates a drop-in replacement for the standard <code>requests</code> session. Behind the scenes, it stores responses in a SQLite database file. Setting <code>expire_after=None</code> means cached responses never expire—useful for historical data that won’t change, though you might want a shorter expiration for frequently updated data.</p>
 <p>To make an API call, we need three things: a base URL pointing to the API endpoint, parameters specifying what data we want, and headers identifying who we are. The parameters are specific to each API—you’ll need to consult the documentation to learn what options are available. The <code>User-Agent</code> header is a polite way to identify your application; many APIs require it, and it helps server administrators contact you if your requests cause problems.</p>
-<div id="9d900fc6" class="cell" data-execution_count="4">
+<div id="e7b3eebb" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>base_url <span class="op">=</span> <span class="st">"https://en.wikipedia.org/w/api.php"</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> {</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'action'</span>: <span class="st">'query'</span>,</span>
@@ -466,18 +466,18 @@ Practice Notebooks
 </div>
 <p>In this example, we’re asking the MediaWiki API for pageview statistics about the Wikipedia article on Emily Brontë. The <code>action</code> parameter tells the API we want to query for information, <code>format</code> specifies we want the response in JSON, <code>prop</code> indicates we want pageview data, and <code>titles</code> names the specific article.</p>
 <p>We can check the response code to verify the request succeeded. A status code of 200 indicates success.</p>
-<div id="66fe43fc" class="cell" data-execution_count="5">
+<div id="b708d809" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>response.status_code</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>200</code></pre>
 </div>
 </div>
 <p>The data returned from this API, as with most web-based APIs, is in JSON format. We can access and parse it with a simple method attached to the response object.</p>
-<div id="e028ec95" class="cell" data-execution_count="6">
+<div id="cff3afa8" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> response.json()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now we are back in a situation similar to what we encountered in <a href="08_dataformats.html" class="quarto-xref"><span>Chapter 8</span></a>: we need to parse the JSON data into one or more tabular data structures. JSON from APIs is often deeply nested, requiring us to navigate through multiple levels to reach the data we want. Let’s extract the pageview data into a Polars DataFrame.</p>
-<div id="b9ed615b" class="cell" data-execution_count="7">
+<div id="de8ea862" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pages <span class="op">=</span> data[<span class="st">'query'</span>][<span class="st">'pages'</span>]</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>page_id <span class="op">=</span> <span class="bu">list</span>(pages.keys())[<span class="dv">0</span>]</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>pageviews <span class="op">=</span> pages[page_id].get(<span class="st">'pageviews'</span>, {})</span>
@@ -582,7 +582,7 @@ Practice Notebooks
 <p>Sometimes the data we need isn’t available through a formal API—it exists only on web pages designed for human readers. <em>Web scraping</em> is the technique of programmatically extracting data from HTML pages. While APIs provide structured data explicitly intended for programs, web scraping requires us to parse the visual structure of a page and extract the relevant pieces.</p>
 <p>The <code>requests</code> module can fetch any URL, not just API endpoints. When we request a regular web page, we get back HTML—the markup language that defines the structure of web pages. We can then parse this HTML to extract the data we want.</p>
 <p>For this example, we’ll grab headlines from CNN Lite, a simplified version of the CNN website that’s particularly easy to parse. CNN Lite presents news headlines as a simple list without the complex JavaScript and advertisements of the main site.</p>
-<div id="f9cbf2fb" class="cell" data-execution_count="8">
+<div id="43d46ea0" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://lite.cnn.com/"</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>headers <span class="op">=</span> {</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"User-Agent"</span>: <span class="st">"DataScienceBook/1.0 (tarnold2@richmond.edu)"</span></span>
@@ -592,7 +592,7 @@ Practice Notebooks
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>html_text <span class="op">=</span> response.text</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>At this point, the response is just a long string containing raw HTML markup. To extract meaningful data, we need to parse this HTML and navigate its structure. We use the <code>lxml</code> library’s HTML parser, which we introduced in <a href="08_dataformats.html" class="quarto-xref"><span>Chapter 8</span></a>.</p>
-<div id="41f4b70d" class="cell" data-execution_count="9">
+<div id="eedbb785" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>tree <span class="op">=</span> html.fromstring(html_text)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>stories <span class="op">=</span> tree.xpath(<span class="st">"//li/a"</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>stories_df <span class="op">=</span> pl.DataFrame({</span>
@@ -679,7 +679,7 @@ Practice Notebooks
 <p>Tools like <a href="https://lmstudio.ai/">LM Studio</a> allow you to run powerful language models locally without needing to set up complex Python environments or manage GPU configurations directly. LM Studio provides a simple graphical interface for downloading and running models, and it exposes them through an API that follows the OpenAI standard—meaning any code written for OpenAI’s API will work with local models too.</p>
 <p>Why would you want to run models locally rather than using a cloud service? Privacy is one reason: your data never leaves your machine. Cost is another: after the initial setup, local inference is free. And for educational purposes, running models locally helps demystify how these systems work.</p>
 <p>Let’s use a locally-running model to classify the news headlines we scraped earlier. The code below assumes you have LM Studio running with a model loaded and serving on the default port. If you don’t have LM Studio set up, you can skip this section—the concepts transfer directly to cloud-based APIs like OpenAI’s.</p>
-<div id="2a0f99cc" class="cell" data-execution_count="10">
+<div id="3e70e42d" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>BASE_URL <span class="op">=</span> <span class="st">"http://127.0.0.1:1234/v1"</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>MODEL <span class="op">=</span> <span class="st">"openai/gpt-oss-20b"</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -722,7 +722,7 @@ Practice Notebooks
 <p>This code sends a POST request to the local LM Studio server. The payload follows the OpenAI chat completions format: a system message that sets the model’s behavior, followed by a user message containing the headline to classify. Setting <code>temperature</code> to 0 makes the model’s output deterministic, which is important for reproducible classification.</p>
 <p>Because our <code>requests_cache</code> session intercepts all HTTP requests, even POST requests to local endpoints are cached automatically. This means if you run the same classification twice, the second call returns instantly from the cache rather than invoking the model again.</p>
 <p>Now let’s classify all of the headlines from our scraped dataset. We’ll loop through each headline, send it to the model, and collect the results.</p>
-<div id="dfd48fe0" class="cell" data-execution_count="11">
+<div id="9881010a" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>categories <span class="op">=</span> []</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> headline <span class="kw">in</span> stories_df[<span class="st">"headline"</span>]:</span>
@@ -747,13 +747,13 @@ Practice Notebooks
 <span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    categories.append(category)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>With our classifications complete, we can add them back into the DataFrame using <code>with_columns</code>.</p>
-<div id="6797642f" class="cell" data-execution_count="12">
+<div id="81b6f94e" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>stories_df <span class="op">=</span> stories_df.with_columns(</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    pl.Series(<span class="st">"category"</span>, categories)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now we can analyze the distribution of news categories. What topics dominate today’s news cycle?</p>
-<div id="120ff73c" class="cell" data-execution_count="13">
+<div id="14da67a3" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    stories_df</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .group_by(c.category)</span>
@@ -796,11 +796,11 @@ Practice Notebooks
 <td>5</td>
 </tr>
 <tr class="even">
-<td>"culture"</td>
+<td>"sports"</td>
 <td>8</td>
 </tr>
 <tr class="odd">
-<td>"sports"</td>
+<td>"culture"</td>
 <td>8</td>
 </tr>
 <tr class="even">
@@ -837,7 +837,7 @@ Practice Notebooks
 </ul>
 <p>This triple structure—also called RDF (Resource Description Framework)—allows knowledge graphs to represent complex, interconnected information flexibly. You can add new types of relationships without modifying a schema, and you can easily traverse connections between entities.</p>
 <p><em>Wikidata</em> is one of the largest freely available knowledge graphs, containing structured data about millions of entities—people, places, organizations, concepts, and more. It powers the information boxes you see on Wikipedia and is freely queryable through the Wikidata Query Service. For an introduction to Wikidata and its data model, see <a href="https://www.wikidata.org/wiki/Wikidata:Introduction">https://www.wikidata.org/wiki/Wikidata:Introduction</a>.</p>
-<div id="7e0c855a" class="cell" data-execution_count="14">
+<div id="5463c6e2" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>SPARQL_ENDPOINT <span class="op">=</span> <span class="st">"https://query.wikidata.org/sparql"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>SPARQL will feel somewhat familiar to the SQL queries we saw in <a href="08_dataformats.html" class="quarto-xref"><span>Chapter 8</span></a>, though with important differences. A SPARQL query typically contains the following components. PREFIX declarations define shortcuts for the long URIs (Uniform Resource Identifiers) used to identify entities and properties. Wikidata’s query service provides default prefixes, so we often don’t need to declare them explicitly. The SELECT clause specifies which variables to return, similar to SQL. Variables in SPARQL are prefixed with a question mark, like <code>?country</code> or <code>?population</code>. The WHERE block contains triple patterns that describe what we’re looking for. Each pattern has the form <code>subject predicate object</code>, where any component can be a variable. The query engine finds all combinations of values that make the patterns true. Optional clauses handle missing data gracefully—if an entity lacks a particular property, it won’t be excluded from results (similar to a LEFT JOIN in SQL). FILTER, ORDER BY, and LIMIT clauses work much like their SQL counterparts.</p>
@@ -849,7 +849,7 @@ Practice Notebooks
 </ul>
 <p>For a comprehensive tutorial on SPARQL and Wikidata, see <a href="https://www.wikidata.org/wiki/Wikidata:SPARQL_tutorial">https://www.wikidata.org/wiki/Wikidata:SPARQL_tutorial</a>.</p>
 <p>Let’s write a query that retrieves all countries along with their capitals and populations. We’ll break down each component.</p>
-<div id="7896e129" class="cell" data-execution_count="15">
+<div id="d81425a3" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> <span class="st">"""</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="st">SELECT ?country ?countryLabel ?capitalLabel ?population WHERE {</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="st">  ?country wdt:P31 wd:Q6256.</span></span>
@@ -865,7 +865,7 @@ Practice Notebooks
 <p>Let’s trace through what this query does. The line <code>?country wdt:P31 wd:Q6256</code> finds all entities where property P31 (“instance of”) equals Q6256 (“country”). In plain English: “find all things that are instances of the concept ‘country’.”</p>
 <p>The OPTIONAL blocks retrieve each country’s capital (P36) and population (P1082). Using OPTIONAL means countries missing this data will still appear in results with null values, rather than being excluded entirely. The SERVICE clause is Wikidata-specific magic that automatically looks up human-readable labels. Without it, we’d get only the Q-numbers and P-numbers, not the actual names. Finally, we order alphabetically by country name and limit to 500 results.</p>
 <p>To execute the query, we send an HTTP GET request to the Wikidata endpoint. We specify that we want results in JSON format.</p>
-<div id="49af94d0" class="cell" data-execution_count="16">
+<div id="91c4dc5d" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>headers <span class="op">=</span> {</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Accept"</span>: <span class="st">"application/sparql+json"</span>,</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"User-Agent"</span>: <span class="st">"DataScienceBook/1.0 (tarnold2@richmond.edu)"</span></span>
@@ -884,7 +884,7 @@ Practice Notebooks
 </div>
 </div>
 <p>The response comes back as JSON with a specific structure for SPARQL results. We need to parse this into a format suitable for creating a DataFrame.</p>
-<div id="4c8a3508" class="cell" data-execution_count="17">
+<div id="c04816a4" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> resp.json()</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>vars_ <span class="op">=</span> data[<span class="st">"head"</span>][<span class="st">"vars"</span>]</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>rows <span class="op">=</span> []</span>

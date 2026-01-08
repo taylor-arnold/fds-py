@@ -418,7 +418,7 @@ Practice Notebooks
 <section id="setup" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">4.1</span> Setup</h2>
 <p>Load all of the modules and datasets needed for the chapter.</p>
-<div id="3fb58ba0" class="cell" data-execution_count="2">
+<div id="21579076" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -444,7 +444,7 @@ Practice Notebooks
 <h2 data-number="4.4" class="anchored" data-anchor-id="joining-by-relation"><span class="header-section-number">4.4</span> Joining by Relation</h2>
 <p>We will start with an abstract example before turning to a specific example using actual DataFrames in Python. Assume we have two tables, <code>table_one</code> and <code>table_two</code>. The column <code>key_col</code> appears in both tables: it is a primary key in <code>table_two</code> and a foreign key in <code>table_one</code>. This means it has a single unique row associated with it in <code>table_two</code> but possibly many instances in <code>table_one</code>.</p>
 <p>To join the information in these two tables, we use the <code>.join()</code> method of the table containing the foreign key. The arguments include the second dataset and the name of the key used to combine the tables.</p>
-<div id="fa4fc8de" class="cell" data-execution_count="3">
+<div id="f13dbc36" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    table_one</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    .join(table_two, on<span class="op">=</span>c.key_col)</span>
@@ -452,7 +452,7 @@ Practice Notebooks
 </div>
 <p>Assuming our data are correctly organized, the output will be a dataset with the same number of rows as <code>table_one</code>, where the first set of columns will also match <code>table_one</code>. After the original columns, there will be a version of all the columns from <code>table_two</code> that correspond to the matching values of our key.</p>
 <p>Often some of the values in <code>table_one</code> will not have a matching value in <code>table_two</code>. In that case, the default behavior is to remove rows without matches; this is called an <em>inner join</em>. Alternatively, you can fill missing columns with <code>null</code> values, which results in a <em>left join</em>. We can indicate this to Python as follows:</p>
-<div id="d52d7ab1" class="cell" data-execution_count="4">
+<div id="9dc4d6f5" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    table_one</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .join(table_two, on<span class="op">=</span>c.key_col, how<span class="op">=</span><span class="st">"left"</span>)</span>
@@ -492,14 +492,14 @@ Equi-joins: inner, left, right, full, semi, anti, cross
 </div>
 </div>
 <p>There are several other modifications that we can apply to the basic syntax. For example, if our key has multiple columns, we can pass a list to <code>on</code> instead of a single value. Here is the code to join on two matching columns from the two DataFrames.</p>
-<div id="3f87bf55" class="cell" data-execution_count="5">
+<div id="8bfc90f1" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    table_one</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .join(table_two, on<span class="op">=</span>[c.key_col1, c.key_col2])</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Or, if the key has different names in the two tables, we can describe them with <code>on_left</code> (the first table) and <code>on_right</code> (the second table). These can be individual values or lists, where each element in one list corresponds to the element in the other.</p>
-<div id="8d039838" class="cell" data-execution_count="6">
+<div id="79f8986e" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    table_one</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .join(table_two, on_left<span class="op">=</span>c.key_col1, on_left<span class="op">=</span>c.key_col1)</span>
@@ -510,7 +510,7 @@ Equi-joins: inner, left, right, full, semi, anti, cross
 <section id="join-examples" class="level2" data-number="4.5">
 <h2 data-number="4.5" class="anchored" data-anchor-id="join-examples"><span class="header-section-number">4.5</span> Join Examples</h2>
 <p>The code outline in the previous section should make more sense once we see examples using actual datasets. To do this, we need multiple datasets that we can join together. We will create a smaller version of the <code>country</code> dataset that contains only two columns, which makes it easier to view the results without scrolling. We also load a dataset of country borders, where each row shows the relationship between a country and one of its neighbors.</p>
-<div id="284b9809" class="cell" data-execution_count="7">
+<div id="ed0dde3b" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>c_sml <span class="op">=</span> country.select(c.iso, c.gini)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>border <span class="op">=</span> pl.read_csv(<span class="st">"data/countries_borders.csv"</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>border</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -585,7 +585,7 @@ Equi-joins: inner, left, right, full, semi, anti, cross
 </div>
 </div>
 <p>We can use a relational join to add the Gini coefficient for the country referenced in the border data. Note that <code>iso</code> is present in both tables; it’s a primary key in <code>c_sml</code> and a foreign key in <code>border</code>. We can join them using the code below.</p>
-<div id="95085055" class="cell" data-execution_count="8">
+<div id="d6801143" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    border</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .join(c_sml, on<span class="op">=</span>c.iso)</span>
@@ -675,7 +675,7 @@ Equi-joins: inner, left, right, full, semi, anti, cross
 </div>
 <p>Notice that the Gini coefficient of the base country has been added to the data. The first five rows all correspond to borders with Afghanistan and therefore the same value of the Gini coefficient (27.8) is duplicated for each of the rows. Similarly, the last four rows correspond to Zimbabwe and repeat the Gini coefficient value of 50.3 in each. As with other data methods we use, the <code>.join()</code> method returns a new dataset without modifying the original data. We would need to save the output if we wanted to work further with the results.</p>
 <p>The DataFrame after the join has only 641 observations compared to the 829 observations in the original. The reason is that our <code>country</code> data only contains those countries for which we have full economic data. This means that some of the countries in <code>border</code> do not have an entry in <code>c_sml</code>. The default relational join is an inner join, so these missing corresponding rows are removed from the result. Changing to a left join restores the DataFrame to the same number of observations as the original <code>border</code> data.</p>
-<div id="af10ce74" class="cell" data-execution_count="9">
+<div id="1beaedfe" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    border</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .join(c_sml, on<span class="op">=</span>c.iso, how<span class="op">=</span><span class="st">"left"</span>)</span>
@@ -764,7 +764,7 @@ Equi-joins: inner, left, right, full, semi, anti, cross
 </div>
 </div>
 <p>So far, we have added the Gini coefficient of the base country. We could also add the coefficient of the bordering country by associating the column <code>iso_neighbor</code> with the column <code>iso</code> in our countries DataFrame. Here is the code to add the neighboring Gini coefficient.</p>
-<div id="4d8472f0" class="cell" data-execution_count="10">
+<div id="c8e2cc86" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    border</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .join(c_sml, left_on<span class="op">=</span>c.iso_neighbor, right_on<span class="op">=</span>c.iso)</span>
@@ -853,7 +853,7 @@ Equi-joins: inner, left, right, full, semi, anti, cross
 </div>
 </div>
 <p>What if we wanted to add the Gini coefficient to both countries in each row? This requires doing two separate joins, one after the other. In the second join, we add the suffix <code>_neighbor</code> to the Gini coefficient to distinguish the two scores in the output.</p>
-<div id="612d52cc" class="cell" data-execution_count="11">
+<div id="d7888629" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    border</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    .join(c_sml, on<span class="op">=</span>c.iso)</span>
@@ -961,7 +961,7 @@ Equi-joins: inner, left, right, full, semi, anti, cross
 <section id="conditional-joins" class="level2" data-number="4.6">
 <h2 data-number="4.6" class="anchored" data-anchor-id="conditional-joins"><span class="header-section-number">4.6</span> Conditional Joins</h2>
 <p>In this section, we introduce two additional kinds of joins that are helpful when working with certain types of complex data. Both of these allow us to join by relationships between keys that do not require values to be exactly equal. To start, let’s create two subsets of our <code>countries</code> data, separating out countries in Africa and in Asia, and sorting by the Gini coefficient. We remove any missing values from the output.</p>
-<div id="18bd5d6f" class="cell" data-execution_count="12">
+<div id="8653d3ce" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>africa <span class="op">=</span> (</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Africa"</span>)</span>
@@ -978,7 +978,7 @@ Equi-joins: inner, left, right, full, semi, anti, cross
 <span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The function <code>.join_asof</code> combines two datasets by matching each row in the first (left) dataset to the nearest value in the second (right) dataset based on numeric values in a specified pair of columns. It always returns a dataset with the same number of rows as the first (left) dataset. The function is optimized to do this quickly even for large datasets; to achieve this, it requires that both datasets be sorted by the join key before being called. Below is an example where we associate each African country with the nearest Asian country in terms of their Gini coefficient. We set <code>coalesce=False</code> to ensure the matching country’s Gini coefficient is retained in the output.</p>
-<div id="29d01dab" class="cell" data-execution_count="13">
+<div id="16e06bb5" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    africa</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    .join_asof(asia, on<span class="op">=</span>c.gini, strategy<span class="op">=</span><span class="st">"nearest"</span>, coalesce<span class="op">=</span><span class="va">False</span>)</span>
@@ -1081,7 +1081,7 @@ Equi-joins: inner, left, right, full, semi, anti, cross
 </div>
 <p>The original motivation for the <code>.join_asof</code> method was to join two time-series datasets. The idea is that we might want the current (most recent) value from one table relative to another. Hence the function’s name and the fact that it uses the <code>backward</code> strategy by default to find the nearest value in the second dataset that is less than (i.e., earlier than) the value in the first. You can set the strategy to <code>forward</code> to look in the other direction, or to <code>nearest</code> to find the closest value. You can also add additional keys with the <code>by</code>, <code>by_left</code>, or <code>by_right</code> options; these keys must match exactly before performing the nearest search. The tables must be pre-sorted by the join key(s) for the function to work.</p>
 <p>If we need to do more exotic joins between two tables, we can use the <code>.join_where</code> method. It takes one or more expressions in the same format used by the <code>.filter</code> method to specify exactly which pairs of rows to keep in the joined dataset. To refer to columns that share the same name in both datasets, use the <code>_right</code> suffix to indicate the second dataset. Below is an example that finds all pairs of countries in Africa and Asia where the difference in the Gini coefficient is less than 5.</p>
-<div id="c0465585" class="cell" data-execution_count="14">
+<div id="b6eafa55" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    africa</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    .join_where(</span>
@@ -1198,7 +1198,7 @@ Equi-joins: inner, left, right, full, semi, anti, cross
 <h2 data-number="4.8" class="anchored" data-anchor-id="pivot-and-unpivot"><span class="header-section-number">4.8</span> Pivot and Unpivot</h2>
 <p>Sometimes the unit of observation in which a data table is stored does not match the unit needed for our analysis. If the stored format uses a compound unit of observation, we can simplify it by using an aggregation to remove one or more components. For example, we could group a <em>plant × day</em> table by plant ID and calculate summary statistics (such as the maximum height over all days) to generate a dataset with <em>plant</em> as the unit of observation. While aggregations are useful, by design they remove information present in the original dataset. Other times, we want to restructure the unit of observation without losing or adding any information—we simply need the data in a different shape for a particular analysis or visualization. To do this, we can use one of two additional data manipulation functions.</p>
 <p>Consider the <code>cellphone</code> dataset; we show its first few rows below. The unit of observation is <em>year × country</em>: each row gives the number of cellphones per 100 people for that year and country.</p>
-<div id="8f9456a1" class="cell" data-execution_count="15">
+<div id="8f277f8b" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>cellphone <span class="op">=</span> pl.read_csv(<span class="st">"data/countries_cellphone.csv"</span>)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>cellphone</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="11">
@@ -1285,7 +1285,7 @@ Equi-joins: inner, left, right, full, semi, anti, cross
 </div>
 </div>
 <p>We could have stored this dataset in a format where the unit of observation was <em>year</em> and each country had its own column. What if we want to work with the data in that format? For example, if we wanted to compute the difference in cellphone ownership between the United States and Canada, we would need the data in this format. We can convert our dataset using the <code>.pivot()</code> method, which requires indicating which column will be used to index the output (this becomes the unit of observation), which column will be used to create the new columns, and which column contains the values that will fill the table.</p>
-<div id="c23d5967" class="cell" data-execution_count="16">
+<div id="f40be403" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>cell_wide <span class="op">=</span> (</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    cellphone</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    .pivot(index<span class="op">=</span><span class="st">"year"</span>, on<span class="op">=</span><span class="st">"iso"</span>, values<span class="op">=</span><span class="st">"cell"</span>)</span>
@@ -2311,7 +2311,7 @@ Equi-joins: inner, left, right, full, semi, anti, cross
 </div>
 </div>
 <p>Now, what if we want to go the other way? That is, suppose we stored the data originally in the format above (<code>cell_wide</code>) but want to return to the version we started with. This can be achieved by using the <code>.unpivot()</code> method, which requires specifying the index column to use. The new columns created to store the data are given the default names <code>variable</code> and <code>value</code>. These can be changed by setting the <code>variable_name</code> and <code>value_name</code> arguments.</p>
-<div id="72660f7f" class="cell" data-execution_count="17">
+<div id="0772c03c" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  cell_wide</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  .unpivot(index<span class="op">=</span><span class="st">"year"</span>)</span>
@@ -2420,7 +2420,7 @@ Pivot and unpivot syntax
 <section id="expand-list-columns" class="level2" data-number="4.9">
 <h2 data-number="4.9" class="anchored" data-anchor-id="expand-list-columns"><span class="header-section-number">4.9</span> Expand List Columns</h2>
 <p>A final type of transformation arises when multiple elements occupy a single cell in a table. This usually occurs only after a data-cleaning step we’ve performed, rather than as raw input from a CSV file. For example, the function <code>str.split</code>, which we’ll learn more about in <a href="07_strings.html" class="quarto-xref"><span>Chapter 7</span></a>, can split the text in a DataFrame column into parts. We can use this to split the multiple language codes found in the <code>lang</code> column of our data.</p>
-<div id="cd05d2cb" class="cell" data-execution_count="18">
+<div id="52b895e2" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    .select(c.full_name, c.lang)</span>
@@ -2512,7 +2512,7 @@ Pivot and unpivot syntax
 </div>
 </div>
 <p>It is hard to work directly with the embedding list structure. Often the easiest way to simplify a data frame that contains list elements is to unravel the lists, duplicating the other columns. Use the <code>.explode()</code> method, passing the column(s) you want to unravel.</p>
-<div id="2a9fc606" class="cell" data-execution_count="19">
+<div id="ddf6182e" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    .select(c.full_name, c.lang)</span>

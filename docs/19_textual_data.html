@@ -449,7 +449,7 @@ Practice Notebooks
 <section id="setup" class="level2" data-number="19.1">
 <h2 data-number="19.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">19.1</span> Setup</h2>
 <p>Load all of the modules and datasets needed for the chapter. We also load the spacy module designed specifically for processing large collections of text.</p>
-<div id="09f5b887" class="cell" data-execution_count="2">
+<div id="f8744207" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -475,11 +475,11 @@ Practice Notebooks
 <section id="nlp-pipeline" class="level2" data-number="19.3">
 <h2 data-number="19.3" class="anchored" data-anchor-id="nlp-pipeline"><span class="header-section-number">19.3</span> NLP Pipeline</h2>
 <p>We load spaCy’s English language model, which contains statistical models trained on large corpora of English text. The “sm” suffix indicates the small model, which balances accuracy with speed and memory usage. Larger models are available for applications requiring higher precision.</p>
-<div id="9c7323a8" class="cell" data-execution_count="3">
+<div id="2ede8e0c" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nlp <span class="op">=</span> spacy.load(<span class="st">"en_core_web_sm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Our primary dataset consists of Wikipedia pages for authors from the United Kingdom. We have a metadata table containing information about each author.</p>
-<div id="dfcf7a8e" class="cell" data-execution_count="4">
+<div id="ebde9347" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>meta</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
 <div><style>
@@ -617,7 +617,7 @@ Practice Notebooks
 </div>
 </div>
 <p>As well as a seperate file giving each of the texts from the documents.</p>
-<div id="4fad5582" class="cell" data-execution_count="5">
+<div id="1a9f964f" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>docs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <div><style>
@@ -691,7 +691,7 @@ Practice Notebooks
 </div>
 <p>The metadata table contains structured information extracted from Wikipedia’s infoboxes: birth and death dates, occupations, and other biographical details. The text table contains the prose content of each page, which we will process using natural language techniques.</p>
 <p>Natural language processing transforms raw text into structured annotations. The <code>DSText.process</code> method sends each document through spaCy’s processing pipeline, which performs several analyses in sequence: tokenization (splitting text into words and punctuation), part-of-speech tagging (identifying nouns, verbs, adjectives), lemmatization (reducing words to their base forms), named entity recognition (identifying people, places, organizations), and dependency parsing (analyzing grammatical relationships).</p>
-<div id="c05122b1" class="cell" data-execution_count="6">
+<div id="51e0393b" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>anno <span class="op">=</span> DSText.process(docs, nlp)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>anno</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
@@ -949,7 +949,7 @@ Practice Notebooks
 <li><strong>ent_type</strong>: The named entity type, if this token is part of a recognized entity.</li>
 </ul>
 <p>There are many analyses that can be performed on the extracted features that are present in the <code>anno</code> table. Fortunately, many of these can be performed by directly using Polars operations covered in the first five chapters of this text, without the need for any new text-specific functions. For example, we can find the most common nouns in the dataset by filtering on the universal part of speech and grouping by lemma with the code below.</p>
-<div id="4f44aefa" class="cell" data-execution_count="7">
+<div id="b5748cd7" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.upos <span class="op">==</span> <span class="st">"NOUN"</span>)</span>
@@ -1026,7 +1026,7 @@ Practice Notebooks
 </div>
 <p>The most frequent nouns across the set of documents roughly fall into one of two categories. Those such as “year”, “life”, “death”, and “family” are nouns that we would frequently associate with biographical entries for nearly any group of people. Others, such as “poem”, “book”, “poet”, and the somewhat more generic “work”, capture the specific objects that authors would produce and therefore would be prominent elements of their respective Wikipedia pages. The fact that these two types of nouns show up at the top of the list helps to verify that both the dataset and the NLP pipeline are working as expected.</p>
 <p>We can use a similar technique to learn about the contents of each of the individual documents. Suppose we wanted to know which adjectives are most used on each page. This can be done by a sequence of Polars operations. First, we filter the data by the part of speech and group the rows of the dataset by the document id and lemma. Then, we count the number of rows for each unique combination of document and lemma and arrange the dataset in descending order of count. We can use the <code>head()</code> method on grouped data to take the most frequent adjectives within each document:</p>
-<div id="0a1f5f2d" class="cell" data-execution_count="8">
+<div id="0c3b4882" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.upos <span class="op">==</span> <span class="st">"ADJ"</span>)</span>
@@ -1060,48 +1060,48 @@ Practice Notebooks
 </thead>
 <tbody>
 <tr class="odd">
-<td>"George Eliot"</td>
-<td>"english; first; much; new; oth…</td>
+<td>"Christopher Isherwood"</td>
+<td>"-; american; few; first; many;…</td>
 </tr>
 <tr class="even">
-<td>"Henry Vaughan"</td>
-<td>"first; most; other; own; relig…</td>
+<td>"Marie de France"</td>
+<td>"12th; close; common; first; la…</td>
+</tr>
+<tr class="odd">
+<td>"Charles Dickens"</td>
+<td>"early; first; great; literary;…</td>
+</tr>
+<tr class="even">
+<td>"Alexander Pope"</td>
+<td>"18th; english; famous; many; n…</td>
+</tr>
+<tr class="odd">
+<td>"James Joyce"</td>
+<td>"british; english; first; irish…</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"T. S. Eliot"</td>
+<td>"early; first; literary; many; …</td>
+</tr>
+<tr class="even">
+<td>"Percy Bysshe Shelley"</td>
+<td>"early; first; long; major; oth…</td>
+</tr>
+<tr class="odd">
+<td>"A. A. Milne"</td>
+<td>"british; many; more; old; orig…</td>
+</tr>
+<tr class="even">
+<td>"James Boswell"</td>
+<td>"first; great; literary; old; o…</td>
 </tr>
 <tr class="odd">
 <td>"Joseph Conrad"</td>
 <td>"british; first; french; litera…</td>
-</tr>
-<tr class="even">
-<td>"Walter Raleigh"</td>
-<td>"half; irish; late; many; relig…</td>
-</tr>
-<tr class="odd">
-<td>"Christina Rossetti"</td>
-<td>"devotional; early; female; fir…</td>
-</tr>
-<tr class="even">
-<td>…</td>
-<td>…</td>
-</tr>
-<tr class="odd">
-<td>"Katherine Philipps"</td>
-<td>"cavalier; female; french; lite…</td>
-</tr>
-<tr class="even">
-<td>"Samuel Johnson"</td>
-<td>"english; first; great; literar…</td>
-</tr>
-<tr class="odd">
-<td>"John Donne"</td>
-<td>"17th; catholic; early; english…</td>
-</tr>
-<tr class="even">
-<td>"Stephen Spender"</td>
-<td>"early; jewish; late; many; mar…</td>
-</tr>
-<tr class="odd">
-<td>"George Herbert"</td>
-<td>"english; many; musical; other;…</td>
 </tr>
 </tbody>
 </table>
@@ -1115,7 +1115,7 @@ Practice Notebooks
 <p>So far we have analyzed individual words in isolation. But meaning often emerges from combinations of words. The phrase “New York” refers to a specific city, not something novel and a name. “Machine learning” describes a field of study, not appliances that acquire knowledge. “Poet laureate” is a title, not just any poet who happens to be a laureate. To capture these multi-word expressions, we turn to <em>n-grams</em>: contiguous sequences of n tokens.</p>
 <p>A unigram is a single token (what we have been working with). A bigram is a pair of adjacent tokens. A trigram is a sequence of three tokens. In general, an n-gram captures local word order, which is lost when we treat documents as unordered collections of words.</p>
 <p>Constructing n-grams requires us to look at tokens in context. Polars window functions allow us to access neighboring rows, which we can use to pair each token with the tokens that follow it. The key is to shift the token column to align adjacent words on the same row.</p>
-<div id="b28c4dd8" class="cell" data-execution_count="9">
+<div id="34a27a86" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>bigrams <span class="op">=</span> (</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.is_alpha)</span>
@@ -1253,7 +1253,7 @@ Practice Notebooks
 </div>
 <p>The <code>shift(-1)</code> operation moves each column up by one position within each document and sentence, so that each row contains both the current token and the following token. We filter to keep only cases where both tokens are alphabetic, excluding bigrams that span punctuation or sentence boundaries.</p>
 <p>Now we can count bigram frequencies just as we counted unigram frequencies:</p>
-<div id="742175dc" class="cell" data-execution_count="10">
+<div id="e32f4cc3" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    bigrams</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .group_by(c.bigram)</span>
@@ -1335,7 +1335,7 @@ Practice Notebooks
 <p><span class="math display">\[ \text{PMI}(w_1, w_2) = \log_2 \frac{P(w_1, w_2)}{P(w_1) \cdot P(w_2)} \]</span></p>
 <p>A high PMI indicates that the words co-occur much more frequently than their individual frequencies would suggest. A PMI of zero means the words are independent. Negative PMI (rare in practice for bigrams that actually occur) would indicate the words avoid each other.</p>
 <p>To compute this we need a few intermediate steps. First of all, we can count the number of times each word appears in all of the texts.</p>
-<div id="ab2c27e1" class="cell" data-execution_count="11">
+<div id="447df7f5" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>word_counts <span class="op">=</span> (</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.is_alpha)</span>
@@ -1346,7 +1346,7 @@ Practice Notebooks
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>total_words <span class="op">=</span> anno.<span class="bu">filter</span>(c.is_alpha).height</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Then, we could the number of teachings each bigram occurs.</p>
-<div id="15f7b303" class="cell" data-execution_count="12">
+<div id="a756dd2d" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>bigram_counts <span class="op">=</span> (</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    bigrams</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .group_by(c.bigram, c.lemma, c.next_token)</span>
@@ -1356,7 +1356,7 @@ Practice Notebooks
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>total_bigrams <span class="op">=</span> bigrams.height</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>And, finally, we can combine the data together to get the PMI scores for each bigram and sort to find those with the highest scores.</p>
-<div id="2df100f5" class="cell" data-execution_count="13">
+<div id="aefcd365" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    bigram_counts</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    .join(</span>
@@ -1416,17 +1416,17 @@ Practice Notebooks
 <td>16.27981</td>
 </tr>
 <tr class="odd">
+<td>"Biographia Literaria"</td>
+<td>6</td>
+<td>16.016776</td>
+</tr>
+<tr class="even">
 <td>"Corpus Christi"</td>
 <td>5</td>
 <td>16.016776</td>
 </tr>
-<tr class="even">
-<td>"magnum opus"</td>
-<td>5</td>
-<td>16.016776</td>
-</tr>
 <tr class="odd">
-<td>"Auld Lang"</td>
+<td>"magnum opus"</td>
 <td>5</td>
 <td>16.016776</td>
 </tr>
@@ -1441,22 +1441,22 @@ Practice Notebooks
 <td>15.794384</td>
 </tr>
 <tr class="even">
-<td>"MolotovRibbentrop Pact"</td>
-<td>6</td>
-<td>15.794384</td>
-</tr>
-<tr class="odd">
 <td>"Encyclopædia Britannica"</td>
 <td>7</td>
 <td>15.794384</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>"Chatterleys Lover"</td>
 <td>7</td>
 <td>15.794384</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>"Sweden Norway"</td>
+<td>5</td>
+<td>15.794384</td>
+</tr>
+<tr class="odd">
+<td>"Vox Clamantis"</td>
 <td>5</td>
 <td>15.794384</td>
 </tr>
@@ -1467,7 +1467,7 @@ Practice Notebooks
 </div>
 <p>The high-PMI bigrams tell a different story than the high-frequency bigrams. These are phrases where the component words strongly predict each other: proper names, technical terms, and domain-specific expressions. Many of these would be good candidates for treating as single units in downstream analysis.</p>
 <p>We can extend the same logic to trigrams by shifting twice:</p>
-<div id="730d06f3" class="cell" data-execution_count="14">
+<div id="ed44e6bd" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.is_alpha)</span>
@@ -1532,23 +1532,23 @@ Practice Notebooks
 <td>…</td>
 </tr>
 <tr class="odd">
-<td>"that he be"</td>
-<td>74</td>
-</tr>
-<tr class="even">
 <td>"a number of"</td>
 <td>74</td>
 </tr>
-<tr class="odd">
-<td>"to have be"</td>
-<td>64</td>
-</tr>
 <tr class="even">
-<td>"member of the"</td>
-<td>64</td>
+<td>"that he be"</td>
+<td>74</td>
 </tr>
 <tr class="odd">
 <td>"a series of"</td>
+<td>64</td>
+</tr>
+<tr class="even">
+<td>"to have be"</td>
+<td>64</td>
+</tr>
+<tr class="odd">
+<td>"member of the"</td>
 <td>64</td>
 </tr>
 </tbody>
@@ -1561,7 +1561,7 @@ Practice Notebooks
 <section id="named-entity-recognition" class="level2" data-number="19.5">
 <h2 data-number="19.5" class="anchored" data-anchor-id="named-entity-recognition"><span class="header-section-number">19.5</span> Named Entity Recognition</h2>
 <p>Named entity recognition (NER) identifies and classifies proper nouns and other specific references in text. SpaCy’s NER model recognizes several entity types: people (PERSON), organizations (ORG), geopolitical entities like countries and cities (GPE), dates (DATE), works of art (WORK_OF_ART), and others. These annotations are stored in the <code>ent_type</code> column of our token table.</p>
-<div id="0499bacf" class="cell" data-execution_count="15">
+<div id="d81bc3db" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.ent_type <span class="op">!=</span> <span class="st">""</span>)</span>
@@ -1678,7 +1678,7 @@ Practice Notebooks
 </div>
 <p>Each token that is part of a named entity receives a type label. Multi-word entities like “United Kingdom” have the same label on each constituent token. To work with complete entities rather than individual tokens, we need to group consecutive tokens with the same entity type.</p>
 <p>We can identify entity boundaries by detecting where the entity type changes:</p>
-<div id="8951e524" class="cell" data-execution_count="16">
+<div id="aa4d6e4e" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>entities <span class="op">=</span> (</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.ent_type <span class="op">!=</span> <span class="st">""</span>)</span>
@@ -1718,59 +1718,59 @@ Practice Notebooks
 </thead>
 <tbody>
 <tr class="odd">
-<td>"Robert Burns"</td>
-<td>"PERSON"</td>
-<td>"Scot"</td>
-</tr>
-<tr class="even">
-<td>"William Wordsworth"</td>
-<td>"PERSON"</td>
-<td>"Dorothy"</td>
-</tr>
-<tr class="odd">
-<td>"Matthew Arnold"</td>
-<td>"DATE"</td>
-<td>"the - century"</td>
-</tr>
-<tr class="even">
-<td>"Seamus Heaney"</td>
-<td>"ORDINAL"</td>
-<td>"third"</td>
-</tr>
-<tr class="odd">
-<td>"Ben Jonson"</td>
-<td>"PERSON"</td>
-<td>"Jonson"</td>
-</tr>
-<tr class="even">
-<td>…</td>
-<td>…</td>
-<td>…</td>
-</tr>
-<tr class="odd">
-<td>"Joseph Conrad"</td>
+<td>"George Orwell"</td>
 <td>"NORP"</td>
-<td>"Dutch"</td>
+<td>"Jews"</td>
 </tr>
 <tr class="even">
 <td>"Jane Austen"</td>
-<td>"PERSON"</td>
-<td>"Kate Beckinsale"</td>
+<td>"TIME"</td>
+<td>"Later in the century"</td>
 </tr>
 <tr class="odd">
 <td>"Matthew Arnold"</td>
-<td>"CARDINAL"</td>
-<td>"two"</td>
+<td>"PERSON"</td>
+<td>"Thomas Arnold"</td>
 </tr>
 <tr class="even">
-<td>"Mary Wollstonecraft"</td>
-<td>"PERSON"</td>
-<td>"Robert Browning"</td>
+<td>"Samuel Johnson"</td>
+<td>"CARDINAL"</td>
+<td>"sixteen hundred"</td>
 </tr>
 <tr class="odd">
-<td>"Percy Bysshe Shelley"</td>
+<td>"Beatrix Potter"</td>
+<td>"DATE"</td>
+<td>"1900"</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"James Joyce"</td>
+<td>"NORP"</td>
+<td>"Exiles"</td>
+</tr>
+<tr class="even">
+<td>"Thomas Hobbes"</td>
+<td>"NORP"</td>
+<td>"European"</td>
+</tr>
+<tr class="odd">
+<td>"Samuel Pepys"</td>
+<td>"ORG"</td>
+<td>"Medway"</td>
+</tr>
+<tr class="even">
+<td>"John Keats"</td>
 <td>"PERSON"</td>
-<td>"Thomas Medwin"</td>
+<td>"Thomas Barnes"</td>
+</tr>
+<tr class="odd">
+<td>"Lord Byron"</td>
+<td>"PERSON"</td>
+<td>"Childe Harolds Pilgrimage"</td>
 </tr>
 </tbody>
 </table>
@@ -1778,7 +1778,7 @@ Practice Notebooks
 </div>
 </div>
 <p>Now we can analyze entities at the appropriate level of granularity. For example, we can find the most frequently mentioned people across all documents:</p>
-<div id="a3c706d9" class="cell" data-execution_count="17">
+<div id="9487e3c1" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    entities</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.ent_type <span class="op">==</span> <span class="st">"PERSON"</span>)</span>
@@ -1859,7 +1859,7 @@ Practice Notebooks
 </div>
 <p>The most frequently mentioned people likely include both the subjects of the Wikipedia pages and other figures who appear across multiple biographies—editors, patrons, family members, or influential contemporaries.</p>
 <p>We can examine which entity types are most common overall:</p>
-<div id="7f26b2d4" class="cell" data-execution_count="18">
+<div id="46cb7960" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    entities</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    .group_by(c.ent_type)</span>
@@ -1938,7 +1938,7 @@ Practice Notebooks
 </div>
 <p>Biographical articles naturally contain many dates (birth, death, publication) and references to people and places. The distribution of entity types provides a high-level characterization of the content.</p>
 <p>Entity co-occurrence within documents can reveal relationships. Which people are mentioned together? Which places are associated with which organizations?</p>
-<div id="6dd8738a" class="cell" data-execution_count="19">
+<div id="db163a7b" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Find all pairs of people mentioned in the same document</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>people <span class="op">=</span> (</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    entities</span>
@@ -2049,7 +2049,7 @@ Practice Notebooks
 <li><strong>ROOT</strong>: The root of the sentence</li>
 </ul>
 <p>Let’s look at a particular example from the Seamus Heaney article.</p>
-<div id="a126997f" class="cell" data-execution_count="20">
+<div id="a9509eab" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.doc_id <span class="op">==</span> <span class="st">"Seamus Heaney"</span>)</span>
@@ -2166,7 +2166,7 @@ Practice Notebooks
 </div>
 </div>
 <p>We can use dependency relations to extract specific grammatical patterns. For example, to find what subjects do what actions, we can look for subject-verb pairs.</p>
-<div id="7e0ec2b4" class="cell" data-execution_count="21">
+<div id="91b8277c" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>verbs <span class="op">=</span> (</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.upos <span class="op">==</span> <span class="st">"VERB"</span>)</span>
@@ -2271,7 +2271,7 @@ Practice Notebooks
 </div>
 <p>This reveals the typical actions associated with different subjects in our corpus. We might see that authors “write”, “publish”, and “die”, while works “appear”, “receive”, and “influence”.</p>
 <p>We can also extract adjective-noun pairs to see how different concepts are described:</p>
-<div id="f0f4e2b3" class="cell" data-execution_count="22">
+<div id="4a539a07" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.dep <span class="op">==</span> <span class="st">"amod"</span>, c.is_alpha)</span>
@@ -2325,13 +2325,13 @@ Practice Notebooks
 <td>50</td>
 </tr>
 <tr class="odd">
-<td>"same"</td>
-<td>"time"</td>
+<td>"early"</td>
+<td>"work"</td>
 <td>44</td>
 </tr>
 <tr class="even">
-<td>"early"</td>
-<td>"work"</td>
+<td>"same"</td>
+<td>"time"</td>
 <td>44</td>
 </tr>
 <tr class="odd">
@@ -2375,7 +2375,7 @@ Practice Notebooks
 <h2 data-number="19.7" class="anchored" data-anchor-id="keyword-in-context-kwic"><span class="header-section-number">19.7</span> Keyword in Context (KWIC)</h2>
 <p>Sometimes we want to see how a specific word is used across the corpus. A <em>concordance</em> or <em>keyword in context</em> (KWIC) display shows each occurrence of a target word along with the words that surround it. This technique, which predates computers, remains invaluable for understanding how language is actually used.</p>
 <p>To build a KWIC display, we need to extract a window of tokens around each occurrence of our keyword. This logic is implemented in the <code>DSText.kwic</code> method.</p>
-<div id="e4d1bd05" class="cell" data-execution_count="23">
+<div id="4481a273" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>kwic_results <span class="op">=</span> DSText.kwic(anno, <span class="st">"poetry"</span>, max_num<span class="op">=</span><span class="dv">15</span>, window<span class="op">=</span><span class="dv">5</span>)</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>kwic_results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -2402,7 +2402,7 @@ Edmund Spenser:84                            scholars have noted that his [poetr
 <h2 data-number="19.8" class="anchored" data-anchor-id="complexity-metrics"><span class="header-section-number">19.8</span> Complexity Metrics</h2>
 <p>Beyond analyzing content, we can characterize the <em>style</em> of texts using quantitative measures of readability and complexity. These metrics, originally developed to assess the difficulty of reading materials for educational purposes, provide useful descriptive statistics for comparing texts.</p>
 <p>For example, sentence length is one of the simplest style measures. Longer sentences tend to be more complex and harder to read.</p>
-<div id="95f97d63" class="cell" data-execution_count="24">
+<div id="4fb5ea49" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    .group_by([c.doc_id, c.sid])</span>
@@ -2510,7 +2510,7 @@ Edmund Spenser:84                            scholars have noted that his [poetr
 </div>
 </div>
 <p>Type-token ratio (TTR) measures vocabulary richness: the number of unique words (types) divided by the total number of words (tokens). A higher TTR indicates more varied vocabulary.</p>
-<div id="642b3833" class="cell" data-execution_count="25">
+<div id="e22ec98d" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.is_alpha)</span>
@@ -2617,7 +2617,7 @@ Edmund Spenser:84                            scholars have noted that his [poetr
 </div>
 <p>TTR is sensitive to document length: longer documents naturally have lower TTR because common words get repeated. For fair comparison across documents of different lengths, we can compute TTR on a fixed-size sample of tokens.</p>
 <p>Average word length correlates with vocabulary sophistication. Documents using more polysyllabic, Latinate vocabulary will have higher average word lengths.</p>
-<div id="94ca9eff" class="cell" data-execution_count="26">
+<div id="20413895" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.is_alpha)</span>
@@ -2698,7 +2698,7 @@ Edmund Spenser:84                            scholars have noted that his [poetr
 </div>
 </div>
 <p>Finally, function word ratio measures the proportion of grammatical words (articles, prepositions, pronouns) versus content words (nouns, verbs, adjectives). Different genres and styles have characteristic function word profiles.</p>
-<div id="f0918e75" class="cell" data-execution_count="27">
+<div id="e1102cd7" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>content_pos <span class="op">=</span> [<span class="st">"NOUN"</span>, <span class="st">"VERB"</span>, <span class="st">"ADJ"</span>, <span class="st">"ADV"</span>]</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>(</span>
@@ -2815,7 +2815,7 @@ Edmund Spenser:84                            scholars have noted that his [poetr
 <p>A common alternative technique is to combine information about the frequency of a word within a document with the frequency of the term across the entire collection. We return here to the importance of how we define a document, which will shape our analysis. Metrics of this form are known as <em>term frequency–inverse document frequency scores</em> (TF-IDF). A common version of TF-IDF computes a score for every combination of term and document by multiplying the term frequency by the logarithm of the inverse document frequency. The logarithm is a function that is used to make sure that counts do not grow too fast. For example, a count of about 1000 is only approximately twice as big on the logarithmic scale as a count of 25, in comparison to being 40 times larger on a linear scale. Mathematically, we define this TF-IDF function using the following formula, where <em>tf</em> gives the term frequency and <em>df</em> gives the document frequency:</p>
 <p><span class="math display">\[ \text{tfidf} = \text{tf} \times \log\left(\frac{N + 1}{\text{df} + 1}\right) + 1 \]</span></p>
 <p>Here, <em>N</em> is the total number of documents. This score gives a measurement of how important a term is in describing a document in the context of the other documents. If we select words with the highest TF-IDF score for each document, these should give a good measurement of what terms best describe each document uniquely from the rest of the collection. Note that while the scaling functions given above are popular choices, they are not universal. Other papers and software may make different choices with moderate effects on the output results.</p>
-<div id="e0c4e984" class="cell" data-execution_count="28">
+<div id="57eff1bf" class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>tfidf <span class="op">=</span> DSText.compute_tfidf(anno, min_df<span class="op">=</span><span class="fl">0.1</span>, max_df<span class="op">=</span><span class="fl">0.5</span>)</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>tfidf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="28">
@@ -2850,103 +2850,103 @@ Edmund Spenser:84                            scholars have noted that his [poetr
 </thead>
 <tbody>
 <tr class="odd">
-<td>"William Blake"</td>
-<td>"black"</td>
-<td>4</td>
-<td>0.000519</td>
-<td>16</td>
-<td>2.49752</td>
-<td>0.001296</td>
-</tr>
-<tr class="even">
-<td>"Lord Byron"</td>
-<td>"burial"</td>
-<td>1</td>
-<td>0.000105</td>
-<td>10</td>
-<td>2.932838</td>
-<td>0.000308</td>
-</tr>
-<tr class="odd">
-<td>"John Keats"</td>
-<td>"increasingly"</td>
-<td>3</td>
-<td>0.00046</td>
-<td>28</td>
-<td>1.963438</td>
-<td>0.000903</td>
-</tr>
-<tr class="even">
-<td>"George Orwell"</td>
-<td>"operate"</td>
-<td>1</td>
-<td>0.000061</td>
-<td>8</td>
-<td>3.133509</td>
-<td>0.000192</td>
-</tr>
-<tr class="odd">
-<td>"Thomas More"</td>
-<td>"criticism"</td>
-<td>5</td>
-<td>0.000613</td>
-<td>30</td>
-<td>1.896746</td>
-<td>0.001163</td>
-</tr>
-<tr class="even">
-<td>…</td>
-<td>…</td>
-<td>…</td>
-<td>…</td>
-<td>…</td>
-<td>…</td>
-<td>…</td>
-</tr>
-<tr class="odd">
-<td>"Percy Bysshe Shelley"</td>
-<td>"reduce"</td>
-<td>1</td>
-<td>0.000147</td>
-<td>12</td>
-<td>2.765784</td>
-<td>0.000408</td>
-</tr>
-<tr class="even">
-<td>"Jonathan Swift"</td>
-<td>"clergy"</td>
-<td>1</td>
-<td>0.000231</td>
-<td>10</td>
-<td>2.932838</td>
-<td>0.000678</td>
-</tr>
-<tr class="odd">
-<td>"Walter Raleigh"</td>
-<td>"top"</td>
-<td>1</td>
-<td>0.000229</td>
-<td>16</td>
-<td>2.49752</td>
-<td>0.000571</td>
-</tr>
-<tr class="even">
 <td>"Joseph Conrad"</td>
-<td>"heavily"</td>
+<td>"collaborator"</td>
 <td>1</td>
 <td>0.00008</td>
-<td>17</td>
-<td>2.440362</td>
-<td>0.000195</td>
+<td>8</td>
+<td>3.133509</td>
+<td>0.00025</td>
+</tr>
+<tr class="even">
+<td>"Thomas Malory"</td>
+<td>"Chaucer"</td>
+<td>1</td>
+<td>0.000205</td>
+<td>13</td>
+<td>2.691676</td>
+<td>0.000551</td>
 </tr>
 <tr class="odd">
-<td>"Charlotte Smith"</td>
-<td>"anything"</td>
+<td>"Louis MacNeice"</td>
+<td>"involve"</td>
+<td>2</td>
+<td>0.000733</td>
+<td>34</td>
+<td>1.775385</td>
+<td>0.001301</td>
+</tr>
+<tr class="even">
+<td>"Edward Upward"</td>
+<td>"deal"</td>
 <td>1</td>
-<td>0.000282</td>
-<td>25</td>
-<td>2.072637</td>
-<td>0.000585</td>
+<td>0.000939</td>
+<td>34</td>
+<td>1.775385</td>
+<td>0.001667</td>
+</tr>
+<tr class="odd">
+<td>"Elizabeth Barrett Browning"</td>
+<td>"intensity"</td>
+<td>1</td>
+<td>0.000243</td>
+<td>11</td>
+<td>2.845827</td>
+<td>0.000691</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"William Shakespeare"</td>
+<td>"shift"</td>
+<td>1</td>
+<td>0.000153</td>
+<td>17</td>
+<td>2.440362</td>
+<td>0.000374</td>
+</tr>
+<tr class="even">
+<td>"Samuel Taylor Coleridge"</td>
+<td>"connection"</td>
+<td>1</td>
+<td>0.000171</td>
+<td>31</td>
+<td>1.864997</td>
+<td>0.000319</td>
+</tr>
+<tr class="odd">
+<td>"Thomas Malory"</td>
+<td>"hardly"</td>
+<td>1</td>
+<td>0.000205</td>
+<td>9</td>
+<td>3.028148</td>
+<td>0.00062</td>
+</tr>
+<tr class="even">
+<td>"John Milton"</td>
+<td>"discover"</td>
+<td>1</td>
+<td>0.000124</td>
+<td>30</td>
+<td>1.896746</td>
+<td>0.000236</td>
+</tr>
+<tr class="odd">
+<td>"Cecil Day-Lewis"</td>
+<td>"reach"</td>
+<td>1</td>
+<td>0.000773</td>
+<td>29</td>
+<td>1.929536</td>
+<td>0.001491</td>
 </tr>
 </tbody>
 </table>
@@ -2954,7 +2954,7 @@ Edmund Spenser:84                            scholars have noted that his [poetr
 </div>
 </div>
 <p>Then we can combine the top terms from</p>
-<div id="de9105c9" class="cell" data-execution_count="29">
+<div id="57758fd1" class="cell" data-execution_count="29">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    tfidf</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    .sort([c.doc_id, c.tfidf], descending<span class="op">=</span>[<span class="va">False</span>, <span class="va">True</span>])</span>
@@ -2985,48 +2985,48 @@ Edmund Spenser:84                            scholars have noted that his [poetr
 </thead>
 <tbody>
 <tr class="odd">
-<td>"Samuel Pepys"</td>
-<td>"diary; fire; detailed; Fire; S…</td>
-</tr>
-<tr class="even">
-<td>"D. H. Lawrence"</td>
-<td>"Lawrence; Love; Women; Italy; …</td>
-</tr>
-<tr class="odd">
-<td>"A. A. Milne"</td>
-<td>"Christopher; Forest; output; c…</td>
-</tr>
-<tr class="even">
-<td>"Ann Radcliffe"</td>
-<td>"Ann; supernatural; Catholicism…</td>
-</tr>
-<tr class="odd">
-<td>"John Gower"</td>
-<td>"Chaucer; IV; pound; Kent; pred…</td>
-</tr>
-<tr class="even">
-<td>…</td>
-<td>…</td>
-</tr>
-<tr class="odd">
-<td>"William Shakespeare"</td>
-<td>"Shakespeare; Shakespeares; tra…</td>
+<td>"William Langland"</td>
+<td>"narrator; medieval; passage; p…</td>
 </tr>
 <tr class="even">
 <td>"Christopher Isherwood"</td>
 <td>"Berlin; Auden; war; fight; art…</td>
 </tr>
 <tr class="odd">
-<td>"W. H. Auden"</td>
-<td>"Auden; partly; York; summer; l…</td>
+<td>"George Herbert"</td>
+<td>"Herbert; musical; Temple; East…</td>
 </tr>
 <tr class="even">
-<td>"Oscar Wilde"</td>
-<td>"Douglas; Oscar; trial; prison;…</td>
+<td>"Jonathan Swift"</td>
+<td>"Temple; Ireland; Dublin; Jonat…</td>
 </tr>
 <tr class="odd">
-<td>"Elizabeth Barrett Browning"</td>
-<td>"Browning; Leigh; herself; End;…</td>
+<td>"Emilia Lanier"</td>
+<td>"Lady; Dark; Countess; feminist…</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>"William Blake"</td>
+<td>"Blake; Catherine; Reynolds; vi…</td>
+</tr>
+<tr class="even">
+<td>"Thomas More"</td>
+<td>"More; king; execution; Tower; …</td>
+</tr>
+<tr class="odd">
+<td>"George Orwell"</td>
+<td>"Four; communist; Road; Party; …</td>
+</tr>
+<tr class="even">
+<td>"Henry Vaughan"</td>
+<td>"Herbert; Welsh; prose; spiritu…</td>
+</tr>
+<tr class="odd">
+<td>"W. H. Auden"</td>
+<td>"Auden; partly; York; summer; l…</td>
 </tr>
 </tbody>
 </table>
@@ -3050,7 +3050,7 @@ Edmund Spenser:84                            scholars have noted that his [poetr
 <p>Finally, sparse vectors are cheap to compute—just count words and apply the TF-IDF formula—but expensive to store naively and limited in semantic power. Dense embeddings require a neural network forward pass, which is more computationally intensive, but the resulting vectors are compact and capture deeper meaning.</p>
 <p>Despite these limitations, sparse embeddings remain valuable for many tasks. They require no pre-trained models, work immediately on any language or domain, and produce interpretable results. For exploratory analysis and visualization, sparse methods often provide sufficient structure to reveal patterns in the data.</p>
 <p>The code below constructs a sparse document-term matrix from our annotated text, then applies UMAP to project these high-dimensional sparse vectors down to two dimensions for visualization. Documents that use similar vocabulary will cluster together in the resulting plot.</p>
-<div id="bb8020e0" class="cell" data-execution_count="30">
+<div id="7e5c0dba" class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    anno</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -3079,11 +3079,11 @@ Edmund Spenser:84                            scholars have noted that his [poetr
 <h2 data-number="19.11" class="anchored" data-anchor-id="across-languages"><span class="header-section-number">19.11</span> Across Languages</h2>
 <p>One of the reasons that we enjoy using the content of Wikipedia pages as example datasets for textual analysis is that it is possible to get the page text in a large number of different languages. One of the most interesting aspects of textual analysis is that we can apply our techniques to study how differences across languages and cultures affect the way that knowledge is created and distributed.</p>
 <p>Let’s see how our text analysis pipeline can be modified to work with Wikipedia pages from the French version of the site. SpaCy provides models for many different languages:</p>
-<div id="5efa948a" class="cell" data-execution_count="31">
+<div id="ed89440a" class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>nlp_fr <span class="op">=</span> spacy.load(<span class="st">"fr_core_news_sm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>And now, we can annotate the text as follows</p>
-<div id="a495da10" class="cell" data-execution_count="32">
+<div id="7a623cb5" class="cell" data-execution_count="32">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>anno_fr <span class="op">=</span> DSText.process(docs_fr, nlp_fr)</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>anno_fr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="32">

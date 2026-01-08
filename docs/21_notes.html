@@ -397,7 +397,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="setup" class="level2" data-number="21.1">
 <h2 data-number="21.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">21.1</span> Setup</h2>
 <p>Load all of the modules and datasets needed for the chapter.</p>
-<div id="d248e9d8" class="cell" data-execution_count="1">
+<div id="006fbbed" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -416,16 +416,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="loading-and-saving-data" class="level2" data-number="21.3">
 <h2 data-number="21.3" class="anchored" data-anchor-id="loading-and-saving-data"><span class="header-section-number">21.3</span> Loading and Saving Data</h2>
 <p>Here is the standard way of loading a CSV dataset into Python and saving it as a DataFrame called <code>df</code>.</p>
-<div id="0e7ddf6a" class="cell" data-execution_count="2">
+<div id="3a754ec0" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pl.read_csv(<span class="st">"data/hans_roslin.csv"</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>If you have messy data from another source, this is a helpful one-line of code that sanitises the column names. We usually will not need this for the datasets in this book, but it is very helpful to have when working on data from other sources.</p>
-<div id="bf4e9911" class="cell" data-execution_count="3">
+<div id="e0e8997b" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.rename(<span class="kw">lambda</span> c: c.lower().replace_all(<span class="vs">r"</span><span class="pp">[^a-z0-9_]</span><span class="vs">"</span>, <span class="st">""</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Finally, to write the output as a CSV file, use the following code:</p>
-<div id="6e1c50dc" class="cell" data-execution_count="4">
+<div id="83844d49" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df.write_csv(<span class="st">"output_name.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Other input and output formats can be found in the Polars documentation.</p>
@@ -433,7 +433,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="transforming-data" class="level2" data-number="21.4">
 <h2 data-number="21.4" class="anchored" data-anchor-id="transforming-data"><span class="header-section-number">21.4</span> Transforming Data</h2>
 <p>These methods return a subset of the rows from the original dataset:</p>
-<div id="26d86ebb" class="cell" data-execution_count="5">
+<div id="2cdddeaa" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>.head(n<span class="op">=&lt;</span>i64<span class="op">&gt;</span>)          <span class="co"># take the first n rows from the top</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>.tail(n<span class="op">=&lt;</span>i64<span class="op">&gt;</span>)          <span class="co"># take the last n rows from the bottom</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>.sample(n<span class="op">=&lt;</span>i64<span class="op">&gt;</span>)        <span class="co"># take a random selection of n rows</span></span>
@@ -442,45 +442,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>.drop_nans()            <span class="co"># remove any rows that have invalid numbers</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The <code>.filter</code> method allows for selecting rows based on one or more conditions:</p>
-<div id="0f856889" class="cell" data-execution_count="6">
+<div id="d56a030c" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>.<span class="bu">filter</span>(c.col1 <span class="op">&gt;</span> <span class="fl">0.1</span>)        <span class="co"># select rows where col1 is bigger than 0.1 </span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>.<span class="bu">filter</span>(c[<span class="st">"col1"</span>] <span class="op">&gt;</span> <span class="fl">0.1</span>)     <span class="co"># select rows where col1 is bigger than 0.1</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>.<span class="bu">filter</span>(c.col1.is_in([<span class="st">"A"</span>, <span class="st">"B"</span>]))   <span class="co"># select rows if col1 is "A" or "B"</span></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>.<span class="bu">filter</span>(<span class="op">~</span>c.col1.is_in([<span class="st">"A"</span>, <span class="st">"B"</span>]))  <span class="co"># select if col1 is neither "A" nor "B"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>These sort the rows of the dataset without changing their contents:</p>
-<div id="e5275518" class="cell" data-execution_count="7">
+<div id="061012af" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>.sort(c.col1)            <span class="co"># sort in ascending order by col1</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>.sort(c.col1, c.col2)    <span class="co"># sort as above; break ties with col2</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>.sort(c.col1, descending<span class="op">=</span><span class="va">True</span>)  <span class="co"># sort in descending order by col1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The <code>.with_columns</code> method allows for creating or modifying one or more columns.</p>
-<div id="f0e6a417" class="cell" data-execution_count="8">
+<div id="ff6eebc9" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>.with_columns(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    new <span class="op">=</span> c.col1 <span class="op">+</span> c.col2,     <span class="co"># create a new column as sum of col1 and col2</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    new2 <span class="op">=</span> c.col3.sqrt(),      <span class="co"># create a new column from square root of col1</span></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The <code>.over</code> method on a column allows us to group by a column when creating or modifying another column.</p>
-<div id="0905454c" class="cell" data-execution_count="9">
+<div id="41f81530" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>.with_columns(</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    new <span class="op">=</span> c.col1 <span class="op">-</span> c.col1.over(<span class="st">"col2"</span>).<span class="bu">min</span>(),    <span class="co"># diff to smallest value</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    new <span class="op">=</span> c.col1 <span class="op">-</span> c.col1.over(<span class="st">"col2"</span>).shift(<span class="op">-</span><span class="dv">1</span>) <span class="co"># rolling difference</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>There is a special <code>pl.when</code> function that allows for using conditional statements when creating or modifying a column.</p>
-<div id="18f2f7f9" class="cell" data-execution_count="10">
+<div id="42c1f83d" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>.with_columns(</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    new <span class="op">=</span> pl.when(c.col1 <span class="op">&gt;</span> <span class="dv">0</span>).then(c.col1).otherwise(<span class="dv">0</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>There is also a special method called <code>cast</code> that converts data between different types. This is most useful for converting strings into numbers after string processing.</p>
-<div id="ebe095be" class="cell" data-execution_count="11">
+<div id="4540dbef" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>c.col1.cast(pl.Int64)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>c.col1.cast(pl.Float64)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can also group by one or more columns and then compute one or more aggregations of the columns (or transformations of them).</p>
-<div id="28467faf" class="cell" data-execution_count="12">
+<div id="337c58af" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>.group_by(c.col1, c.col2)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>.agg(</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    col1_mean <span class="op">=</span> c.col1.mean(),          <span class="co"># compute the average of col1</span></span>
@@ -495,7 +495,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="restructuring-data" class="level2" data-number="21.5">
 <h2 data-number="21.5" class="anchored" data-anchor-id="restructuring-data"><span class="header-section-number">21.5</span> Restructuring Data</h2>
 <p>To join on one or more keys between two tables, we can use the <code>.join</code> method. There are several options that control how it works, most of which can be combined with one another in various ways</p>
-<div id="8fb0d039" class="cell" data-execution_count="13">
+<div id="0570e5be" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>.join(df_r, on<span class="op">=</span><span class="st">"col1"</span>, how<span class="op">=</span><span class="st">"left"</span>)             <span class="co"># left join on col1</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>.join(df_r, on<span class="op">=</span>[<span class="st">"col1"</span>, <span class="st">"col2"</span>], how<span class="op">=</span><span class="st">"left"</span>)   <span class="co"># left join on col1 and col2</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>.join(df_r, left_on<span class="op">=</span><span class="st">"col1"</span>, right_on<span class="op">=</span><span class="st">"col2"</span> how<span class="op">=</span><span class="st">"left"</span>) <span class="co"># join col1 == col2</span></span>
@@ -508,14 +508,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>.join(df_r, on<span class="op">=</span><span class="st">"col1"</span>, how<span class="op">=</span><span class="st">"anti"</span>)             <span class="co"># anti join on col1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>More complex joins can use the <code>.join_where</code> method.</p>
-<div id="12945632" class="cell" data-execution_count="14">
+<div id="e62d3a26" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>.join_where(df_r, c.col1 <span class="op">&gt;</span> c.col2)   <span class="co"># all combinations where col1 &gt; col2</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>.join_where(                </span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    df_r, c.col1 <span class="op">&gt;</span> c.col2_right      <span class="co"># append suffix if col2 is in both tables </span></span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>)   </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can make a table wider using the <code>.pivot</code> method.</p>
-<div id="2ed78333" class="cell" data-execution_count="15">
+<div id="c8309064" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>.pivot(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    values<span class="op">=</span><span class="st">"col1"</span>,</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span><span class="st">"col2"</span>,</span>
@@ -523,7 +523,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Or, make it longer using the <code>.unpivot</code> method. We simply indicate which column(s) to use as the index in the output and all the other values becom unpivoted into the resulting rows.</p>
-<div id="e43e62a0" class="cell" data-execution_count="16">
+<div id="8a0ec3b6" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>.unpivot(</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span><span class="st">"col1"</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -532,7 +532,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="visualization" class="level2" data-number="21.6">
 <h2 data-number="21.6" class="anchored" data-anchor-id="visualization"><span class="header-section-number">21.6</span> Visualization</h2>
 <p>Here is an example of a simple scatter plot of two columns from the DataFrame <code>df</code>.</p>
-<div id="5e2c4638" class="cell" data-execution_count="17">
+<div id="b1d2ce38" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    df</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    .to_ggplot(aes(x<span class="op">=</span><span class="st">"col1"</span>, y<span class="op">=</span><span class="st">"col2"</span>))</span>
@@ -540,11 +540,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Geometries can be modified by adding optional aesthetics such as color and size or an alternative DataFrame <code>df_r</code>. Any or all of these can be added and mixed with different geometries.</p>
-<div id="2ae48e5e" class="cell" data-execution_count="18">
+<div id="68e3db21" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="op">+</span> geom_point(aes(color<span class="op">=</span><span class="st">"col3"</span>), size<span class="op">=&lt;</span>i64<span class="op">&gt;</span>, data<span class="op">=</span>df_r.to_pandas())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Here are some of the most common geometries that were introduced in the text along with their additional required aesthetics beyond <code>x</code> and <code>y</code>. The second set at the bottom have statistics applied before creating the plot.</p>
-<div id="e57c3218" class="cell" data-execution_count="19">
+<div id="8a9b2e33" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="op">+</span> geom_col()</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="op">+</span> geom_line()</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="op">+</span> geom_path()</span>
@@ -561,7 +561,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="op">+</span> geom_density(adjust<span class="op">=&lt;</span>f64<span class="op">&gt;</span>)                       <span class="co"># has no y-aesthetic</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Scales can be added to the plot to control how visual elements are mapped from the specific values in the data. See the full examples in Chapter 3 for how to further customize these.</p>
-<div id="cf457e18" class="cell" data-execution_count="20">
+<div id="d5360d33" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="op">+</span> scale_color_cmap()            <span class="co"># continuous color-blind friendly colors</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="op">+</span> scale_color_cmap_d()          <span class="co"># discrete color-blind friendly colors</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="op">+</span> scale_fill_cmap()             <span class="co"># continuous color-blind friendly colors</span></span>
@@ -573,7 +573,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="op">+</span> scale_y_continuous(limits<span class="op">=</span>[<span class="op">&lt;</span>f64<span class="op">&gt;</span>, <span class="op">&lt;</span>f64<span class="op">&gt;</span>])   <span class="co"># set range of the y axis</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can also add labels, facets, and coordinate systems to further modify the look of the plot.</p>
-<div id="241ded85" class="cell" data-execution_count="21">
+<div id="fcb6167d" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="op">+</span> labs(</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Main title"</span>,</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    subtitle<span class="op">=</span><span class="st">"Subtitle"</span>,</span>
@@ -595,15 +595,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 data-number="21.7" class="anchored" data-anchor-id="strings"><span class="header-section-number">21.7</span> Strings</h2>
 <p>There are many different string operations supplied by polars that allow us to work with the content of the values within a string column. Many of these allow us to search for patterns of strings using regular expressions. In the examples below <code>&lt;pattern&gt;</code> describes a regular expression (described at the end of the section). Set <code>literal=False</code> to treat the search string as a literal value.</p>
 <p>The method <code>contains</code> can be used inside of a <code>.filter()</code> method to select rows in a dataset.</p>
-<div id="33d133be" class="cell" data-execution_count="22">
+<div id="c4e9ec11" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>c.col1.<span class="bu">str</span>.contains(<span class="st">"&lt;pattern&gt;"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The <code>.join</code> function can be used within an aggregation to combine the values of a string column with a seperator value. It is often useful to use <code>.unique()</code> and/or <code>.sort()</code> before doing the joining.</p>
-<div id="559c4dfb" class="cell" data-execution_count="23">
+<div id="3df8d1d9" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>c.col1.<span class="bu">str</span>.join(<span class="st">"&lt;str&gt;"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>All of the other string functions are used inside of <code>with_columns</code> to create or modify a column in the data. These are the functions that we use throughout the text, with notes for those that may not be clear from the context. They are grouped by the kind of data they return: the first set return a new string, the second an integer, and the final one a list.</p>
-<div id="0a23ba24" class="cell" data-execution_count="24">
+<div id="90879bd8" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>c.col1.<span class="bu">str</span>.extract(<span class="st">"&lt;pattern&gt;"</span>)</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>c.col1.<span class="bu">str</span>.extract(<span class="st">"&lt;pattern&gt;"</span>, <span class="op">&lt;</span>i64<span class="op">&gt;</span>)   <span class="co"># extract group number &lt;i64&gt;</span></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>c.col1.<span class="bu">str</span>.extract_all(<span class="st">"&lt;pattern&gt;"</span>)</span>
@@ -642,7 +642,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="inference" class="level2" data-number="21.8">
 <h2 data-number="21.8" class="anchored" data-anchor-id="inference"><span class="header-section-number">21.8</span> Inference</h2>
 <p>To run statistical inference using the columns from a DataFrame, using the helper function <code>fit_statsmodels</code> as follows:</p>
-<div id="2ed2d0b6" class="cell" data-execution_count="25">
+<div id="fa961fcc" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>.pipe(fit_statsmodels, <span class="st">"ttest1"</span>, <span class="st">"col1 ~ 1"</span>)     <span class="co"># col1 num.</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>.pipe(fit_statsmodels, <span class="st">"ttest2"</span>, <span class="st">"col1 ~ col2"</span>)  <span class="co"># col1 num. ; col2 2 groups</span></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>.pipe(fit_statsmodels, <span class="st">"anova"</span>, <span class="st">"col1 ~ col2"</span>)   <span class="co"># col1 num. ; col2 3+ groups</span></span>
@@ -656,7 +656,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="sklearn-helpers" class="level2" data-number="21.9">
 <h2 data-number="21.9" class="anchored" data-anchor-id="sklearn-helpers"><span class="header-section-number">21.9</span> Sklearn Helpers</h2>
 <p>The <code>DSSklearn</code> class provides wrappers for fitting supervised, dimensionality reduction, and clustering models directly from a DataFrame. Supervised models split the data into train/test sets automatically.</p>
-<div id="af4d73a0" class="cell" data-execution_count="26">
+<div id="4804380b" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>DSSklearn.linear_regression(df, target<span class="op">=</span>c.col1, drop<span class="op">=</span>c.<span class="bu">id</span>)</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>DSSklearn.elastic_net(df, target<span class="op">=</span>ccol1, features<span class="op">=</span>[c.col2, c.col3])</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>DSSklearn.elastic_net_cv(df, target<span class="op">=</span>c.col1, drop<span class="op">=</span>c.<span class="bu">id</span>)</span>
@@ -676,7 +676,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>DSSklearn.dbscan(df, drop<span class="op">=</span>c.<span class="bu">id</span>, eps<span class="op">=</span><span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>All models accept <code>test_size</code>, <code>random_state</code>, and <code>stratify</code> options. The fitted model returns a wrapper object with the following methods:</p>
-<div id="84100bad" class="cell" data-execution_count="27">
+<div id="662c64b7" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>model.predict()              <span class="co"># returns DataFrame with target_, prediction_</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>model.predict(full<span class="op">=</span><span class="va">True</span>)     <span class="co"># includes original columns</span></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>model.predict_proba()        <span class="co"># classifiers only; adds probability columns</span></span>
@@ -688,7 +688,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>model.confusion_matrix()     <span class="co"># classifiers; displays confusion matrix</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The <code>DSSklearnText</code> class works similarly but builds a document-term matrix from token-level data:</p>
-<div id="fd44fb85" class="cell" data-execution_count="28">
+<div id="75e32211" class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>DSSklearnText.logistic_regression(</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    df, doc_id<span class="op">=</span><span class="st">"doc_id"</span>, term_id<span class="op">=</span><span class="st">"lemma"</span>, target<span class="op">=</span><span class="st">"label"</span>,</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    min_df<span class="op">=</span><span class="fl">0.01</span>, max_df<span class="op">=</span><span class="fl">0.9</span>, max_vocab_size<span class="op">=</span><span class="dv">5000</span></span>
@@ -699,7 +699,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="pytorch-helpers" class="level2" data-number="21.10">
 <h2 data-number="21.10" class="anchored" data-anchor-id="pytorch-helpers"><span class="header-section-number">21.10</span> PyTorch Helpers</h2>
 <p>The <code>DSTorch</code> class provides utilities for loading data and training neural network classifiers.</p>
-<div id="956f6b52" class="cell" data-execution_count="29">
+<div id="b604b532" class="cell" data-execution_count="29">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>X, X_train, X_test, y, y_train, y_test, cn <span class="op">=</span> DSTorch.load_image(</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    df, scale<span class="op">=</span><span class="va">True</span></span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>)</span>
@@ -720,7 +720,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="transformer-embedders" class="level2" data-number="21.11">
 <h2 data-number="21.11" class="anchored" data-anchor-id="transformer-embedders"><span class="header-section-number">21.11</span> Transformer Embedders</h2>
 <p>Three classes provide pre-trained embeddings from transformer models. Each returns a normalized numpy vector.</p>
-<div id="6ee617f4" class="cell" data-execution_count="30">
+<div id="3c35e397" class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>vit <span class="op">=</span> ViTEmbedder()</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>vec <span class="op">=</span> vit(<span class="st">"path/to/image.jpg"</span>)</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -737,7 +737,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="network-data" class="level2" data-number="21.12">
 <h2 data-number="21.12" class="anchored" data-anchor-id="network-data"><span class="header-section-number">21.12</span> Network Data</h2>
 <p>The <code>DSNetwork.process</code> function converts an edge list into node and edge DataFrames suitable for visualization, along with centrality measures.</p>
-<div id="dd0f4392" class="cell" data-execution_count="31">
+<div id="ee9d439a" class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>node_df, edge_df, G <span class="op">=</span> DSNetwork.process(edges_df, directed<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Input <code>edges_df</code> must have columns <code>doc_id</code> and <code>doc_id2</code>. The returned <code>node_df</code> contains: <code>id</code>, <code>x</code>, <code>y</code> (layout coordinates), <code>component</code>, <code>cluster</code>, <code>degree</code> (or <code>degree_in</code>/<code>degree_out</code> if directed), <code>eigen</code>, <code>between</code>, and <code>close</code> (closeness, undirected only). The <code>edge_df</code> contains <code>x</code>, <code>y</code>, <code>xend</code>, <code>yend</code> for plotting with <code>geom_segment</code>. The igraph object <code>G</code> is also returned for further analysis.</p>
@@ -745,7 +745,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="text-data" class="level2" data-number="21.13">
 <h2 data-number="21.13" class="anchored" data-anchor-id="text-data"><span class="header-section-number">21.13</span> Text Data</h2>
 <p>The <code>DSText.process</code> function applies a spaCy NLP pipeline to a document DataFrame and returns a token-level DataFrame.</p>
-<div id="1a9d40b3" class="cell" data-execution_count="32">
+<div id="2edf7f69" class="cell" data-execution_count="32">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> spacy</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>nlp <span class="op">=</span> spacy.load(<span class="st">"en_core_web_sm"</span>)</span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -756,7 +756,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="image-data" class="level2" data-number="21.14">
 <h2 data-number="21.14" class="anchored" data-anchor-id="image-data"><span class="header-section-number">21.14</span> Image Data</h2>
 <p>The <code>DSImage</code> class provides utilities for working with image files.</p>
-<div id="a874b3aa" class="cell" data-execution_count="33">
+<div id="74b23abd" class="cell" data-execution_count="33">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>DSImage.plot_image_grid(df, ncol<span class="op">=</span><span class="dv">10</span>, label_name<span class="op">=</span><span class="st">"label"</span>, filepath<span class="op">=</span><span class="st">"filepath"</span>, limit<span class="op">=</span><span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The <code>compute_colors</code> method returns color percentages from an HSV image array (used internally for color analysis).</p>

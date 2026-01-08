@@ -412,7 +412,7 @@ Practice Notebooks
 <section id="setup" class="level2" data-number="8.1">
 <h2 data-number="8.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">8.1</span> Setup</h2>
 <p>Load all of the modules and datasets needed for the chapter. In addition to the standard modules, here we also use duckdb to work with databases, json to parse JSON data, and lxml to parse XML and HTML.</p>
-<div id="66ee3255" class="cell" data-execution_count="2">
+<div id="b9f2af85" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -479,7 +479,7 @@ Practice Notebooks
 </ol>
 <p>Objects are defined by curly braces and arrays are defined with square brackets. The reason that JSON can become complex even with these limited types is that, as in the example above, it is possible to create deeply nested structures using the object and array types. A JSON array can contain objects, which themselves contain arrays of more objects, and so on indefinitely. This flexibility makes JSON excellent for representing hierarchical data but can make converting it to a flat tabular format challenging.</p>
 <p>To read a JSON object into Python, we can use the built-in <code>json</code> module. This module is part of Python’s standard library, so no additional installation is required. Below, we load a version of the example dataset presented above.</p>
-<div id="4194dd67" class="cell" data-execution_count="3">
+<div id="c475e76c" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>obj_json <span class="op">=</span> json.loads(Path(<span class="st">"examples/author.json"</span>).read_text())</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(obj_json)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -489,7 +489,7 @@ Practice Notebooks
 </div>
 <p>The output object <code>obj_json</code> is a Python dictionary. In general, Python turns JSON arrays into lists and objects into dictionaries. Numbers, strings, and Boolean objects become the corresponding Python types, and <code>null</code> becomes Python’s <code>None</code>. This mapping between JSON and Python types is intuitive and makes working with JSON data feel natural.</p>
 <p>To create a structured dataset from the output, we can use standard Python dictionary and list operations. Here, we extract the author names using a list comprehension.</p>
-<div id="3edb551e" class="cell" data-execution_count="4">
+<div id="1afd9a33" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>[author[<span class="st">'name'</span>] <span class="cf">for</span> author <span class="kw">in</span> obj_json[<span class="st">'data'</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
 <pre><code>['Charlotte Brontë', 'Virginia Woolf']</code></pre>
@@ -497,7 +497,7 @@ Practice Notebooks
 </div>
 <p>This approach of navigating through nested dictionaries and lists is the fundamental technique for working with JSON data. Each level of nesting requires an additional key lookup (for dictionaries) or index access (for lists). In the example above, <code>obj_json['data']</code> returns the list of author objects, and then we iterate through each author to extract the <code>'name'</code> field.</p>
 <p>We can use a for-loop over the JSON data to construct a DataFrame object containing all of the author metadata in a tabular form. The key insight here is that we need to decide which pieces of information belong in our output table and how to handle nested structures.</p>
-<div id="fd2f5e36" class="cell" data-execution_count="5">
+<div id="eb0893fc" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>meta <span class="op">=</span> []</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> author <span class="kw">in</span> obj_json[<span class="st">'data'</span>]:</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    meta.append({</span>
@@ -553,7 +553,7 @@ Practice Notebooks
 </div>
 <p>Notice how we “flattened” the nested <code>date</code> object by extracting its <code>born</code> and <code>died</code> fields as separate columns in our output. This is a common pattern when converting JSON to tabular format: nested objects often become multiple columns rather than a single complex column.</p>
 <p>The JSON object also associates each author with a set of professions. JSON naturally handles such nested structures, where a single entity has multiple related values. However, this can be difficult to represent in a simple rectangular table. To create a dataset mapping each author to all of their professions, we need to create multiple rows for authors with multiple professions.</p>
-<div id="e8bc76d6" class="cell" data-execution_count="6">
+<div id="df093bbc" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>prof <span class="op">=</span> []</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> author <span class="kw">in</span> obj_json[<span class="st">'data'</span>]:</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    name <span class="op">=</span> author[<span class="st">'name'</span>]</span>
@@ -669,27 +669,27 @@ Working with large JSON files
 <span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">root</span>&gt;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Comparing this to the JSON version, we can see several differences. Information can be stored either as text content within tags (like the author’s name inside <code>&lt;n&gt;...&lt;/n&gt;</code>) or as attributes (like <code>name="born"</code> in the <code>&lt;item&gt;</code> tag). XML tends to be more verbose than JSON because of all the repeated tag names, but it offers more flexibility in how data can be structured and annotated.</p>
 <p>Python provides several ways to parse XML. One of the most powerful is the <code>lxml</code> library, which provides both speed and a comprehensive feature set. Here is the code to get started loading our example data into Python.</p>
-<div id="20d64771" class="cell" data-execution_count="7">
+<div id="51f11692" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>xml_path <span class="op">=</span> Path(<span class="st">"examples/author.xml"</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>tree <span class="op">=</span> etree.parse(<span class="bu">str</span>(xml_path))</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>root <span class="op">=</span> tree.getroot()</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>root</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
-<pre><code>&lt;Element root at 0x16811b080&gt;</code></pre>
+<pre><code>&lt;Element root at 0x1129be8c0&gt;</code></pre>
 </div>
 </div>
 <p>The <code>tree</code> object represents the entire XML document, while <code>root</code> is the top-level element (the <code>&lt;root&gt;</code> tag in our example). Unlike JSON, which loads directly into Python dictionaries and lists, XML loads into specialized element objects that we need to navigate using XML-specific methods.</p>
 <p>To work with the data, we will use a special query language called XPath. XPath allows us to locate elements within an XML document by specifying their position in the document’s tree structure, their tag names, their attributes, or combinations of these criteria. You can think of XPath as similar to regular expressions but designed for navigating XML structures rather than matching text patterns. For example, we can use the expression <code>/root/author</code> to get all of the tags <code>&lt;author&gt;</code> that are directly contained within the tag <code>&lt;root&gt;</code>.</p>
-<div id="c48031fb" class="cell" data-execution_count="8">
+<div id="d9e58462" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>author_nodes <span class="op">=</span> root.xpath(<span class="st">"/root/author"</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>author_nodes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
-<pre><code>[&lt;Element author at 0x168377280&gt;, &lt;Element author at 0x168376400&gt;]</code></pre>
+<pre><code>[&lt;Element author at 0x1129c00c0&gt;, &lt;Element author at 0x1129c0600&gt;]</code></pre>
 </div>
 </div>
 <p>The XPath expression <code>/root/author</code> means “starting from the root of the document, find the <code>root</code> element, then find all <code>author</code> elements directly inside it.” The result is a list of element objects, one for each author in our data. The leading slash indicates we’re starting from the absolute top of the document, while the forward slashes separate each level of the hierarchy.</p>
 <p>Now, to build a DataFrame of the author-level metadata, we need to cycle through each of the author nodes. For each author node, we use further XPath expressions to extract all of the author-level information.</p>
-<div id="6af7afe5" class="cell" data-execution_count="9">
+<div id="dbae0c31" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>author_df <span class="op">=</span> []</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, author <span class="kw">in</span> <span class="bu">enumerate</span>(author_nodes, start<span class="op">=</span><span class="dv">1</span>):</span>
@@ -753,7 +753,7 @@ Working with large JSON files
 </div>
 <p>Notice several important details in this code. First, when we use XPath from an element (like <code>author.xpath("n")</code>), the path is relative to that element rather than starting from the document root. Second, the expression <code>[@name='born']</code> is an XPath predicate that filters elements based on their attributes—it selects only <code>&lt;item&gt;</code> elements where the <code>name</code> attribute equals <code>"born"</code>. Third, the <code>.text</code> property of an element gives us the text content between the opening and closing tags.</p>
 <p>We can use a similar approach to parse the professions, creating a separate table that we could later join with the author metadata.</p>
-<div id="406ba842" class="cell" data-execution_count="10">
+<div id="cd172749" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>profession_df <span class="op">=</span> []</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, author <span class="kw">in</span> <span class="bu">enumerate</span>(author_nodes, start<span class="op">=</span><span class="dv">1</span>):</span>
@@ -834,7 +834,7 @@ XPath expressions
 </div>
 <p>HTML, short for HyperText Markup Language, is a closely related format to XML that is primarily intended to be displayed in a web browser. While HTML’s primary purpose is not to store arbitrary data, we often need to extract data from HTML documents. This is particularly common when we want to collect data from websites that don’t offer a structured API. The process of extracting data from web pages is sometimes called “web scraping.”</p>
 <p>We can parse HTML using the same <code>lxml</code> library, but with its HTML-specific module instead of the XML parser. Here is a simple example:</p>
-<div id="b97a7b4c" class="cell" data-execution_count="11">
+<div id="e450dfee" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>html_content <span class="op">=</span> <span class="st">"""</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;html&gt;</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;body&gt;</span></span>
@@ -865,25 +865,25 @@ XPath expressions
 <p>Databases are specialized software systems designed to store, organize, and retrieve structured data. They offer significant advantages over simple file-based storage: they can efficiently handle datasets too large to fit in memory, they support concurrent access by multiple users, they enforce data integrity constraints, and they provide powerful query capabilities. If you find yourself working in a corporate environment with larger, complex datasets that change frequently, it is almost certainly the case that you will use a database to fetch data and perform initial processing before pulling subsets into Python for detailed analysis and visualization. Even for local work, if you are dealing with datasets that are difficult to load into memory all at once, a database can provide an efficient solution.</p>
 <p>Most databases have well-maintained Python modules for interacting with them. In this section, we illustrate the process of using DuckDB, a modern database implementation that is particularly well-suited for analytical workloads. DuckDB is designed to be embedded directly within applications and requires no external setup—it can be managed entirely from within Python. This makes it an excellent choice for data science work where you want the power of a database without the complexity of setting up and maintaining a separate database server. Other database systems like PostgreSQL, MySQL, or SQLite function similarly but require more involved setup steps. That’s not necessarily a problem if you’re accessing a database maintained by an IT team, but for local analytical work, DuckDB is an excellent choice.</p>
 <p>To start, we will create a local DuckDB database, which is nothing more than a highly optimized file stored on our machine. We will be working with the <code>countries.csv</code> dataset and will begin by creating a DuckDB connection to a new file called <code>countries.duckdb</code>.</p>
-<div id="b8932656" class="cell" data-execution_count="12">
+<div id="0d0eec93" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>con <span class="op">=</span> duckdb.<span class="ex">connect</span>(<span class="st">"examples/countries.duckdb"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The <code>con</code> object represents our connection to the database. All subsequent operations will go through this connection object.</p>
 <p>Interacting with databases typically involves using a specialized language called SQL (Structured Query Language). SQL is used both to define the structure of data (creating tables, defining relationships) and to query and manipulate data that is already stored. Many of SQL’s query operations mirror the Polars data manipulation commands we learned in <a href="02_modify.html" class="quarto-xref"><span>Chapter 2</span></a> and <a href="04_combine.html" class="quarto-xref"><span>Chapter 4</span></a>. If you understand filtering, selecting, grouping, and joining in Polars, you already understand the core concepts of SQL—only the syntax differs.</p>
 <p>We will not provide a complete introduction to SQL here, but we will highlight the key commands that you are most likely to encounter. First, to load a dataset from a CSV file into the database, we use the following command:</p>
-<div id="5624337e" class="cell" data-execution_count="13">
+<div id="f21f4b3f" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>con.execute(<span class="ss">f"""</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="ss">    CREATE TABLE IF NOT EXISTS country AS</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="ss">    SELECT *</span></span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="ss">    FROM read_csv_auto('data/countries.csv')</span></span>
 <span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="13">
-<pre><code>&lt;_duckdb.DuckDBPyConnection at 0x15b326970&gt;</code></pre>
+<pre><code>&lt;_duckdb.DuckDBPyConnection at 0x108036fb0&gt;</code></pre>
 </div>
 </div>
 <p>Let’s break down this SQL statement. <code>CREATE TABLE IF NOT EXISTS country</code> tells the database to create a new table called <code>country</code>, but only if a table with that name doesn’t already exist. The <code>AS SELECT * FROM read_csv_auto('data/countries.csv')</code> part says to populate this table by reading all columns (<code>*</code>) from our CSV file. DuckDB’s <code>read_csv_auto</code> function automatically detects column types and handles common CSV formatting issues.</p>
 <p>This loading step only needs to be done once. Once the data is in the database, it persists across Python sessions (unlike DataFrames in memory, which disappear when you close Python). We can then query the data using <code>SELECT</code> statements.</p>
-<div id="c99a7b7f" class="cell" data-execution_count="14">
+<div id="1c16d182" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> con.execute(<span class="st">"""</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="st">    SELECT iso, full_name, region, hdi, gdp</span></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="st">    FROM country</span></span>
@@ -995,7 +995,7 @@ XPath expressions
 </div>
 <p>This query selects five specific columns from our <code>country</code> table, sorts the results by <code>hdi</code> in descending order, and returns only the top 10 rows. The <code>.pl()</code> method at the end converts the result into a Polars DataFrame, allowing us to continue working with the data using all the Polars methods we’ve learned. Notice how the SQL keywords (<code>SELECT</code>, <code>FROM</code>, <code>ORDER BY</code>, <code>LIMIT</code>) directly correspond to Polars operations (<code>.select()</code>, reading from a table, <code>.sort()</code>, <code>.head()</code>).</p>
 <p>Often we use a database because the data is too large to fit easily in Python memory in its full form. We can limit the number of rows that we read in using a <code>WHERE</code> clause, which is similar to a filter in Polars. This allows us to extract just the subset of data we need for a particular analysis.</p>
-<div id="82fc286f" class="cell" data-execution_count="15">
+<div id="5e1061de" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> con.execute(<span class="st">"""</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="st">    SELECT iso, full_name, lexp, gdp</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="st">    FROM country</span></span>
@@ -1085,7 +1085,7 @@ XPath expressions
 </div>
 <p>The <code>WHERE</code> clause supports multiple conditions combined with <code>AND</code> or <code>OR</code>, along with comparison operators like <code>=</code>, <code>&gt;=</code>, <code>&lt;</code>, and <code>!=</code>. This query finds countries in the Americas with high life expectancy and GDP.</p>
 <p>We can also perform aggregation directly inside the database using <code>GROUP BY</code>:</p>
-<div id="78af76cf" class="cell" data-execution_count="16">
+<div id="d8661c2d" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> con.execute(<span class="st">"""</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="st">    SELECT</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="st">        region,</span></span>

@@ -446,7 +446,7 @@ Practice Notebooks
 <section id="setup" class="level2" data-number="11.1">
 <h2 data-number="11.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">11.1</span> Setup</h2>
 <p>Load all of the modules and datasets needed for the chapter.</p>
-<div id="636df98f" class="cell" data-execution_count="2">
+<div id="fa7f1e61" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -502,7 +502,7 @@ y = \alpha + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_k x_k + \varepsilon
 \]</span></p>
 <p>The coefficients <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta_1, \ldots, \beta_k\)</span> are estimated by minimizing the sum of squared residuals on the training data. Once these coefficients are estimated, we can make predictions for any observation by plugging in the predictor values and computing the predicted response.</p>
 <p>To fit predictive models, we will use a class called <code>DSSklearn</code>, which provides a consistent interface to the scikit-learn machine learning library in Python. Like the <code>DSStatsmodels</code> class from the previous chapter, <code>DSSklearn</code> is designed to work within a Polars pipe chain. It takes as arguments the target variable (the column to predict) and a list of features (the columns to use as predictors).</p>
-<div id="ec8ff2b4" class="cell" data-execution_count="3">
+<div id="e7f62b7c" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> (</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -514,7 +514,7 @@ y = \alpha + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_k x_k + \varepsilon
 </div>
 <p>This code fits a linear regression model predicting life expectancy (<code>lexp</code>) using four predictors: the Human Development Index (<code>hdi</code>), GDP per capita (<code>gdp</code>), cellphone subscriptions per 100 people (<code>cellphone</code>), and a happiness index (<code>happy</code>). The function automatically splits the data into training and testing sets, fits the model on the training data, and stores everything needed to evaluate and use the model.</p>
 <p>The resulting model object provides several methods for examining the results. The <code>score</code> method returns a dictionary containing the RMSE for both the training and testing sets.</p>
-<div id="9d2e1113" class="cell" data-execution_count="4">
+<div id="28d24a04" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>model.score()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
 <pre><code>{'train': np.float64(2.916788304946737), 'test': np.float64(3.103181695026965)}</code></pre>
@@ -522,7 +522,7 @@ y = \alpha + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_k x_k + \varepsilon
 </div>
 <p>The training RMSE tells us how well the model fits the data it was trained on, while the testing RMSE provides a more realistic estimate of prediction accuracy on new data. A large gap between training and testing RMSE can indicate overfitting — the model has learned patterns specific to the training data that do not generalize well.</p>
 <p>The <code>coef</code> method returns a DataFrame containing the estimated coefficients for each predictor.</p>
-<div id="cc4fadf0" class="cell" data-execution_count="5">
+<div id="fb51f291" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>model.coef()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <div><style>
@@ -572,7 +572,7 @@ y = \alpha + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_k x_k + \varepsilon
 </div>
 <p>These coefficients have the same interpretation as in the inferential context: each coefficient represents the expected change in the response for a one-unit change in the corresponding predictor, holding all other predictors constant. However, in the predictive context, we are less concerned with testing whether these coefficients are significantly different from zero and more concerned with whether they collectively produce accurate predictions.</p>
 <p>The <code>predict</code> method returns a DataFrame with columns indicating whether each observation was in the training or testing set (<code>index_</code>), the actual response value (<code>target_</code>), and the model’s prediction (<code>prediction_</code>).</p>
-<div id="08502336" class="cell" data-execution_count="6">
+<div id="feeaed0d" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>model.predict()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <div><style>
@@ -658,7 +658,7 @@ y = \alpha + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_k x_k + \varepsilon
 </div>
 </div>
 <p>This output allows us to examine individual predictions and understand where the model performs well or poorly. We can also add the predictions to the original data using the <code>with_columns</code> method.</p>
-<div id="436402c6" class="cell" data-execution_count="7">
+<div id="4d431d2f" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
@@ -972,7 +972,7 @@ Why the Absolute Value?
 </div>
 <p>Choosing the right value of <span class="math inline">\(\lambda\)</span> is crucial. Too small a value provides little regularization and does not address overfitting; too large a value over-penalizes the coefficients and produces a model that underfits the data. Cross-validation is the standard approach for selecting <span class="math inline">\(\lambda\)</span>. The training data is divided into several folds (subsets), and for each candidate value of <span class="math inline">\(\lambda\)</span>, the model is trained on some folds and evaluated on the remaining fold. This process is repeated for all possible fold arrangements, and the <span class="math inline">\(\lambda\)</span> value that produces the best average performance is selected.</p>
 <p>The <code>DSSklearn</code> class handles cross-validation automatically when using the <code>elastic_net_cv</code> method, which is a general framework that includes the lasso as a special case. Setting <code>l1_ratio=1</code> specifies that we want the lasso penalty.</p>
-<div id="5313c032" class="cell" data-execution_count="8">
+<div id="4b6e6125" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> (</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -984,7 +984,7 @@ Why the Absolute Value?
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The resulting model object provides the same methods as before. The <code>score</code> method shows performance on training and testing sets.</p>
-<div id="0c857980" class="cell" data-execution_count="9">
+<div id="55f0edab" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>model.score()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="9">
 <pre><code>{'train': np.float64(2.961003671269824),
@@ -992,7 +992,7 @@ Why the Absolute Value?
 </div>
 </div>
 <p>The <code>predict</code> method returns predictions.</p>
-<div id="e92f85a6" class="cell" data-execution_count="10">
+<div id="00a0f8bd" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>model.predict()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="10">
 <div><style>
@@ -1078,7 +1078,7 @@ Why the Absolute Value?
 </div>
 </div>
 <p>The <code>coef</code> method shows the estimated coefficients.</p>
-<div id="19df87ae" class="cell" data-execution_count="11">
+<div id="5628f073" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>model.coef()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="11">
 <div><style>
@@ -1128,7 +1128,7 @@ Why the Absolute Value?
 </div>
 <p>Notice that some coefficients may be exactly zero or very close to zero, reflecting the lasso’s variable selection property. The model has determined that these predictors do not contribute enough to predictions to justify keeping them.</p>
 <p>To compare the relative importance of predictors, it is helpful to examine coefficients on a standardized scale. The <code>raw=True</code> argument returns coefficients based on standardized (scaled) features, making the magnitudes comparable across predictors with different units.</p>
-<div id="8a488aa1" class="cell" data-execution_count="12">
+<div id="54b8d799" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>model.coef(raw<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="12">
 <div><style>
@@ -1177,14 +1177,14 @@ Why the Absolute Value?
 </div>
 </div>
 <p>The <code>alpha</code> method returns the value of <span class="math inline">\(\lambda\)</span> (called alpha in scikit-learn) selected by cross-validation.</p>
-<div id="ef886988" class="cell" data-execution_count="13">
+<div id="4c86e17c" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>model.alpha()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="13">
 <pre><code>np.float64(0.24888744821240497)</code></pre>
 </div>
 </div>
 <p>Once we have identified the optimal penalty strength through cross-validation, we can refit the model with this specific value using <code>elastic_net</code> instead of <code>elastic_net_cv</code>. This is useful when we want more control over the fitting process.</p>
-<div id="f20df09b" class="cell" data-execution_count="14">
+<div id="a697a37c" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -1246,7 +1246,7 @@ Why the Absolute Value?
 <p>The squared penalty shrinks coefficients toward zero but, unlike the lasso, never shrinks them exactly to zero. This means ridge regression keeps all predictors in the model but with reduced influence. Ridge regression is particularly useful when predictors are highly correlated with each other, a situation where ordinary least squares and even the lasso can produce unstable estimates.</p>
 <p>The elastic net combines both penalties, allowing the user to balance the lasso’s variable selection with ridge regression’s stability. The <code>l1_ratio</code> parameter controls this balance: a value of 1 gives the lasso (all absolute value penalty), a value of 0 gives ridge regression (all squared penalty), and intermediate values give a blend.</p>
 <p>To fit a ridge regression model, we set <code>l1_ratio=0</code>:</p>
-<div id="9b9994b9" class="cell" data-execution_count="15">
+<div id="31f0ac7c" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> (</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -1259,14 +1259,14 @@ Why the Absolute Value?
 <span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The <code>alphas</code> parameter specifies the candidate penalty values to consider during cross-validation. The <code>alpha</code> method returns the selected value.</p>
-<div id="85d01023" class="cell" data-execution_count="16">
+<div id="9f42070d" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>model.alpha()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="16">
 <pre><code>np.float64(0.01)</code></pre>
 </div>
 </div>
 <p>To fit an elastic net with a blend of both penalties, we specify an intermediate <code>l1_ratio</code>:</p>
-<div id="e9cac030" class="cell" data-execution_count="17">
+<div id="93bb1e77" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> (</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -1277,7 +1277,7 @@ Why the Absolute Value?
 <span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="4cdb1f3e" class="cell" data-execution_count="18">
+<div id="3bc0a743" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>model.alpha()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="18">
 <pre><code>np.float64(0.030825660663502993)</code></pre>
@@ -1314,7 +1314,7 @@ Decision Trees
 </ol>
 <p>Here, <span class="math inline">\(\eta\)</span> is the learning rate, a small positive number that controls how much each tree contributes to the final prediction. Smaller learning rates require more trees but often produce better final results.</p>
 <p>The <code>DSSklearn</code> class provides access to gradient boosting through the <code>gradient_boosting_regressor</code> method. Key parameters include the number of trees (<code>n_estimators</code>), the learning rate (<code>learning_rate</code>), and the maximum depth of each tree (<code>max_depth</code>).</p>
-<div id="0775a6e4" class="cell" data-execution_count="19">
+<div id="b9d210ee" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> (</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -1328,15 +1328,15 @@ Decision Trees
 <span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The model provides the same methods as before. The <code>score</code> method shows training and testing performance.</p>
-<div id="03dd21c2" class="cell" data-execution_count="20">
+<div id="de944cf8" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>model.score()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="20">
 <pre><code>{'train': np.float64(0.6290821129470985),
- 'test': np.float64(3.223076012317957)}</code></pre>
+ 'test': np.float64(3.194865235423206)}</code></pre>
 </div>
 </div>
 <p>The <code>predict</code> method returns predictions for individual observations.</p>
-<div id="dd31b915" class="cell" data-execution_count="21">
+<div id="0e49a92c" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>model.predict()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="21">
 <div><style>
@@ -1374,7 +1374,7 @@ Decision Trees
 <tr class="odd">
 <td>"test"</td>
 <td>82.84</td>
-<td>84.023521</td>
+<td>83.889788</td>
 </tr>
 <tr class="even">
 <td>"train"</td>
@@ -1399,7 +1399,7 @@ Decision Trees
 <tr class="even">
 <td>"test"</td>
 <td>76.03</td>
-<td>76.472325</td>
+<td>76.073709</td>
 </tr>
 <tr class="odd">
 <td>"train"</td>
@@ -1422,7 +1422,7 @@ Decision Trees
 </div>
 </div>
 <p>Because gradient boosting does not produce simple linear coefficients, we cannot interpret the model in the same way as linear regression. Instead, the <code>importance</code> method provides a measure of how much each predictor contributes to reducing prediction error across all trees.</p>
-<div id="d7c0c85f" class="cell" data-execution_count="22">
+<div id="7e6c7830" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>model.importance()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="22">
 <div><style>
@@ -1447,19 +1447,19 @@ Decision Trees
 <tbody>
 <tr class="odd">
 <td>"hdi"</td>
-<td>0.861349</td>
+<td>0.861063</td>
 </tr>
 <tr class="even">
 <td>"gdp"</td>
-<td>0.059907</td>
+<td>0.059134</td>
 </tr>
 <tr class="odd">
 <td>"cellphone"</td>
-<td>0.026876</td>
+<td>0.028945</td>
 </tr>
 <tr class="even">
 <td>"happy"</td>
-<td>0.051868</td>
+<td>0.050858</td>
 </tr>
 </tbody>
 </table>
@@ -1491,7 +1491,7 @@ Tuning Gradient Boosting
 <p>We introduced logistic regression in <a href="10_inference.html" class="quarto-xref"><span>Chapter 10</span></a> as a method for modeling binary outcomes. In the predictive context, logistic regression serves as a classification method. Given predictor values, we compute the probability that an observation belongs to each class and predict the class with the highest probability.</p>
 <p>For classification with more than two classes (called multinomial or multiclass classification), logistic regression extends naturally. Instead of modeling a single probability, we model the probability of each class simultaneously, with the probabilities constrained to sum to one.</p>
 <p>The <code>DSSklearn</code> class provides logistic regression through the <code>.logistic_regression_cv</code> method, which automatically selects the regularization strength through cross-validation. For classification problems, we also typically want to stratify the train-test split, ensuring that each class is proportionally represented in both sets. This is especially important when some classes are rare.</p>
-<div id="25a66e74" class="cell" data-execution_count="23">
+<div id="e4f8dd07" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> (</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -1506,14 +1506,14 @@ Tuning Gradient Boosting
 </div>
 <p>This code fits a multinomial logistic regression predicting the region of a country based on development indicators. The <code>l1_ratios=[1]</code> specifies lasso regularization, which can help identify the most important predictors for distinguishing between regions. The <code>solver="saga"</code> specifies the optimization algorithm, which is required for lasso regularization with multiple classes.</p>
 <p>The <code>score</code> method returns the accuracy (proportion of correct predictions) for training and testing sets rather than RMSE.</p>
-<div id="d33c9c8f" class="cell" data-execution_count="24">
+<div id="f101b115" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>model.score()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="24">
 <pre><code>{'train': 0.648936170212766, 'test': 0.6585365853658537}</code></pre>
 </div>
 </div>
 <p>The <code>predict</code> method returns the actual and predicted classes for each observation.</p>
-<div id="279707a8" class="cell" data-execution_count="25">
+<div id="24f432de" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>model.predict()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="25">
 <div><style>
@@ -1599,7 +1599,7 @@ Tuning Gradient Boosting
 </div>
 </div>
 <p>While overall accuracy provides a simple summary, it does not reveal which classes are easy or difficult to predict. A confusion matrix shows the detailed breakdown of predictions versus actual classes. Each row represents the actual class, and each column represents the predicted class. The diagonal elements show correct predictions, while off-diagonal elements show misclassifications.</p>
-<div id="946d14ac" class="cell" data-execution_count="26">
+<div id="caab9a16" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>model.confusion_matrix()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
@@ -1611,7 +1611,7 @@ Tuning Gradient Boosting
 </div>
 <p>The confusion matrix helps diagnose model performance. If certain classes are frequently confused with each other, this might suggest that those classes are genuinely similar according to the available predictors, or that additional predictors are needed to distinguish them.</p>
 <p>Rather than just predicting the most likely class, classification models can provide the probability of each class. These probabilities are useful for understanding model confidence and for applications where the costs of different types of errors vary.</p>
-<div id="55a20524" class="cell" data-execution_count="27">
+<div id="878f533d" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>model.predict_proba()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="27">
 <div><style>
@@ -1652,56 +1652,56 @@ Tuning Gradient Boosting
 <td>"test"</td>
 <td>"Africa"</td>
 <td>"Africa"</td>
-<td>0.759865</td>
-<td>0.759865</td>
-<td>0.055419</td>
-<td>0.166564</td>
+<td>0.75986</td>
+<td>0.75986</td>
+<td>0.05542</td>
+<td>0.166566</td>
 <td>0.013723</td>
-<td>0.004429</td>
+<td>0.004431</td>
 </tr>
 <tr class="even">
 <td>"test"</td>
 <td>"Americas"</td>
 <td>"Asia"</td>
-<td>0.342027</td>
-<td>0.267808</td>
-<td>0.270038</td>
-<td>0.342027</td>
+<td>0.342031</td>
+<td>0.267804</td>
+<td>0.270032</td>
+<td>0.342031</td>
 <td>0.106997</td>
-<td>0.01313</td>
+<td>0.013137</td>
 </tr>
 <tr class="odd">
 <td>"test"</td>
 <td>"Europe"</td>
 <td>"Europe"</td>
-<td>0.636833</td>
-<td>0.00973</td>
-<td>0.234236</td>
-<td>0.110384</td>
-<td>0.636833</td>
-<td>0.008816</td>
+<td>0.636847</td>
+<td>0.009729</td>
+<td>0.234223</td>
+<td>0.11038</td>
+<td>0.636847</td>
+<td>0.008821</td>
 </tr>
 <tr class="even">
 <td>"test"</td>
 <td>"Americas"</td>
 <td>"Europe"</td>
-<td>0.757309</td>
+<td>0.757316</td>
 <td>0.00967</td>
-<td>0.033026</td>
-<td>0.192817</td>
-<td>0.757309</td>
-<td>0.007177</td>
+<td>0.033028</td>
+<td>0.192805</td>
+<td>0.757316</td>
+<td>0.007181</td>
 </tr>
 <tr class="odd">
 <td>"train"</td>
 <td>"Asia"</td>
 <td>"Asia"</td>
-<td>0.548601</td>
-<td>0.182781</td>
-<td>0.038866</td>
-<td>0.548601</td>
-<td>0.21298</td>
-<td>0.016771</td>
+<td>0.54861</td>
+<td>0.182788</td>
+<td>0.038869</td>
+<td>0.54861</td>
+<td>0.212955</td>
+<td>0.016777</td>
 </tr>
 <tr class="even">
 <td>…</td>
@@ -1718,56 +1718,56 @@ Tuning Gradient Boosting
 <td>"train"</td>
 <td>"Europe"</td>
 <td>"Asia"</td>
-<td>0.442426</td>
-<td>0.10247</td>
-<td>0.169015</td>
-<td>0.442426</td>
-<td>0.270186</td>
-<td>0.015903</td>
+<td>0.442427</td>
+<td>0.102469</td>
+<td>0.169017</td>
+<td>0.442427</td>
+<td>0.270176</td>
+<td>0.01591</td>
 </tr>
 <tr class="even">
 <td>"train"</td>
 <td>"Asia"</td>
 <td>"Europe"</td>
-<td>0.400515</td>
-<td>0.092077</td>
-<td>0.156947</td>
-<td>0.334113</td>
-<td>0.400515</td>
-<td>0.016348</td>
+<td>0.40051</td>
+<td>0.092074</td>
+<td>0.156949</td>
+<td>0.334111</td>
+<td>0.40051</td>
+<td>0.016356</td>
 </tr>
 <tr class="odd">
 <td>"test"</td>
 <td>"Americas"</td>
 <td>"Americas"</td>
-<td>0.398278</td>
-<td>0.307306</td>
-<td>0.398278</td>
-<td>0.20063</td>
-<td>0.082734</td>
-<td>0.011051</td>
+<td>0.398266</td>
+<td>0.3073</td>
+<td>0.398266</td>
+<td>0.200638</td>
+<td>0.082739</td>
+<td>0.011057</td>
 </tr>
 <tr class="even">
 <td>"train"</td>
 <td>"Asia"</td>
 <td>"Europe"</td>
-<td>0.674076</td>
-<td>0.021438</td>
-<td>0.071543</td>
-<td>0.221419</td>
-<td>0.674076</td>
-<td>0.011524</td>
+<td>0.67407</td>
+<td>0.021437</td>
+<td>0.071547</td>
+<td>0.221417</td>
+<td>0.67407</td>
+<td>0.01153</td>
 </tr>
 <tr class="odd">
 <td>"test"</td>
 <td>"Asia"</td>
 <td>"Africa"</td>
-<td>0.724346</td>
-<td>0.724346</td>
+<td>0.724343</td>
+<td>0.724343</td>
 <td>0.035139</td>
 <td>0.21958</td>
 <td>0.016154</td>
-<td>0.004781</td>
+<td>0.004783</td>
 </tr>
 </tbody>
 </table>
@@ -1776,7 +1776,7 @@ Tuning Gradient Boosting
 </div>
 <p>The output includes the predicted class, the maximum probability (the confidence in that prediction), and the probability assigned to each possible class. Observations with high maximum probability are those where the model is most confident; observations with probabilities spread across multiple classes are more uncertain.</p>
 <p>For multinomial classification, there are separate coefficients for each class. Each set of coefficients describes how the predictors relate to the probability of that particular class relative to the others.</p>
-<div id="4b41bee0" class="cell" data-execution_count="28">
+<div id="3543a9d0" class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>model.coef()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="28">
 <div><style>
@@ -1809,41 +1809,41 @@ Tuning Gradient Boosting
 <tbody>
 <tr class="odd">
 <td>"Intercept"</td>
-<td>0.408246</td>
-<td>0.099516</td>
-<td>1.175219</td>
-<td>0.484503</td>
-<td>-2.167483</td>
+<td>0.408139</td>
+<td>0.099446</td>
+<td>1.175126</td>
+<td>0.484408</td>
+<td>-2.167119</td>
 </tr>
 <tr class="even">
 <td>"hdi"</td>
-<td>-1.786861</td>
+<td>-1.786844</td>
 <td>0.0</td>
 <td>0.0</td>
-<td>0.758682</td>
+<td>0.758631</td>
 <td>0.0</td>
 </tr>
 <tr class="odd">
 <td>"gdp"</td>
 <td>0.0</td>
-<td>-0.770284</td>
+<td>-0.770222</td>
 <td>0.0</td>
-<td>0.500736</td>
+<td>0.500775</td>
 <td>0.0</td>
 </tr>
 <tr class="even">
 <td>"cellphone"</td>
 <td>0.0</td>
 <td>0.0</td>
-<td>-0.40785</td>
+<td>-0.40783</td>
 <td>0.0</td>
 <td>0.0</td>
 </tr>
 <tr class="odd">
 <td>"happy"</td>
-<td>-0.078949</td>
-<td>1.039055</td>
-<td>-0.038645</td>
+<td>-0.079028</td>
+<td>1.038953</td>
+<td>-0.038708</td>
 <td>0.0</td>
 <td>0.0</td>
 </tr>
@@ -1854,7 +1854,7 @@ Tuning Gradient Boosting
 </div>
 <p>Interpreting these coefficients is more complex than in binary logistic regression. A positive coefficient for a predictor in a particular class means that higher values of that predictor are associated with higher probability of that class, all else being equal. However, because the probabilities must sum to one, the effects are relative rather than absolute.</p>
 <p>Gradient boosting can also be applied to classification problems. The algorithm adapts to predict class probabilities rather than numeric values, using a suitable loss function for classification.</p>
-<div id="c881f5bb" class="cell" data-execution_count="29">
+<div id="ecd6af9d" class="cell" data-execution_count="29">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> (</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -1867,14 +1867,14 @@ Tuning Gradient Boosting
 <span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="093c6480" class="cell" data-execution_count="30">
+<div id="42cf2525" class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>model.score()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="30">
 <pre><code>{'train': 1.0, 'test': 0.5853658536585366}</code></pre>
 </div>
 </div>
 <p>Gradient boosting classifiers can capture complex, nonlinear relationships between predictors and class membership. However, they can also overfit, especially with small datasets or many trees. A common sign of overfitting is a large gap between training accuracy (often very high) and testing accuracy.</p>
-<div id="579aab5b" class="cell" data-execution_count="31">
+<div id="7c959bb1" class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>model.predict_proba()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="31">
 <div><style>
@@ -1937,12 +1937,12 @@ Tuning Gradient Boosting
 <td>"test"</td>
 <td>"Europe"</td>
 <td>"Europe"</td>
-<td>0.893899</td>
-<td>0.000409</td>
-<td>0.003041</td>
-<td>0.102624</td>
-<td>0.893899</td>
-<td>0.000027</td>
+<td>0.852998</td>
+<td>0.000567</td>
+<td>0.004214</td>
+<td>0.142184</td>
+<td>0.852998</td>
+<td>0.000037</td>
 </tr>
 <tr class="even">
 <td>"train"</td>
@@ -1992,11 +1992,11 @@ Tuning Gradient Boosting
 <td>"test"</td>
 <td>"Asia"</td>
 <td>"Americas"</td>
-<td>0.927044</td>
-<td>0.002287</td>
-<td>0.927044</td>
-<td>0.023434</td>
-<td>0.047227</td>
+<td>0.923263</td>
+<td>0.002322</td>
+<td>0.923263</td>
+<td>0.023678</td>
+<td>0.050729</td>
 <td>0.000008</td>
 </tr>
 <tr class="odd">

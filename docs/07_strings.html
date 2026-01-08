@@ -419,7 +419,7 @@ Practice Notebooks
 <section id="setup" class="level2" data-number="7.1">
 <h2 data-number="7.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">7.1</span> Setup</h2>
 <p>Load all of the modules and datasets needed for the chapter.</p>
-<div id="71d69a7b" class="cell" data-execution_count="2">
+<div id="28944caf" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -435,7 +435,7 @@ Practice Notebooks
 <h2 data-number="7.2" class="anchored" data-anchor-id="introduction"><span class="header-section-number">7.2</span> Introduction</h2>
 <p>Text data appears everywhere in data science: names, addresses, product descriptions, social media posts, and scraped web content. Working effectively with strings requires learning a small set of operations that allow us to search, extract, and transform text within a DataFrame. In this chapter, we explore the string methods available in Polars, which provide a consistent and efficient way to manipulate text columns. We will also introduce regular expressions, a powerful pattern-matching language that underlies many of these operations.</p>
 <p>To illustrate these methods, we use a dataset of British writers compiled from Wikipedia. The dataset contains metadata about 75 authors spanning from the medieval period to the present day.</p>
-<div id="fb608f94" class="cell" data-execution_count="3">
+<div id="75db3a64" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>wiki.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 75
@@ -455,7 +455,7 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 <section id="filtering-with-contains" class="level2" data-number="7.3">
 <h2 data-number="7.3" class="anchored" data-anchor-id="filtering-with-contains"><span class="header-section-number">7.3</span> Filtering with Contains</h2>
 <p>A common task is selecting rows where a text column contains a particular pattern. The <code>contains</code> method checks whether each value in a string column matches a given pattern. Let’s find all authors whose names include “William”:</p>
-<div id="dc93ce51" class="cell" data-execution_count="4">
+<div id="4571e2e3" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.doc_id.<span class="bu">str</span>.contains(<span class="st">"William"</span>))</span>
@@ -533,7 +533,7 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 </div>
 </div>
 <p>The pattern matching is case-sensitive. To find authors from the sixteenth century, we filter on the <code>era</code> column:</p>
-<div id="f48397ea" class="cell" data-execution_count="5">
+<div id="94e594ae" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.era.<span class="bu">str</span>.contains(<span class="st">"Sixteenth"</span>))</span>
@@ -629,7 +629,7 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 </div>
 </div>
 <p>We can combine string filters with other conditions using the standard logical operators. Below we find female authors born before 1800:</p>
-<div id="6f886803" class="cell" data-execution_count="6">
+<div id="5cefe7dd" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(</span>
@@ -776,7 +776,7 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 <h2 data-number="7.4" class="anchored" data-anchor-id="regular-expression-basics"><span class="header-section-number">7.4</span> Regular Expression Basics</h2>
 <p>So far we have searched for literal text, but the <code>contains</code> method (and most other string methods in Polars) actually accepts regular expressions by default. Regular expressions are patterns that describe sets of strings. They give us far more flexibility than searching for exact text.</p>
 <p>Let’s start with two simple but powerful patterns: <code>^</code> matches the start of a string, and <code>$</code> matches the end. To find all authors whose names start with the letter “M”:</p>
-<div id="b1bb9efc" class="cell" data-execution_count="7">
+<div id="b528d4ba" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.doc_id.<span class="bu">str</span>.contains(<span class="vs">r"</span><span class="dv">^</span><span class="vs">M"</span>))</span>
@@ -873,7 +873,7 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 </div>
 <p>The <code>r</code> before the string creates a raw string literal, which is a Python convention for regular expressions. It prevents Python from treating backslashes as escape characters, which becomes important with more complex patterns.</p>
 <p>To find names that end with the letter “e”:</p>
-<div id="7b563f50" class="cell" data-execution_count="8">
+<div id="bd5011ab" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.doc_id.<span class="bu">str</span>.contains(<span class="vs">r"e</span><span class="dv">$</span><span class="vs">"</span>))</span>
@@ -1014,7 +1014,7 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 </div>
 </div>
 <p>We can combine these anchors with character classes. Square brackets define a set of characters to match. The pattern <code>[A-Z]</code> matches any uppercase letter, while <code>[a-z]</code> matches any lowercase letter. To find names where the first character is lowercase (unusual for English names), we write:</p>
-<div id="44ba0a1d" class="cell" data-execution_count="9">
+<div id="a8fc3575" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.doc_id.<span class="bu">str</span>.contains(<span class="vs">r"</span><span class="dv">^</span><span class="pp">[a-z]</span><span class="vs">"</span>))</span>
@@ -1056,7 +1056,7 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 </div>
 </div>
 <p>No results—every name starts with a capital letter, as expected. But what about names that contain a word starting with a lowercase letter? The pattern <code>\s[a-z]</code> matches a space followed by a lowercase letter:</p>
-<div id="3d8c7d0c" class="cell" data-execution_count="10">
+<div id="7ae1138d" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.doc_id.<span class="bu">str</span>.contains(<span class="vs">r"</span><span class="dv">\s</span><span class="pp">[a-z]</span><span class="vs">"</span>))</span>
@@ -1117,7 +1117,7 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 </div>
 <p>This finds “Marie de France,” whose name includes the lowercase “de.” The <code>\s</code> is a shorthand character class meaning “any whitespace character.” There are several useful shorthands: <code>\d</code> matches any digit, <code>\w</code> matches any “word character” (letters, digits, and underscore), and <code>\S</code>, <code>\D</code>, and <code>\W</code> match the opposite of their lowercase counterparts.</p>
 <p>Quantifiers let us specify repetition. The <code>+</code> means “one or more” of the preceding element. The pattern <code>\d+</code> matches one or more consecutive digits:</p>
-<div id="29b9ac92" class="cell" data-execution_count="11">
+<div id="9287fb09" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.link.<span class="bu">str</span>.contains(<span class="vs">r"</span><span class="dv">\d</span><span class="op">+</span><span class="vs">"</span>))</span>
@@ -1160,7 +1160,7 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 </div>
 <p>This finds authors whose Wikipedia link contains numbers, such as “Mary_I_of_England.” Other quantifiers include <code>*</code> (zero or more) and <code>?</code> (zero or one).</p>
 <p>If you want to search for literal text and avoid interpreting special characters as regex operators, set <code>literal=True</code>:</p>
-<div id="233515cc" class="cell" data-execution_count="12">
+<div id="e11e069d" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.era.<span class="bu">str</span>.contains(<span class="st">"C"</span>, literal<span class="op">=</span><span class="va">True</span>))</span>
@@ -1305,7 +1305,7 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 <h2 data-number="7.5" class="anchored" data-anchor-id="aggregating-strings"><span class="header-section-number">7.5</span> Aggregating Strings</h2>
 <p>When working with grouped data, we sometimes want to combine text values into a single string. The <code>join</code> method concatenates all values in a string column, separated by a delimiter you specify. This is particularly useful after grouping.</p>
 <p>For example, we can list all authors in each era, separated by commas:</p>
-<div id="3dc134de" class="cell" data-execution_count="13">
+<div id="297c89c3" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    .group_by(c.era)</span>
@@ -1335,32 +1335,32 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 </thead>
 <tbody>
 <tr class="odd">
-<td>"Romantic"</td>
-<td>"Austen, Blake, Burns, Byron, C…</td>
-</tr>
-<tr class="even">
-<td>"Seventeenth C"</td>
-<td>"Cavendish, Donne, Herbert, Hob…</td>
-</tr>
-<tr class="odd">
-<td>"Sixteenth C"</td>
-<td>"Marlowe, More, Raleigh, Shakes…</td>
-</tr>
-<tr class="even">
 <td>"Restoration"</td>
 <td>"Boswell, Dryden, Johnson, Lock…</td>
 </tr>
+<tr class="even">
+<td>"Sixteenth C"</td>
+<td>"Marlowe, More, Raleigh, Shakes…</td>
+</tr>
 <tr class="odd">
-<td>"Twentieth C"</td>
-<td>"Auden, Beckett, C. S. Lewis, C…</td>
+<td>"Seventeenth C"</td>
+<td>"Cavendish, Donne, Herbert, Hob…</td>
 </tr>
 <tr class="even">
+<td>"Early"</td>
+<td>"Chaucer, Gower, Kempe, Langlan…</td>
+</tr>
+<tr class="odd">
 <td>"Victorian"</td>
 <td>"Arnold, Browning, C. Brontë, D…</td>
 </tr>
+<tr class="even">
+<td>"Twentieth C"</td>
+<td>"Auden, Beckett, C. S. Lewis, C…</td>
+</tr>
 <tr class="odd">
-<td>"Early"</td>
-<td>"Chaucer, Gower, Kempe, Langlan…</td>
+<td>"Romantic"</td>
+<td>"Austen, Blake, Burns, Byron, C…</td>
 </tr>
 </tbody>
 </table>
@@ -1372,7 +1372,7 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 <section id="extracting-text-with-patterns" class="level2" data-number="7.6">
 <h2 data-number="7.6" class="anchored" data-anchor-id="extracting-text-with-patterns"><span class="header-section-number">7.6</span> Extracting Text with Patterns</h2>
 <p>The <code>extract</code> method pulls out the first match of a regular expression pattern. This is used inside <code>with_columns</code> to create new columns. For example, we can extract the first word from each author’s full name using the pattern <code>^\w+</code>, which means “one or more word characters at the start of the string”:</p>
-<div id="12bddcfd" class="cell" data-execution_count="14">
+<div id="05070775" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .select(c.doc_id)</span>
@@ -1451,7 +1451,7 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 </div>
 </div>
 <p>Similarly, the pattern <code>\w+$</code> extracts the last word:</p>
-<div id="26ac8673" class="cell" data-execution_count="15">
+<div id="838a58d7" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    .select(c.doc_id)</span>
@@ -1534,7 +1534,7 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 <h2 data-number="7.7" class="anchored" data-anchor-id="capture-groups"><span class="header-section-number">7.7</span> Capture Groups</h2>
 <p>When a pattern contains parentheses, they create capture groups that let you extract specific parts of a match. By default, <code>extract</code> returns group 1 (the first set of parentheses). You can specify which group to extract by passing a second argument.</p>
 <p>Consider a pattern that matches a first name, then anything in the middle, then a last word: <code>^(\w+).*\s(\w+)$</code>. The first group captures the opening word, and the second captures the final word. We can extract each separately:</p>
-<div id="b60db57c" class="cell" data-execution_count="16">
+<div id="0827a6da" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    .select(c.doc_id)</span>
@@ -1628,7 +1628,7 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 </div>
 <p>The <code>.</code> in the pattern matches any character, and <code>.*</code> matches zero or more of any character—this is how we skip over the middle portion of the name.</p>
 <p>If you want all matches of a pattern rather than just the first, use <code>extract_all</code>, which returns a list:</p>
-<div id="b5cf865b" class="cell" data-execution_count="17">
+<div id="b0f916dc" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    .select(c.doc_id)</span>
@@ -1710,7 +1710,7 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 <section id="replacing-text" class="level2" data-number="7.8">
 <h2 data-number="7.8" class="anchored" data-anchor-id="replacing-text"><span class="header-section-number">7.8</span> Replacing Text</h2>
 <p>The <code>replace</code> method substitutes the first occurrence of a pattern with a new string, while <code>replace_all</code> substitutes every occurrence. Below we standardize the era labels by removing the ” C” suffix:</p>
-<div id="ff4bb049" class="cell" data-execution_count="18">
+<div id="a883d4b2" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    .select(c.era)</span>
@@ -1741,14 +1741,6 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 </thead>
 <tbody>
 <tr class="odd">
-<td>"Romantic"</td>
-<td>"Romantic"</td>
-</tr>
-<tr class="even">
-<td>"Victorian"</td>
-<td>"Victorian"</td>
-</tr>
-<tr class="odd">
 <td>"Seventeenth C"</td>
 <td>"Seventeenth"</td>
 </tr>
@@ -1757,16 +1749,24 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 <td>"Sixteenth"</td>
 </tr>
 <tr class="odd">
-<td>"Restoration"</td>
-<td>"Restoration"</td>
-</tr>
-<tr class="even">
-<td>"Early"</td>
-<td>"Early"</td>
-</tr>
-<tr class="odd">
 <td>"Twentieth C"</td>
 <td>"Twentieth"</td>
+</tr>
+<tr class="even">
+<td>"Romantic"</td>
+<td>"Romantic"</td>
+</tr>
+<tr class="odd">
+<td>"Early"</td>
+<td>"Early"</td>
+</tr>
+<tr class="even">
+<td>"Victorian"</td>
+<td>"Victorian"</td>
+</tr>
+<tr class="odd">
+<td>"Restoration"</td>
+<td>"Restoration"</td>
 </tr>
 </tbody>
 </table>
@@ -1774,7 +1774,7 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 </div>
 </div>
 <p>Replacements can use capture groups from the pattern. In the replacement string, <code>$1</code> refers to the first capture group, <code>$2</code> to the second, and so on. Here we swap the first and last words of each name:</p>
-<div id="0ccadcab" class="cell" data-execution_count="19">
+<div id="f60207f9" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    .select(c.doc_id)</span>
@@ -1856,7 +1856,7 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 <section id="working-with-substrings" class="level2" data-number="7.9">
 <h2 data-number="7.9" class="anchored" data-anchor-id="working-with-substrings"><span class="header-section-number">7.9</span> Working with Substrings</h2>
 <p>Sometimes we need to extract a fixed portion of a string rather than matching a pattern. The <code>slice</code> method returns a substring given a starting position and length. Positions are zero-indexed, meaning the first character is at position 0.</p>
-<div id="5648fa05" class="cell" data-execution_count="20">
+<div id="8d60e732" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    .select(c.doc_id)</span>
@@ -1935,7 +1935,7 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 </div>
 </div>
 <p>For cleaning whitespace, <code>strip_chars</code> removes leading and trailing spaces (or other characters you specify). The case conversion methods <code>to_lowercase</code>, <code>to_uppercase</code>, and <code>to_titlecase</code> are useful for standardizing text:</p>
-<div id="b7a5fed4" class="cell" data-execution_count="21">
+<div id="2de72adb" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    .select(c.era)</span>
@@ -1969,19 +1969,9 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 </thead>
 <tbody>
 <tr class="odd">
-<td>"Romantic"</td>
-<td>"ROMANTIC"</td>
-<td>"romantic"</td>
-</tr>
-<tr class="even">
-<td>"Victorian"</td>
-<td>"VICTORIAN"</td>
-<td>"victorian"</td>
-</tr>
-<tr class="odd">
-<td>"Sixteenth C"</td>
-<td>"SIXTEENTH C"</td>
-<td>"sixteenth c"</td>
+<td>"Twentieth C"</td>
+<td>"TWENTIETH C"</td>
+<td>"twentieth c"</td>
 </tr>
 <tr class="even">
 <td>"Seventeenth C"</td>
@@ -1994,14 +1984,24 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 <td>"restoration"</td>
 </tr>
 <tr class="even">
-<td>"Twentieth C"</td>
-<td>"TWENTIETH C"</td>
-<td>"twentieth c"</td>
+<td>"Romantic"</td>
+<td>"ROMANTIC"</td>
+<td>"romantic"</td>
 </tr>
 <tr class="odd">
 <td>"Early"</td>
 <td>"EARLY"</td>
 <td>"early"</td>
+</tr>
+<tr class="even">
+<td>"Victorian"</td>
+<td>"VICTORIAN"</td>
+<td>"victorian"</td>
+</tr>
+<tr class="odd">
+<td>"Sixteenth C"</td>
+<td>"SIXTEENTH C"</td>
+<td>"sixteenth c"</td>
 </tr>
 </tbody>
 </table>
@@ -2012,7 +2012,7 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 <section id="counting-strings" class="level2" data-number="7.10">
 <h2 data-number="7.10" class="anchored" data-anchor-id="counting-strings"><span class="header-section-number">7.10</span> Counting Strings</h2>
 <p>Several string methods return numeric values rather than text. The <code>len_chars</code> method returns the number of characters in each string:</p>
-<div id="4a301200" class="cell" data-execution_count="22">
+<div id="69247a08" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    .select(c.doc_id)</span>
@@ -2092,7 +2092,7 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 </div>
 </div>
 <p>The <code>count_matches</code> method counts how many times a pattern appears in each string. Here we count the number of spaces in each name, which tells us how many words it contains (plus one):</p>
-<div id="a359158c" class="cell" data-execution_count="23">
+<div id="abd19ec1" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    .select(c.doc_id)</span>
@@ -2185,7 +2185,7 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 </div>
 </div>
 <p>The <code>find</code> method returns the starting index of the first match, or -1 if not found:</p>
-<div id="673a6283" class="cell" data-execution_count="24">
+<div id="acfab0de" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    .select(c.doc_id)</span>
@@ -2267,7 +2267,7 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 <section id="splitting-strings" class="level2" data-number="7.11">
 <h2 data-number="7.11" class="anchored" data-anchor-id="splitting-strings"><span class="header-section-number">7.11</span> Splitting Strings</h2>
 <p>The <code>split</code> method divides a string into a list of substrings based on a delimiter. This creates a list column, which often needs further processing. The most common follow-up is to use <code>explode</code> to expand each list element into its own row.</p>
-<div id="70167ccf" class="cell" data-execution_count="25">
+<div id="fcb12c9b" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    .select(c.doc_id)</span>
@@ -2346,7 +2346,7 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 </div>
 </div>
 <p>When we explode the list column, each word becomes a separate row:</p>
-<div id="36a857ee" class="cell" data-execution_count="26">
+<div id="a702d6f1" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    wiki</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    .select(c.doc_id, c.short)</span>

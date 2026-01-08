@@ -8,6 +8,7 @@
 ## Practice Notebooks
 
 - Notebook01a [[Colab↗](https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook01a.ipynb?hl=en)]
+- Notebook01b [[Colab↗](https://colab.research.google.com/github/taylor-arnold/fds-py-nb/blob/main/nb/notebook01b.ipynb?hl=en)]
 
 :::
 

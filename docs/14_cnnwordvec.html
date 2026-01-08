@@ -447,7 +447,7 @@ Practice Notebooks
 <section id="setup" class="level2" data-number="14.1">
 <h2 data-number="14.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">14.1</span> Setup</h2>
 <p>Load all of the modules and datasets needed for the chapter. We also load several parts of the torch module for building deep learning models and the Word2Vec model from gensim.</p>
-<div id="bc094311" class="cell" data-execution_count="2">
+<div id="8ee9ed60" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -519,7 +519,7 @@ Figure&nbsp;14.4: Max pooling takes the maximum value from each region.
 <section id="cnns-application" class="level2" data-number="14.3">
 <h2 data-number="14.3" class="anchored" data-anchor-id="cnns-application"><span class="header-section-number">14.3</span> CNNs: Application</h2>
 <p>To apply a CNN to our MNIST data, we first need to reload the image data without flattening. Convolutional layers expect inputs with spatial structure: height, width, and channels. For our grayscale digits, each image is 28 pixels tall, 28 pixels wide, and has 1 channel.</p>
-<div id="a82f1630" class="cell" data-execution_count="3">
+<div id="d4747ffb" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>X, X_train, X_test, y, y_train, y_test, cn <span class="op">=</span> DSTorch.load_image(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    mnist, scale<span class="op">=</span><span class="va">True</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>)</span>
@@ -530,7 +530,7 @@ Figure&nbsp;14.4: Max pooling takes the maximum value from each region.
 </div>
 <p>The shape shows that we have 1,000 images, each with 1 channel and dimensions 28×28. This four-dimensional structure (batch size, channels, height, width) is the standard format for image data in PyTorch.</p>
 <p>We now define a CNN architecture using the same class-based approach as before. The model consists of two main parts: a feature extraction section with convolutional and pooling layers, and a classification section with dense layers.</p>
-<div id="f2d1aaee" class="cell" data-execution_count="4">
+<div id="64641fd2" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SimpleCNN(nn.Module):</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, num_classes<span class="op">=</span><span class="dv">10</span>):</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
@@ -556,7 +556,7 @@ Figure&nbsp;14.4: Max pooling takes the maximum value from each region.
 <p>The feature extraction section begins with <code>nn.Conv2d(1, 16, kernel_size=3, padding=1)</code>. This creates a convolutional layer that takes 1 input channel (grayscale) and produces 16 output channels using 3×3 filters. The <code>padding=1</code> argument adds a border of zeros around the input so that the output has the same spatial dimensions as the input. After the ReLU activation, <code>nn.MaxPool2d(2)</code> applies 2×2 max pooling, which halves both spatial dimensions from 28×28 to 14×14. The second convolutional block follows the same pattern: a 3×3 convolution that increases from 16 to 32 channels, a ReLU activation, and another 2×2 max pooling that reduces dimensions to 7×7. After these two blocks, each image is represented by a 32×7×7 tensor containing 1,568 values.</p>
 <p>The classifier section first flattens this tensor into a vector of length <span class="math inline">\(32 \times 7 \times 7 = 1{,}568\)</span>. A dense layer reduces this to 128 hidden units, followed by ReLU and a final layer that produces 10 outputs for our 10 digit classes.</p>
 <p>We create the model and optimizer, using a smaller learning rate than we did for the dense network. CNNs often benefit from lower learning rates because the shared weights across spatial positions can lead to larger effective gradients.</p>
-<div id="9318ca17" class="cell" data-execution_count="5">
+<div id="ebcc2131" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> SimpleCNN()</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> optim.Adam(model.parameters(), lr<span class="op">=</span><span class="fl">1e-3</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -564,43 +564,43 @@ Figure&nbsp;14.4: Max pooling takes the maximum value from each region.
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    model, optimizer, X_train, y_train, num_epochs<span class="op">=</span><span class="dv">20</span>, batch_size<span class="op">=</span><span class="dv">64</span></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Epoch 1/20, Loss: 2.4195
+<pre><code>Epoch 1/20, Loss: 2.4154
 Epoch 2/20, Loss: 1.8451
-Epoch 3/20, Loss: 1.0313
-Epoch 4/20, Loss: 0.6675
-Epoch 5/20, Loss: 0.4992
-Epoch 6/20, Loss: 0.4362
-Epoch 7/20, Loss: 0.3354
-Epoch 8/20, Loss: 0.2816
-Epoch 9/20, Loss: 0.2379
-Epoch 10/20, Loss: 0.2305
-Epoch 11/20, Loss: 0.1821
-Epoch 12/20, Loss: 0.1523
-Epoch 13/20, Loss: 0.1118
-Epoch 14/20, Loss: 0.1056
-Epoch 15/20, Loss: 0.0866
-Epoch 16/20, Loss: 0.0866
-Epoch 17/20, Loss: 0.0648
-Epoch 18/20, Loss: 0.0518
-Epoch 19/20, Loss: 0.0525
-Epoch 20/20, Loss: 0.0395</code></pre>
+Epoch 3/20, Loss: 1.1140
+Epoch 4/20, Loss: 0.7491
+Epoch 5/20, Loss: 0.5468
+Epoch 6/20, Loss: 0.4680
+Epoch 7/20, Loss: 0.3937
+Epoch 8/20, Loss: 0.3192
+Epoch 9/20, Loss: 0.2690
+Epoch 10/20, Loss: 0.2131
+Epoch 11/20, Loss: 0.2152
+Epoch 12/20, Loss: 0.1721
+Epoch 13/20, Loss: 0.1518
+Epoch 14/20, Loss: 0.1331
+Epoch 15/20, Loss: 0.1066
+Epoch 16/20, Loss: 0.0951
+Epoch 17/20, Loss: 0.0680
+Epoch 18/20, Loss: 0.0717
+Epoch 19/20, Loss: 0.0650
+Epoch 20/20, Loss: 0.0592</code></pre>
 </div>
 </div>
 <p>After training, we evaluate the model on both the training and test sets.</p>
-<div id="98ca7235" class="cell" data-execution_count="6">
+<div id="5cd5f686" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>DSTorch.score_image(model, X_train, y_train, cn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <pre><code>0.9946666955947876</code></pre>
 </div>
 </div>
-<div id="564031d5" class="cell" data-execution_count="7">
+<div id="401de519" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>DSTorch.score_image(model, X_test, y_test, cn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
-<pre><code>0.8960000276565552</code></pre>
+<pre><code>0.9039999842643738</code></pre>
 </div>
 </div>
 <p>The CNN achieves strong performance on the digit classification task. To better understand where the model struggles, we can examine the images it misclassifies. The code below filters for incorrect predictions and displays them with their predicted labels.</p>
-<div id="a087e005" class="cell" data-execution_count="8">
+<div id="fae79440" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    mnist</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
@@ -645,7 +645,7 @@ Hyperparameter choices
 <section id="movie-reviews-data" class="level2" data-number="14.5">
 <h2 data-number="14.5" class="anchored" data-anchor-id="movie-reviews-data"><span class="header-section-number">14.5</span> Movie Reviews Data</h2>
 <p>To illustrate word embeddings, we will work with a collection of movie reviews. Each review is a short text expressing an opinion about a film. We load the data and examine its structure.</p>
-<div id="de73c1ca" class="cell" data-execution_count="9">
+<div id="69953a42" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>imdb5k</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="9">
 <div><style>
@@ -757,7 +757,7 @@ Hyperparameter choices
 </div>
 </div>
 <p>Each row contains a review text and a sentiment label indicating whether the review is positive or negative. For learning embeddings, we focus on the text itself. The first step is to convert each review into a list of words, a process called tokenization. We use a simple approach that converts text to lowercase and splits on whitespace and punctuation.</p>
-<div id="71bb94e3" class="cell" data-execution_count="10">
+<div id="98cdf9de" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>imdb5k <span class="op">=</span> (</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    imdb5k</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
@@ -904,7 +904,7 @@ Figure&nbsp;14.5: Visualization of the Skip-gram version of Word2Vec
 </figure>
 </div>
 <p>Training this model in PyTorch is certainly possible, but a bit complex because the embeddings on the left-side of the equation (the one that takes “jumped” as an input in the exam) need to be the same as the embeddings used to compare to the surrounding words on the right-side of the equation. Rather than implementing this logic ourselves, we use the gensim library to build Word2Vec embeddings using our movie reviews. The model takes several hyperparameters: <code>vector_size</code> controls the dimensionality of the embeddings, <code>window</code> specifies how many words on each side of the target word to consider as context, <code>min_count</code> filters out rare words that appear fewer than this many times, and <code>sg=1</code> selects the Skip-gram variant.</p>
-<div id="6ba9dac6" class="cell" data-message="false" data-execution_count="11">
+<div id="1e03a8d5" class="cell" data-message="false" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> Word2Vec(</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    sentences<span class="op">=</span>imdb5k[<span class="st">"tokens"</span>].to_list(),</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    vector_size<span class="op">=</span><span class="dv">100</span>,</span>
@@ -917,18 +917,22 @@ Figure&nbsp;14.5: Visualization of the Skip-gram version of Word2Vec
 <pre><code>Exception ignored in: 'gensim.models.word2vec_inner.our_dot_float'
 Exception ignored in: 'gensim.models.word2vec_inner.our_dot_float'
 Exception ignored in: 'gensim.models.word2vec_inner.our_dot_float'
+Exception ignored in: 'gensim.models.word2vec_inner.our_dot_float'
+Exception ignored in: 'gensim.models.word2vec_inner.our_dot_float'
+Exception ignored in: 'gensim.models.word2vec_inner.our_dot_float'
+Exception ignored in: 'gensim.models.word2vec_inner.our_dot_float'
 Exception ignored in: 'gensim.models.word2vec_inner.our_dot_float'</code></pre>
 </div>
 </div>
 <p>The trained model contains a vocabulary of words and their corresponding embedding vectors. We can examine the size of the learned vocabulary and retrieve the embedding for any word.</p>
-<div id="b64c14cc" class="cell" data-execution_count="12">
+<div id="75c40f37" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(model.wv)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="12">
 <pre><code>12479</code></pre>
 </div>
 </div>
 <p>Each word is now represented as a vector of 100 numbers. We can convert this into a DataFrame using the following code:</p>
-<div id="6ebe630f" class="cell" data-execution_count="13">
+<div id="9938c607" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>embed <span class="op">=</span> pl.DataFrame({</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"word"</span>: <span class="bu">list</span>(<span class="bu">set</span>(model.wv.key_to_index)),</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"embedding"</span>: [model.wv[w].tolist() <span class="cf">for</span> w <span class="kw">in</span> <span class="bu">set</span>(model.wv.key_to_index)],</span>
@@ -956,48 +960,48 @@ Exception ignored in: 'gensim.models.word2vec_inner.our_dot_float'</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td>"holiday"</td>
-<td>[-0.180582, 0.507424, … 0.424143]</td>
+<td>"gasp"</td>
+<td>[0.202926, 0.172699, … -0.03288]</td>
 </tr>
 <tr class="even">
-<td>"dummy"</td>
-<td>[0.248469, 0.111522, … -0.068986]</td>
+<td>"nicolas"</td>
+<td>[0.149095, 0.029603, … 0.053545]</td>
 </tr>
 <tr class="odd">
-<td>"complicate"</td>
-<td>[0.088538, 0.472111, … -0.121648]</td>
+<td>"relatively"</td>
+<td>[0.373473, -0.480511, … 0.456371]</td>
 </tr>
 <tr class="even">
-<td>"allegory"</td>
-<td>[-0.056512, 0.211663, … -0.09803]</td>
+<td>"poignancy"</td>
+<td>[0.157766, 0.116407, … -0.11928]</td>
 </tr>
 <tr class="odd">
-<td>"file"</td>
-<td>[-0.070713, 0.468541, … -0.231866]</td>
+<td>"magazines"</td>
+<td>[0.111295, 0.278877, … -0.162705]</td>
 </tr>
 <tr class="even">
 <td>…</td>
 <td>…</td>
 </tr>
 <tr class="odd">
-<td>"shopping"</td>
-<td>[0.099406, 0.146863, … -0.445791]</td>
+<td>"worships"</td>
+<td>[-0.450613, 0.160482, … -0.010699]</td>
 </tr>
 <tr class="even">
-<td>"marie"</td>
-<td>[0.136281, 0.155532, … 0.269225]</td>
+<td>"al"</td>
+<td>[0.130421, 0.170884, … 0.778572]</td>
 </tr>
 <tr class="odd">
-<td>"moody"</td>
-<td>[-0.671701, 0.3668, … 0.19907]</td>
+<td>"severely"</td>
+<td>[0.269815, 0.136924, … -0.175788]</td>
 </tr>
 <tr class="even">
-<td>"donkey"</td>
-<td>[-0.027578, 0.500128, … 0.004641]</td>
+<td>"damned"</td>
+<td>[-0.107711, -0.054413, … 0.127976]</td>
 </tr>
 <tr class="odd">
-<td>"poe"</td>
-<td>[-0.074743, 0.326205, … 0.199083]</td>
+<td>"biko"</td>
+<td>[-0.102705, 0.376713, … 0.036604]</td>
 </tr>
 </tbody>
 </table>
@@ -1009,24 +1013,24 @@ Exception ignored in: 'gensim.models.word2vec_inner.our_dot_float'</code></pre>
 <section id="semantic-relationships" class="level2" data-number="14.7">
 <h2 data-number="14.7" class="anchored" data-anchor-id="semantic-relationships"><span class="header-section-number">14.7</span> Semantic Relationships</h2>
 <p>The power of word embeddings lies in their ability to capture semantic relationships. Words with similar meanings should have similar vectors, which we can measure using cosine similarity. The gensim model provides a convenient method to find the words most similar to a given word.</p>
-<div id="bf9738a0" class="cell" data-execution_count="14">
+<div id="03494850" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>model.wv.most_similar(<span class="st">"good"</span>, topn<span class="op">=</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="14">
-<pre><code>[('decent', 0.6889284253120422),
- ('great', 0.6225944757461548),
- ('bad', 0.5997419357299805),
- ('cool', 0.5796875357627869),
- ('stellar', 0.5622669458389282),
- ('goofy', 0.5536388754844666),
- ('lousy', 0.5529866218566895),
- ('ok', 0.5527254343032837),
- ('nice', 0.5480157136917114),
- ('reasonable', 0.5469480156898499)]</code></pre>
+<pre><code>[('decent', 0.6656251549720764),
+ ('bad', 0.6361536979675293),
+ ('great', 0.6094589829444885),
+ ('cool', 0.5628355145454407),
+ ('goofy', 0.5593497157096863),
+ ('ok', 0.5590813755989075),
+ ('reasonable', 0.5571255683898926),
+ ('lousy', 0.554226279258728),
+ ('promising', 0.5480849742889404),
+ ('stellar', 0.5436846613883972)]</code></pre>
 </div>
 </div>
 <p>The results show words that appear in similar contexts to “good” in our movie review corpus. Words like “great,” “bad,” and “excellent” appear because they are used in similar ways when expressing opinions about films.</p>
 <p>We can also explore relationships for other types of individual words. Perhaps the most interesting thing, however, is looking at the relationships between multiple words all at once. The 100-dimensional embedding space is difficult to visualize directly. We can use the dimensionality reduction algorithms from <a href="12_unsupervised.html" class="quarto-xref"><span>Chapter 12</span></a> to reduce their dimenionality to make them possible to plot.</p>
-<div id="4bc2d026" class="cell" data-execution_count="15">
+<div id="c2a08d3c" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>terms <span class="op">=</span> pl.DataFrame({</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"word"</span>: [<span class="st">"good"</span>, <span class="st">"great"</span>, <span class="st">"excellent"</span>, <span class="st">"bad"</span>, <span class="st">"terrible"</span>, <span class="st">"awful"</span>,</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>             <span class="st">"movie"</span>, <span class="st">"film"</span>, <span class="st">"actor"</span>, <span class="st">"actress"</span>, <span class="st">"director"</span>,</span>
@@ -1075,7 +1079,7 @@ Figure&nbsp;14.6: A 1D convolutional layer applied to text embeddings.
 <p>Consider what such a filter might learn. A filter could activate strongly when it sees the pattern “not good” or “not bad” — sequences where a negation word precedes a sentiment word. Another filter might detect emphatic phrases like “really great” or “absolutely terrible.” Each filter learns to recognize a different local pattern, and the collection of filters together captures many aspects of how sentiment is expressed in text.</p>
 <p>After the convolutional layer processes the sequence, we have a new sequence of values — one output per filter for each position where the filter was applied. To produce a fixed-length representation regardless of document length, we apply global max pooling: for each filter, we take the maximum value it produced anywhere in the document. This captures whether a particular pattern appeared at all, regardless of where. The resulting vector has one value per filter and can be passed through dense layers to produce the final classification.</p>
 <p>To build a text CNN in PyTorch, we need to prepare our data in a specific format. Each document must be converted to a sequence of integer indices that refer to positions in our vocabulary. We also need to handle the fact that documents have different lengths by padding shorter documents and truncating longer ones to a fixed maximum length. representing negative.</p>
-<div id="51f3cbfc" class="cell" data-execution_count="16">
+<div id="7102bbef" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>X, X_train, X_test, y, y_train, y_test, cn <span class="op">=</span> DSTorch.load_text(</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    df<span class="op">=</span>imdb5k,</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span>model,</span>
@@ -1084,12 +1088,12 @@ Figure&nbsp;14.6: A 1D convolutional layer applied to text embeddings.
 <span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>A key component of our text CNN is the embedding layer, which converts word indices into embedding vectors. PyTorch provides <code>nn.Embedding</code> for this purpose. We can initialize this layer with the pre-trained Word2Vec embeddings we learned earlier, giving the model a head start with meaningful word representations.</p>
-<div id="4246bcee" class="cell" data-execution_count="17">
+<div id="d4e9e46c" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>embedding_dim <span class="op">=</span> model.vector_size</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>embedding_matrix <span class="op">=</span> torch.tensor(model.wv.vectors, dtype<span class="op">=</span>torch.float32)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We now define the complete CNN architecture for text classification. The model consists of an embedding layer initialized with our Word2Vec vectors, a 1D convolutional layer that detects local patterns, global max pooling to aggregate across the sequence, and dense layers to produce the final classification.</p>
-<div id="27df5705" class="cell" data-execution_count="18">
+<div id="639a662c" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> TextCNN(nn.Module):</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, embedding_matrix, num_filters<span class="op">=</span><span class="dv">100</span>, filter_size<span class="op">=</span><span class="dv">3</span>, num_classes<span class="op">=</span><span class="dv">2</span>):</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
@@ -1143,45 +1147,45 @@ Freezing embeddings
 </div>
 </div>
 <p>We create an instance of the model and set up the optimizer and loss function. For binary classification, we use cross-entropy loss, which is the standard choice for classification problems.</p>
-<div id="fa208386" class="cell" data-execution_count="19">
+<div id="51972cc4" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>model_cnn <span class="op">=</span> TextCNN(embedding_matrix, num_filters<span class="op">=</span><span class="dv">100</span>, filter_size<span class="op">=</span><span class="dv">3</span>)</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> optim.Adam(model_cnn.parameters(), lr<span class="op">=</span><span class="fl">0.001</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The training loop iterates over the training data in batches, computing predictions, calculating the loss, and updating the model parameters through backpropagation.</p>
-<div id="274f8c95" class="cell" data-execution_count="20">
+<div id="59712a9d" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>DSTorch.train(model_cnn, optimizer, X_train, y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Epoch 1/18, Loss: 0.6740
-Epoch 2/18, Loss: 0.4731
-Epoch 3/18, Loss: 0.3417
-Epoch 4/18, Loss: 0.2562
-Epoch 5/18, Loss: 0.1559
-Epoch 6/18, Loss: 0.0925
-Epoch 7/18, Loss: 0.0446
-Epoch 8/18, Loss: 0.0420
-Epoch 9/18, Loss: 0.0298
-Epoch 10/18, Loss: 0.0110
-Epoch 11/18, Loss: 0.0053
-Epoch 12/18, Loss: 0.0038
-Epoch 13/18, Loss: 0.0039
-Epoch 14/18, Loss: 0.0026
+<pre><code>Epoch 1/18, Loss: 0.6695
+Epoch 2/18, Loss: 0.4729
+Epoch 3/18, Loss: 0.3519
+Epoch 4/18, Loss: 0.2573
+Epoch 5/18, Loss: 0.1715
+Epoch 6/18, Loss: 0.1084
+Epoch 7/18, Loss: 0.0532
+Epoch 8/18, Loss: 0.0265
+Epoch 9/18, Loss: 0.0141
+Epoch 10/18, Loss: 0.0122
+Epoch 11/18, Loss: 0.0079
+Epoch 12/18, Loss: 0.0060
+Epoch 13/18, Loss: 0.0054
+Epoch 14/18, Loss: 0.0033
 Epoch 15/18, Loss: 0.0024
-Epoch 16/18, Loss: 0.0016
-Epoch 17/18, Loss: 0.0019
-Epoch 18/18, Loss: 0.0014</code></pre>
+Epoch 16/18, Loss: 0.0022
+Epoch 17/18, Loss: 0.0016
+Epoch 18/18, Loss: 0.0018</code></pre>
 </div>
 </div>
 <p>After training, we evaluate the model on both the training and test sets to assess how well it has learned and how well it generalizes to new examples.</p>
-<div id="41c061aa" class="cell" data-execution_count="21">
+<div id="9e7b8da0" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>DSTorch.score_text(model_cnn, X_train, y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="21">
 <pre><code>1.0</code></pre>
 </div>
 </div>
-<div id="6cb03da4" class="cell" data-execution_count="22">
+<div id="2459308f" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>DSTorch.score_text(model_cnn, X_test, y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="22">
-<pre><code>0.8489999771118164</code></pre>
+<pre><code>0.8600000143051147</code></pre>
 </div>
 </div>
 <p>The model learns to classify sentiment from the movie reviews by detecting local patterns in the word sequences. The convolutional filters learn to recognize phrases and word combinations that are indicative of positive or negative sentiment.</p>
@@ -1190,7 +1194,7 @@ Epoch 18/18, Loss: 0.0014</code></pre>
 <h2 data-number="14.9" class="anchored" data-anchor-id="pre-trained-embeddings"><span class="header-section-number">14.9</span> Pre-trained embeddings</h2>
 <p>Training word embeddings on a small corpus like our movie reviews has limitations. Rare words may not have good representations, and the learned relationships reflect only the patterns in this specific dataset. In practice, it is common to use pre-trained embeddings learned from massive text corpora containing billions of words. Popular options include Word2Vec trained on Google News, GloVe trained on Wikipedia and web text, and fastText trained on Common Crawl. These pre-trained embeddings capture general semantic relationships and can be fine-tuned or used directly for downstream tasks. The gensim library provides tools for loading many pre-trained embedding models.</p>
 <p>The gensim library includes a downloader that provides access to several pre-trained models. We can list the available models and load them directly.</p>
-<div id="ce3eb612" class="cell" data-execution_count="23">
+<div id="8a46f568" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> gensim.downloader <span class="im">as</span> api</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">list</span>(api.info()[<span class="st">'models'</span>].keys()))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1199,11 +1203,11 @@ Epoch 18/18, Loss: 0.0014</code></pre>
 </div>
 </div>
 <p>The list includes models of varying sizes and training corpora. For our purposes, we will use <code>glove-wiki-gigaword-100</code>, which provides 100-dimensional GloVe embeddings trained on Wikipedia and Gigaword news text. This model strikes a balance between quality and computational efficiency.</p>
-<div id="cc7cec91" class="cell" data-execution_count="24">
+<div id="023e34cc" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>pretrained <span class="op">=</span> api.load(<span class="st">"glove-wiki-gigaword-100"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The loaded model works similarly to our Word2Vec model. We can query it for word vectors and find similar words. Let’s compare the most similar words to “good” in the pre-trained model versus our corpus-specific model.</p>
-<div id="e203edee" class="cell" data-execution_count="25">
+<div id="a54c058e" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>pretrained.most_similar(<span class="st">"good"</span>, topn<span class="op">=</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="25">
 <pre><code>[('better', 0.893191397190094),
@@ -1219,14 +1223,14 @@ Epoch 18/18, Loss: 0.0014</code></pre>
 </div>
 </div>
 <p>The results differ from our corpus-trained model because the pre-trained embeddings reflect patterns from general English text rather than movie reviews specifically. Notice that words related to quality and evaluation appear prominently. The pre-trained model has a much larger vocabulary, covering words that might appear rarely or not at all in our movie reviews.</p>
-<div id="82d2f66b" class="cell" data-execution_count="26">
+<div id="d6d32438" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(pretrained)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="26">
 <pre><code>400000</code></pre>
 </div>
 </div>
 <p>To use pre-trained embeddings with our text CNN, we need to create a new embedding matrix that maps our corpus vocabulary to the pre-trained vectors. Words that exist in the pre-trained model get their learned vectors; words that do not exist get random vectors initialized in the same range.</p>
-<div id="d878d9ae" class="cell" data-execution_count="27">
+<div id="89af013f" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>vocab <span class="op">=</span> <span class="bu">list</span>(model.wv.key_to_index.keys())</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>embedding_dim <span class="op">=</span> pretrained.vector_size</span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1248,38 +1252,38 @@ Epoch 18/18, Loss: 0.0014</code></pre>
 </div>
 <p>Most words in our vocabulary have corresponding pre-trained vectors because they are common English words. The few missing words are typically misspellings, informal variants, or domain-specific terms.</p>
 <p>We can now create a new text CNN using the pre-trained embedding matrix instead of our corpus-trained embeddings. The architecture remains identical; only the initial word vectors differ.</p>
-<div id="74480c1f" class="cell" data-execution_count="28">
+<div id="ed500e4c" class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>model_pretrained <span class="op">=</span> TextCNN(pretrained_matrix, num_filters<span class="op">=</span><span class="dv">100</span>, filter_size<span class="op">=</span><span class="dv">3</span>)</span>
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>optimizer_pretrained <span class="op">=</span> optim.Adam(model_pretrained.parameters(), lr<span class="op">=</span><span class="fl">0.001</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="21748b6c" class="cell" data-execution_count="29">
+<div id="22275e65" class="cell" data-execution_count="29">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>DSTorch.train(model_pretrained, optimizer_pretrained, X_train, y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Epoch 1/18, Loss: 0.6811
-Epoch 2/18, Loss: 0.5278
-Epoch 3/18, Loss: 0.3971
-Epoch 4/18, Loss: 0.3156
-Epoch 5/18, Loss: 0.2354
-Epoch 6/18, Loss: 0.1781
-Epoch 7/18, Loss: 0.0986
-Epoch 8/18, Loss: 0.0521
-Epoch 9/18, Loss: 0.0416
-Epoch 10/18, Loss: 0.0311
-Epoch 11/18, Loss: 0.0177
-Epoch 12/18, Loss: 0.0111
-Epoch 13/18, Loss: 0.0064
-Epoch 14/18, Loss: 0.0047
-Epoch 15/18, Loss: 0.0066
-Epoch 16/18, Loss: 0.0041
-Epoch 17/18, Loss: 0.0029
+<pre><code>Epoch 1/18, Loss: 0.6772
+Epoch 2/18, Loss: 0.5099
+Epoch 3/18, Loss: 0.3867
+Epoch 4/18, Loss: 0.3089
+Epoch 5/18, Loss: 0.2293
+Epoch 6/18, Loss: 0.1356
+Epoch 7/18, Loss: 0.0735
+Epoch 8/18, Loss: 0.0417
+Epoch 9/18, Loss: 0.0273
+Epoch 10/18, Loss: 0.0192
+Epoch 11/18, Loss: 0.0100
+Epoch 12/18, Loss: 0.0084
+Epoch 13/18, Loss: 0.0071
+Epoch 14/18, Loss: 0.0043
+Epoch 15/18, Loss: 0.0034
+Epoch 16/18, Loss: 0.0025
+Epoch 17/18, Loss: 0.0020
 Epoch 18/18, Loss: 0.0022</code></pre>
 </div>
 </div>
-<div id="287ac563" class="cell" data-execution_count="30">
+<div id="528fa3f7" class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>DSTorch.score_text(model_pretrained, X_train, y_train)</span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>DSTorch.score_text(model_pretrained, X_test, y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="30">
-<pre><code>0.8289999961853027</code></pre>
+<pre><code>0.8180000185966492</code></pre>
 </div>
 </div>
 <p>The model with pre-trained embeddings often achieves comparable or better performance, particularly when the training corpus is small. The pre-trained embeddings provide a better starting point because they encode semantic relationships learned from billions of words of text.</p>

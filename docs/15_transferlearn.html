@@ -415,7 +415,7 @@ Practice Notebooks
 <section id="setup" class="level2" data-number="15.1">
 <h2 data-number="15.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">15.1</span> Setup</h2>
 <p>Load all of the modules and datasets needed for the chapter. We load the openai module to make requests to the OpenAI API in order to work with state-of-the-art transformer models.</p>
-<div id="17d10d2c" class="cell" data-execution_count="2">
+<div id="420308ef" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -439,7 +439,7 @@ Practice Notebooks
 <section id="image-embedding" class="level2" data-number="15.3">
 <h2 data-number="15.3" class="anchored" data-anchor-id="image-embedding"><span class="header-section-number">15.3</span> Image Embedding</h2>
 <p>For this chapter we will use a new dataset of images of different bird species. The predictive model that we want to build should learn how to take an image of a bird and identify which of the ten species in our data the bird comes from. This is a more challenging task than MNIST digit recognition for several reasons: the images are larger and more complex, the subjects appear at different scales and orientations, and the differences between species can be subtle.</p>
-<div id="7fc06cb7" class="cell" data-execution_count="3">
+<div id="bfccba6e" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>birds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
 <div><style>
@@ -551,7 +551,7 @@ Practice Notebooks
 </div>
 </div>
 <p>Before we get started with the model, let’s see one example of each of the classes from this dataset. Examining the data visually helps us understand what the model needs to learn and gives us intuition about which categories might be easy or difficult to distinguish.</p>
-<div id="27c12027" class="cell" data-execution_count="4">
+<div id="45087996" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>DSImage.plot_image_grid(birds.group_by(<span class="st">'label'</span>).first(), ncol<span class="op">=</span><span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
@@ -564,12 +564,12 @@ Practice Notebooks
 <p>If we were to approach this problem using the techniques from <a href="13_deeplearning.html" class="quarto-xref"><span>Chapter 13</span></a>, we would need to design a neural network architecture, choose appropriate hyperparameters, and train the model on our relatively small dataset. This would likely require extensive experimentation and might still produce mediocre results due to the limited training data available. Instead, we will use transfer learning to leverage the knowledge encoded in a model that has already been trained on millions of images.</p>
 <p>Here, we will use the internal representations of a powerful, pre-built deep learning model as a jumping-off point for our own model. The final predictions from the existing model would not be very helpful because they predict categories that are not the same as ours. But, the internal representations of images are sufficiently generic and meaningful to be a good starting point for our models. This approach is called transfer learning. It accounts, in one form or another, for the vast majority of use-cases of deep learning because the best models require very large amounts of training data and compute time.</p>
 <p>Python is the de facto language for machine learning, deep learning, and AI research. It is one of the key reasons we are using it in this revised text. As a result, there are fantastic ready-to-use libraries to build, run, and load deep learning models. We have wrapped up one of these models in the function called <code>ViTEmbedder</code> (the code to create it uses <strong>pytorch</strong> and is given in full in the notebooks). It implements Google’s <a href="https://huggingface.co/google/vit-base-patch16-224">Vision Transformer (ViT) model</a>, which was trained on a dataset of 14 million images with a total of 21,843 classes. We will use the values in the internal representation of the final model that come right before the predictions of the classes in the original. Here is all we need to load (and, if not already grabbed, download) the model:</p>
-<div id="6fefeba1" class="cell" data-execution_count="5">
+<div id="e5cd5ca9" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>vit <span class="op">=</span> ViTEmbedder()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The Vision Transformer model works by dividing an image into a grid of patches, treating each patch as a token similar to how language models treat words. These patches are then processed through multiple transformer layers that allow the model to learn relationships between different parts of the image. The result is a rich representation that captures both local details and global structure.</p>
 <p>Calling the model on an image path returns a sequence of 768 numbers. These numbers, called an embedding, form a compact representation of the image’s content. Two images that are visually similar will have embeddings that are close together in this 768-dimensional space, while dissimilar images will have embeddings that are far apart. We can see an example on the first few bird images:</p>
-<div id="dc6d61f1" class="cell" data-execution_count="6">
+<div id="f35390a5" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    birds</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">5</span>)</span>
@@ -647,7 +647,7 @@ Practice Notebooks
 </div>
 </div>
 <p>Computing embeddings for all images in the dataset takes some time, so we have precomputed these values and stored them in a Parquet file. Parquet is a columnar storage format that is particularly well-suited for analytical workloads. Unlike CSV files, Parquet preserves data types exactly, handles nested structures like lists efficiently, and compresses data effectively. This makes it an excellent choice for storing embeddings, which are arrays of floating-point numbers that would be awkward to represent in CSV format. Reading the precomputed embeddings is straightforward:</p>
-<div id="33039443" class="cell" data-execution_count="7">
+<div id="a816dea6" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>birds <span class="op">=</span> pl.read_parquet(<span class="st">"data/birds10.parquet"</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>birds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
@@ -760,7 +760,7 @@ Practice Notebooks
 </div>
 </div>
 <p>Notice that the dataset now includes a <code>vit</code> column containing the 768-dimensional embedding for each image. With these embeddings in hand, we can now train a classifier using the techniques from earlier chapters. The key insight is that we are not training a deep neural network from scratch. Instead, we are using logistic regression on the embedding features, which is computationally cheap and requires far less data than end-to-end deep learning.</p>
-<div id="c0e30c9c" class="cell" data-execution_count="8">
+<div id="d615e988" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> (</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    birds</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -774,14 +774,14 @@ Practice Notebooks
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The results are impressive given how little effort we put into the modeling process. We simply extracted pre-trained embeddings and applied logistic regression with cross-validation to select the regularization strength.</p>
-<div id="abed9a18" class="cell" data-execution_count="9">
+<div id="5ad0826e" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>model.score()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="9">
 <pre><code>{'train': 1.0, 'test': 1.0}</code></pre>
 </div>
 </div>
 <p>The confusion matrix shows us which species are most often confused with each other. This can provide insight into the structure of the problem and potentially guide data collection if we wanted to improve performance further. In this case we see that the model does not make a single error on our dataset!</p>
-<div id="e6db0126" class="cell" data-execution_count="10">
+<div id="ad70f160" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>model.confusion_matrix()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
@@ -792,7 +792,7 @@ Practice Notebooks
 </div>
 </div>
 <p>To better understand what the model has learned, we can examine the images that the model is most confident about. These are the examples where the predicted probability for the correct class is highest. Looking at these high-confidence predictions helps verify that the model is attending to meaningful features of the birds rather than artifacts of the images.</p>
-<div id="aaa2cf71" class="cell" data-execution_count="11">
+<div id="b38b8ca4" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    birds</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
@@ -815,7 +815,7 @@ Practice Notebooks
 </div>
 </div>
 <p>Beyond classification, embeddings can also be visualized to understand the structure of our data. Dimensionality reduction techniques like UMAP (Uniform Manifold Approximation and Projection) can project the 768-dimensional embeddings down to two dimensions while preserving the relative distances between points. This allows us to see how the different bird species cluster in the embedding space.</p>
-<div id="8a4b9b50" class="cell" data-execution_count="12">
+<div id="a32d0dbf" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    birds</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -841,11 +841,11 @@ Practice Notebooks
 <p>Let’s see another way that we can extend transfer learning using an even newer class of deep learning models called zero-shot models. These work, at least conceptually, by allowing us to do classification on a new dataset with data that the original model may never have seen with no additional training data needed. The idea sounds almost magical: we can classify images into categories without ever showing the model any labeled examples of those categories.</p>
 <p>Zero-shot learning became practical with the development of multimodal models that learn to connect images and text in a shared embedding space. These models are trained on massive datasets of image-caption pairs scraped from the internet. By learning to match images with their textual descriptions, the models develop an understanding of concepts that can be expressed in natural language. To classify a new image, we simply compare its embedding to the embeddings of text descriptions of each possible category.</p>
 <p>We will use a model called SigLIP (Sigmoid Language-Image Pre-training), which represents the current state of the art in this type of approach. Like ViT, we have wrapped the model in a convenient interface that handles loading and embedding.</p>
-<div id="b47a06ab" class="cell" data-execution_count="13">
+<div id="da3c7e8e" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>siglip <span class="op">=</span> SigLIPEmbedder()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The SigLIP model can embed both images and text into the same space. Images that match a textual description will have embeddings that are close together, measured by the dot product of their embedding vectors. Let’s start with a simple example: we will create a text embedding for “a photo of a canary” and see which images in our dataset are most similar to this description.</p>
-<div id="eef8018d" class="cell" data-execution_count="14">
+<div id="47201aa7" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>embed <span class="op">=</span> (</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    pl.DataFrame({<span class="st">"text"</span>: [<span class="st">"a photo of a canary"</span>]})</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
@@ -857,7 +857,7 @@ Practice Notebooks
 <span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now we can compute the similarity between this text embedding and every image in our dataset. The dot product of two normalized vectors measures how aligned they are: values close to 1 indicate high similarity, while values close to 0 indicate the vectors are nearly orthogonal (unrelated).</p>
-<div id="a5fabe28" class="cell" data-execution_count="15">
+<div id="cfa64516" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    birds</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    .join(embed, how<span class="op">=</span><span class="st">"cross"</span>)</span>
@@ -1015,7 +1015,7 @@ Practice Notebooks
 </div>
 </div>
 <p>Visualizing the similarity scores by bird species shows that canary images indeed have the highest similarity to our “a photo of a canary” text prompt. This demonstrates that the model has learned a meaningful connection between the visual appearance of canaries and the word “canary” without us ever explicitly teaching it this connection.</p>
-<div id="1552a80b" class="cell" data-execution_count="16">
+<div id="9400c000" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    birds</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    .join(embed, how<span class="op">=</span><span class="st">"cross"</span>)</span>
@@ -1034,7 +1034,7 @@ Practice Notebooks
 </div>
 </div>
 <p>To perform zero-shot classification on the entire dataset, we need to create text embeddings for all of our bird species categories. We can then assign each image to the category whose text embedding it is most similar to. This process requires no training data at all; we are simply leveraging the knowledge the model acquired during its original pre-training.</p>
-<div id="90871978" class="cell" data-execution_count="17">
+<div id="d029c282" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>embed <span class="op">=</span> (</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    birds</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    .select(text <span class="op">=</span> c.label.unique())</span>
@@ -1046,7 +1046,7 @@ Practice Notebooks
 <span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>For each image, we compute its similarity to every category label, then select the label with the highest similarity as the predicted class. The classification rate tells us how often this zero-shot approach correctly identifies the bird species.</p>
-<div id="5724da3f" class="cell" data-execution_count="18">
+<div id="df7fda0d" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    birds</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    .join(embed, how<span class="op">=</span><span class="st">"cross"</span>)</span>
@@ -1087,7 +1087,7 @@ Practice Notebooks
 </div>
 <p>While the zero-shot accuracy makes a few errors (in comparison to the model above), it is remarkable that we can achieve any reasonable classification performance without a single labeled training example, let alone such a strong classification rate on the testing data. This approach is particularly valuable when labeled data is expensive or impossible to obtain, there are a very large number of categories, or when we need to quickly prototype a classification system for new categories.</p>
 <p>Let’s examine the images that the zero-shot classifier got wrong. Understanding these errors can provide insight into the model’s limitations and the ambiguity inherent in visual classification.</p>
-<div id="9c6b03e4" class="cell" data-execution_count="19">
+<div id="5ea1529b" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    birds</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    .join(embed, how<span class="op">=</span><span class="st">"cross"</span>)</span>
@@ -1117,7 +1117,7 @@ Practice Notebooks
 <h2 data-number="15.5" class="anchored" data-anchor-id="text-embedding"><span class="header-section-number">15.5</span> Text Embedding</h2>
 <p>The transfer learning approach we applied to images works equally well for text data. Just as image models learn to represent visual content in ways that transfer across tasks, language models learn to represent text in ways that capture semantic meaning. By extracting embeddings from a pre-trained language model, we can build text classifiers with minimal task-specific training.</p>
 <p>For this section, we will use a dataset of movie reviews from IMDB. Each review is labeled as either positive or negative, and our goal is to predict the sentiment from the text content. This is the same task we approached in <a href="13_deeplearning.html" class="quarto-xref"><span>Chapter 13</span></a> using neural networks trained from scratch, which allows us to directly compare the transfer learning approach.</p>
-<div id="5916ac04" class="cell" data-execution_count="20">
+<div id="58749a2e" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>imdb <span class="op">=</span> pl.read_parquet(<span class="st">"data/imdb5k_pca.parquet"</span>)</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>imdb</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="20">
@@ -1231,7 +1231,7 @@ Practice Notebooks
 </div>
 <p>The dataset includes precomputed embeddings from the E5 model, a powerful text embedding model designed specifically to produce representations suitable for downstream tasks like classification and semantic search. Like the image embeddings we used earlier, these text embeddings capture the semantic content of each review in a fixed-dimensional vector that can be used as input to any classifier.</p>
 <p>Training a logistic regression model on these embeddings follows exactly the same pattern we used for the bird classification task. The only difference is the source of the embeddings: images of birds versus reviews of movies.</p>
-<div id="6bd62aa6" class="cell" data-execution_count="21">
+<div id="bbd82bda" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> (</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    imdb</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -1245,13 +1245,13 @@ Practice Notebooks
 <span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The performance using transfer learning noticeably exceeds what we achieved in <a href="13_deeplearning.html" class="quarto-xref"><span>Chapter 13</span></a> with neural networks trained from scratch. This improvement comes from the E5 model’s pre-training on vast amounts of text data, which gives it a sophisticated understanding of language that would be impossible to learn from our relatively small training set.</p>
-<div id="0e44f5ed" class="cell" data-execution_count="22">
+<div id="6bbce70e" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>model.score()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="22">
 <pre><code>{'train': 0.9577142857142857, 'test': 0.9426666666666667}</code></pre>
 </div>
 </div>
-<div id="fc4303a4" class="cell" data-execution_count="23">
+<div id="43040c8c" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>model.confusion_matrix()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
@@ -1262,7 +1262,7 @@ Practice Notebooks
 </div>
 </div>
 <p>As with the bird images, we can visualize the embedding space using UMAP to see how positive and negative reviews cluster. Well-separated clusters indicate that the embeddings capture the sentiment distinction effectively.</p>
-<div id="525a3f2f" class="cell" data-execution_count="24">
+<div id="fcf86f75" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    imdb</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -1288,7 +1288,7 @@ Practice Notebooks
 <p>Throughout this chapter, we have used pre-trained models that run locally on our computer. This gives us complete control over our data and allows us to process examples quickly once the models are loaded. However, the most powerful AI models available today are too large to run on typical hardware. These models, with billions or even trillions of parameters, require specialized infrastructure to operate and are typically accessed through web-based APIs.</p>
 <p>Using an API to access AI capabilities represents another form of transfer learning. Instead of downloading model weights and running inference locally, we send our data to a remote server that processes it using state-of-the-art models and returns the results. This approach offers access to capabilities far beyond what we could run locally, at the cost of per-request pricing and the need to send data over the network.</p>
 <p>Here is an example of using OpenAI’s API to classify a movie review. The API accepts natural language instructions, so we can describe the classification task in plain English rather than training a model.</p>
-<div id="19cf5879" class="cell" data-execution_count="25">
+<div id="e8b5fda6" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> OpenAI()</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>review_text <span class="op">=</span> imdb.select(<span class="st">"text"</span>).to_series()[<span class="dv">0</span>]</span>
@@ -1305,7 +1305,7 @@ Practice Notebooks
 <span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>label <span class="op">=</span> response.output_text</span>
 <span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>label</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="f0fdcb46" class="cell" data-execution_count="26">
+<div id="2faf6015" class="cell" data-execution_count="26">
 <div class="cell-output cell-output-display" data-execution_count="25">
 <pre><code>'negative'</code></pre>
 </div>

@@ -440,7 +440,7 @@ Practice Notebooks
 <section id="setup" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">3.1</span> Setup</h2>
 <p>Load all of the modules and datasets needed for the chapter.</p>
-<div id="9fbc24bf" class="cell" data-execution_count="2">
+<div id="a9b5c4b7" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -462,7 +462,7 @@ Practice Notebooks
 <h2 data-number="3.3" class="anchored" data-anchor-id="points-geometry"><span class="header-section-number">3.3</span> Points Geometry</h2>
 <p>We can demonstrate the grammar of graphics by using the countries data, where each row corresponds to a particular country. The first plot we will make is a scatter plot that investigates the relationship between the Human Development Index (HDI)—a “composite index of life expectancy, education (mean years of schooling completed and expected years of schooling upon entering the education system), and per capita income indicators, which is used to rank countries into four tiers of human development”—and perceived happiness. In the language of the grammar of graphics, we begin describing this visualization by specifying the Python variable containing the data (<code>country</code>). Next, we associate the horizontal axis (the <code>x</code> aesthetic) with the column in the data named <code>hdi</code>. The vertical axis (the <code>y</code> aesthetic) can similarly be associated with the column named <code>happy</code>. We will make a scatter plot, with each point describing one of our metropolitan regions, which leads us to use a <em>point geometry</em>. Our plot will allow us to understand the relationship between city density and rental prices.</p>
 <p>In Python, we need to use some special functions to indicate all of this information and to instruct the program to produce a plot. We start by specifying the name of the underlying dataset and applying the special method <code>.pipe</code> with its first argument set to the function <code>ggplot</code>. This indicates that we want to create a data visualization. In the second argument of that function we use the <code>aes</code> (short for aesthetics) function to specify the names of the x and y aesthetics corresponding to columns in the dataset. The plot itself is created by adding—literally, with the plus sign—the <code>geom_point</code> function. This function adds a point geometry (a layer of points) to the plot. Code to do this using the values described above is given below.</p>
-<div id="a08f608d" class="cell" data-execution_count="3">
+<div id="abe5db09" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Europe"</span>)</span>
@@ -500,7 +500,7 @@ Choosing x and y aesthetics
 <section id="optional-aesthetics" class="level2" data-number="3.4">
 <h2 data-number="3.4" class="anchored" data-anchor-id="optional-aesthetics"><span class="header-section-number">3.4</span> Optional Aesthetics</h2>
 <p>The point geometry requires <code>x</code> and <code>y</code> aesthetics. In addition to these required aesthetics, each geometry type also has several optional aesthetics that add information to the plot. For example, most geometries have a <code>color</code> aesthetic. The syntax for specifying this is similar to the required aesthetics, with the only difference being that we place the aesthetics inside the <code>geom_point()</code> function using another call to <code>aes()</code>. This is true for all aesthetics other than <code>x</code> and <code>y</code>. Let’s see what happens when we add a <code>color</code> aesthetic to our scatter plot by mapping the column <code>subregion</code> to the <code>color</code> aesthetic.</p>
-<div id="ee066ccd" class="cell" data-execution_count="4">
+<div id="ea37ad73" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Europe"</span>)</span>
@@ -517,7 +517,7 @@ Choosing x and y aesthetics
 </div>
 <p>The result of associating a column in the dataset with a color produces a new variation of the original scatter plot. We have the same set of points and locations on the plot, as well as the same axes. However, now each subregion has been automatically associated with a color, and every point has been colored according to the subregion value in each row of the data. The mapping between colors and region names is shown in an automatically created legend on the right-hand side of the plot. The ability to add additional information to the plot by specifying a single aesthetic mapping illustrates how powerful the grammar of graphics is for quickly producing informative visualizations.</p>
 <p>In the previous example, we changed the color aesthetic from the fixed default color of black to a color that varies with another variable. It is also possible to specify an alternative fixed value for any aesthetic. We can use the color names available in Python; for example, we might want all of the points to be a shade of green. This can be done with a small change to the function call: set the color aesthetic to the name of a color, such as “red”. However, unlike with variable aesthetics, the mapping needs to be done outside of the <code>aes()</code> function but still within the <code>geom_*</code> function. Below is an example of the code to recreate our plot with a different color. We use a color called “#F5276C”, which is a bright reddish-pink.</p>
-<div id="6b639c4a" class="cell" data-execution_count="5">
+<div id="c94773ff" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Europe"</span>)</span>
@@ -564,7 +564,7 @@ Hexadecimal color codes
 <h2 data-number="3.5" class="anchored" data-anchor-id="text-geometry"><span class="header-section-number">3.5</span> Text Geometry</h2>
 <p>A common critique of computational methods is that they obscure close understanding of each individual object of study by focusing on numeric patterns. This is an important caution: computational analysis should be paired with close analysis. However, visualizations do not always have to reduce complex collections to a few numerical summaries, especially when the dataset contains a relatively small number of observations. Looking back at our first scatter plot, how could we recover a closer analysis of individual countries while also looking for general patterns between the two variables? One option is to add labels indicating the names of the countries. These labels allow viewers to bring their own knowledge of the countries as an additional layer of information when interpreting the plot.</p>
 <p>Adding the names of the countries can be done by using another type of geometry, called <em>text geometry</em>. This geometry is created with the function <code>geom_text</code>. For each row of a dataset, this geometry adds a small textual label. As with the point geometry, we must specify which columns of our data correspond to the <code>x</code> and <code>y</code> aesthetics; these values tell the plot where to place the label. Additionally, the text geometry requires an aesthetic called <code>label</code> that provides the text for each label. In our case, we will use the column called <code>iso</code> to make textual labels on the plot based on the three-letter ISO abbreviation of the country. The code block below produces a plot with text labels by changing the geometry type and adding the <code>label</code> aesthetic.</p>
-<div id="1937ccd4" class="cell" data-execution_count="6">
+<div id="1a50173f" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Europe"</span>)</span>
@@ -582,7 +582,7 @@ Hexadecimal color codes
 <p>The plot generated by the code now allows us to see which countries have the highest levels of happiness (Finland, Iceland, and Denmark) and which have the highest levels of HDI (Iceland, Norway, and Switzerland (CHE)). While we added only a single additional piece of information to the plot, each label uniquely identifies a row of the data. This allows anyone familiar with them to bring many more characteristics of each data point to the plot through their own knowledge. For example, although the plot does not include any information about geography, anyone familiar with Europe will note that the Scandinavian countries are clustered together in the upper-right corner of the plot.</p>
 <p>Although the text plot adds contextual information compared with the scatter plot, it has some shortcomings. Some labels overlap and become difficult to read, and these issues will only worsen if we increase the number of regions in our dataset. It is also unclear which part of a label corresponds to a country’s HDI or happiness score: the center, the start, or the end? We could add a note that the value refers to the center of the label, but that becomes cumbersome to remember and to keep reminding others about.</p>
 <p>To start addressing these issues, we can add the points back into the plot, with labels. We do this in Python by adding the two geometry layers (<code>geom_point</code> and <code>geom_text</code>) one after the other. This makes it clearer where each region is located on the x-axis, but it also makes the country names harder to read. To fix that, we’ll add options to the text geometry to nudge the labels upward and reduce their size. Below is the code that makes both of these modifications.</p>
-<div id="a13537ab" class="cell" data-execution_count="7">
+<div id="658ba9cf" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Europe"</span>)</span>
@@ -604,7 +604,7 @@ Hexadecimal color codes
 <h2 data-number="3.6" class="anchored" data-anchor-id="lines-and-bars"><span class="header-section-number">3.6</span> Lines and Bars</h2>
 <p>The plotnine package supplies a large number of different geometries. In this section, we will look at two additional geometry types that allow us to investigate common relationships among the columns of a dataset.</p>
 <p>For a moment, we look at the cellphone dataset that shows the number of cellphones per one-hundred people over a twenty-year period for each country. Consider a visualization showing the change in the number of cellphones over time. We could create a scatter plot where each point represents a row of the data, the <code>x</code> aesthetic captures the year of each record, and the <code>y</code> aesthetic measures the number of phones. This visualization would be fine and would roughly help us understand changes in cellphone ownership. A more common visualization for data of this format, however, is a line plot, where the values in each year are connected by a line to the values in the subsequent year. To create such a plot, we can use the <code>geom_line</code> geometry. It is most commonly used when the horizontal axis measures some unit of time but can represent other quantities that we expect to change continuously and smoothly between measurements on the x-axis. The line geometry uses the same aesthetics as the point geometry and can be created with the same syntax, as shown in the following block of code.</p>
-<div id="70bba4bb" class="cell" data-execution_count="8">
+<div id="93eb1ea9" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    cellphone</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.iso.is_in([<span class="st">"USA"</span>, <span class="st">"GBR"</span>, <span class="st">"IRL"</span>, <span class="st">"CAN"</span>]))</span>
@@ -621,7 +621,7 @@ Hexadecimal color codes
 </div>
 <p>The output of this visualization shows how the number of cell phones changes over time. The numbers generally increase slowly in North American countries. In Great Britain, they plateau near 2010, while in Ireland they decrease slightly from a peak around 2007.</p>
 <p>Another common use of visualization is to compare the values of a numeric column with the categories of a categorical column. You can represent this relationship with a <code>geom_point</code> layer, but it is often more meaningful visually to use a bar for each category, with the height or length of the bar representing the numeric value. This type of plot is common for showing counts of categories (something we will see in the next chapter), but it can be used whenever a numeric value is associated with different categories. To create a plot with bars, we use the <code>geom_col</code> function, providing both <code>x</code> and <code>y</code> aesthetics. By default the categorical variable maps to <code>x</code> and the numeric variable maps to <code>y</code>, but it is often easier to read the other way around. To address this, we add the <code>coord_flip()</code> layer, which flips the axes. The code block below shows the complete commands to create a bar plot of the population for each country in Africa from our dataset.</p>
-<div id="65810319" class="cell" data-execution_count="9">
+<div id="91fc82fa" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Africa"</span>)</span>
@@ -638,7 +638,7 @@ Hexadecimal color codes
 </div>
 </div>
 <p>One of the first things that stands out in the output is that the regions are ordered alphabetically from bottom to top. The visualization would be much more useful and readable if we could reorder the categories on the y-axis. To do this, we apply the helper function <code>reorder</code> directly inside the graphics code. The function needs to know the name of the variable being reordered and the name of the variable by which it is being reordered.</p>
-<div id="09e8bdf9" class="cell" data-execution_count="10">
+<div id="40bcd8ef" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Africa"</span>)</span>
@@ -660,7 +660,7 @@ Hexadecimal color codes
 <h2 data-number="3.7" class="anchored" data-anchor-id="statistics"><span class="header-section-number">3.7</span> Statistics</h2>
 <p>All the geometries we’ve seen so far directly visualize the rows in the dataset, with one element in the output corresponding to each row in the data. Several geometries first compute summary statistics before plotting. Their aesthetics correspond to the data-summarization process rather than to individual elements in the output. Let’s look at a few common examples.</p>
 <p>We can use the <code>geom_smooth()</code> geometry, with the option <code>method = "lm"</code>, to add a line of best fit to the dataset. By default, it adds a confidence band, which we turn off in the code below by setting <code>se = FALSE</code>.</p>
-<div id="60fa92ad" class="cell" data-execution_count="11">
+<div id="50d4f0df" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Europe"</span>)</span>
@@ -678,7 +678,7 @@ Hexadecimal color codes
 </div>
 <p>We can produce more complex, non-linear smoothing curves by calling <code>geom_smooth()</code> without additional parameters.</p>
 <p>A boxplot lets us see the relationship between a categorical variable and a continuous one. For each category, we plot the 25th, 50th (median), and 75th percentiles as a box with a solid line for the median. A pair of lines, called “whiskers,” extend outward to indicate where most of the remaining data lie. Outliers are plotted as individual points. Often, this involves using <code>reorder()</code> and <code>coord_flip()</code>. Below is an example showing the distribution of HDI values within each region.</p>
-<div id="0308fb8a" class="cell" data-execution_count="12">
+<div id="4a372dbe" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"reorder(region, hdi)"</span>, <span class="st">"hdi"</span>))</span>
@@ -694,7 +694,7 @@ Hexadecimal color codes
 </div>
 </div>
 <p>Certain statistics-based geometries create the y aesthetic directly from the data. These are used to show the univariate distribution of a variable in our dataset. For example, a bar plot using <code>geom_bar</code> takes a categorical variable as a single aesthetic and counts the number of values in each category. The default colors are hard to read, so we change them and flip the coordinates to prevent labels from overlapping. Finally, we can use a special call to <code>reorder</code> to display the results in order of frequency.</p>
-<div id="e81de32d" class="cell" data-execution_count="13">
+<div id="21435d1c" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"reorder(subregion, subregion, len)"</span>))</span>
@@ -710,7 +710,7 @@ Hexadecimal color codes
 </div>
 </div>
 <p>To summarize the distribution of a numeric variable, the equivalent of a bar plot is a histogram, which we create with <code>geom_histogram</code>. The output is easiest to interpret if we set <code>binwidth</code> and <code>boundary</code> to control the width of each bin and how bins are offset from zero. For example, the code below creates histograms that align neatly in groups with a bin width of 0.1. The output shows how many countries fall into each bin.</p>
-<div id="d0885313" class="cell" data-execution_count="14">
+<div id="1d81bd86" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"hdi"</span>))</span>
@@ -742,7 +742,7 @@ Interpreting a histogram
 </div>
 <p>We can also simply set <code>bins=&lt;int&gt;</code> to define the total number of bins. This is an easier way to quickly create results without knowing the scale of the data. However, the resulting counts can be harder to interpret directly.</p>
 <p>An alternative to a histogram is a density plot. This attempts to model, rather than just counting, the distribution of a continuous variable. The <code>adjust</code> option, which defaults to 1, controls how smooth the distribution is. Higher values produce smoother curves, while lower values more closely fit the data. Trying different values can help you find the one that best reveals the relationship you are interested in.</p>
-<div id="096e9543" class="cell" data-execution_count="15">
+<div id="23e5f340" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"hdi"</span>))</span>
@@ -779,7 +779,7 @@ Interpreting a density plot
 <p>Python makes many choices for us automatically when creating any plot. In the example above, where we set the color of the points to follow another variable in the dataset, Python handles the details of how to pick the specific colors and sizes. It has figured out how large to make the axes, where to add tick marks, and where to draw grid lines. Letting Python deal with these details is convenient because it frees us to focus on the data itself. Sometimes, such as when preparing plots for external distribution or when the defaults are particularly hard to interpret, it is useful to manually adjust these details. This is exactly what scales are designed for.</p>
 <p>Each aesthetic within the grammar of graphics is associated with a scale. Scales detail how a plot maps aesthetics to concrete, perceivable features. For example, a scale for the <code>x</code> aesthetic describes the smallest and largest values on the x-axis and encodes how to label that axis. Similarly, a color scale describes what colors correspond to each category in a dataset and how to format a legend for the plot. To modify the default scales, we add an additional function to the code. The order of the scales relative to the geometries does not affect the output; by convention, scales are usually grouped after the geometries.</p>
 <p>For example, a popular alternative to the default color palette shown in our previous plot is the function <code>scale_color_cmap_d()</code>. It constructs a set of colors that are color-blind friendly, print well in black and white, and display clearly on poor projectors. After mapping a geometry’s color to a column in the dataset, add this scale by including the function as an extra line in the plot. An example is shown in the following code.</p>
-<div id="192ca712" class="cell" data-execution_count="16">
+<div id="cf370be2" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Europe"</span>)</span>
@@ -798,7 +798,7 @@ Interpreting a density plot
 <p>The output shows that the colors now range from dark purple to bright yellow instead of the rainbow of colors in the default plot. As with the categories in the bar plot, the ordering of the unique colors is determined by putting the categories in alphabetical order. Changing this requires modifying the dataset before passing it to the plot, which we will discuss in the next chapter. Note that the <code>_d</code> at the end of the scale function indicates the colors are used to create mappings for a character variable (it stands for “discrete”). There is also a complementary function <code>scale_color_cmap()</code> that produces a similar set of colors when making the color of the points vary according to a numeric variable.</p>
 <p>Many other scales exist to control various aesthetics. For example, <code>scale_size_area</code> can make point sizes proportional to another column in the dataset. Several scales control the x and y axes; for example, we can add <code>scale_x_log10()</code> and <code>scale_y_log10()</code> to a plot to display values on a logarithmic scale, which is useful with heavily skewed datasets. We’ll use these in later chapters as needed.</p>
 <p>The default scale for the x-axis is called <code>scale_x_continuous</code>. A corresponding function, <code>scale_y_continuous</code>, is the default for the y-axis. Adding these to a plot by themselves has no visible effect. However, there are many optional arguments we can provide to these functions that change how a plot is displayed. Setting <code>breaks</code> within one of these scales tells Python how many labels to put on the axis. Usually we use a helper function to set them, such as <code>breaks_width</code>. We can set <code>limits</code> to a pair of numbers to specify the start and end of the plotted range. Below is the code to produce a plot that shows the same data as our original scatter plot but with modified grid lines, axis labels, and vertical range.</p>
-<div id="d84e56d9" class="cell" data-execution_count="17">
+<div id="26328574" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Europe"</span>)</span>
@@ -816,7 +816,7 @@ Interpreting a density plot
 </div>
 </div>
 <p>Finally, there are two special scale types that can be useful for working with colors. In some cases, a column in the dataset already specifies the color of each observation; in that case, it’s sensible to use those colors directly. To do that, add the scale <code>scale_color_identity</code> to the plot. Another useful scale for colors is <code>scale_color_manual</code>; with it, you can specify exactly which color should be used for each category. Below is the syntax for specifying manual colors for each region in the <code>countries</code> dataset.</p>
-<div id="a4dc6775" class="cell" data-execution_count="18">
+<div id="ba730954" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Europe"</span>)</span>
@@ -836,7 +836,7 @@ Interpreting a density plot
 <h2 data-number="3.9" class="anchored" data-anchor-id="multiple-datasets"><span class="header-section-number">3.9</span> Multiple Datasets</h2>
 <p>So far, we have seen how to create visualizations using multiple layers with a single dataset. It is also possible to use different datasets in each layer by defining the <code>data=</code> argument for a specific geometry. When setting the <code>data=</code> argument for a geometry, it affects only that geometry; all other geometries will continue to use the default dataset.</p>
 <p>A common reason to use two different datasets in the same plot is to highlight a subset of points within a larger dataset.</p>
-<div id="1dd4c66a" class="cell" data-execution_count="19">
+<div id="eabf6fe3" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>country_ne <span class="op">=</span> country.<span class="bu">filter</span>(c.subregion <span class="op">==</span> <span class="st">"Northern Europe"</span>)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    country</span>
@@ -865,7 +865,7 @@ Interpreting a density plot
 <section id="facets" class="level2" data-number="3.10">
 <h2 data-number="3.10" class="anchored" data-anchor-id="facets"><span class="header-section-number">3.10</span> Facets</h2>
 <p>Another way to show differences across groups of a categorical variable is through facets. These create a grid of small plots in which the data is separated by one or two variables. This is done by adding the <code>facet_wrap()</code> function to the plot and supplying the grouping variable. Often, as in the example below, we add color mapped to the grouping variable and turn off the legend to visually indicate which data appears in each facet.</p>
-<div id="81ceccf2" class="cell" data-execution_count="20">
+<div id="7d756afa" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"hdi"</span>, <span class="st">"happy"</span>))</span>
@@ -887,7 +887,7 @@ Interpreting a density plot
 <h2 data-number="3.11" class="anchored" data-anchor-id="labels-and-themes"><span class="header-section-number">3.11</span> Labels and Themes</h2>
 <p>Throughout this chapter, we have seen a number of ways to create and modify data visualizations. One thing we did not cover was how to label our axes. While many data visualization guides stress the importance of labeling axes, it is often best to use the default labels provided by Python during the exploratory phase of analysis. These defaults are useful for several reasons. First, they require minimal effort and make it easy to change axes, variables, and other settings without spending time adjusting labels. Second, the default labels use the variable names in our dataset. When writing code, those names are exactly what we need to refer to a variable in additional plots, models, and data-manipulation tasks. Of course, when we want to present our results to others, it is essential to provide more detailed descriptions of the axes and legends in our plots. Fortunately, these can be added directly using the grammar of graphics.</p>
 <p>In order to change the labels in a plot, we can use the <code>labs</code> function as an additional layer of our plot. Inside the function, we assign labels to the names of aesthetic values that we want to describe. Leaving a value unspecified will keep the default value in place. Labels for the x-axis and y-axis will be placed on the sides of the plot; labels for other aesthetics such as size and color will be placed in the legend. We can also add <code>title</code>, <code>subtitle</code>, and a <code>caption</code> to <code>labs</code> to provide additional information describing the plot as a whole. Here is an example of our color-coded scatter plot that includes a variety of labels.</p>
-<div id="331d7599" class="cell" data-execution_count="21">
+<div id="e490edeb" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Europe"</span>)</span>
@@ -911,7 +911,7 @@ Interpreting a density plot
 </div>
 </div>
 <p>Another way to prepare our graphics for distribution is to modify the <em>theme</em> of a plot. Themes affect the appearance of plot elements such as axis labels, ticks, and the background. Throughout this book, we’ve set the default plot theme to <code>theme_minimal()</code>. We think it’s a great choice for exploring a dataset. As the name implies, it removes much of the clutter of other themes while keeping grid lines and other visual cues that help with interpretation. When presenting information for external publication, we often prefer a theme based on the work of Edward Tufte, a well-known scholar in the field of data visualization. To set the theme, we can add <code>theme_minimal()</code> or another theme function to our plot, as in the example below.</p>
-<div id="e580c1ef" class="cell" data-execution_count="22">
+<div id="79b2d90b" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>theme_set(theme_minimal())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now, whenever we construct a plot, it will use the newly assigned theme. Minimal themes are designed to use as little “ink” as possible, focusing the reader on the data <span class="citation" data-cites="tufte1987">[<a href="#ref-tufte1987" role="doc-biblioref">3</a>]</span>. They can be a bit too minimal when first exploring a dataset, but are a great tool for presenting results. Again, there are many resources online to customize them according to our needs.</p>

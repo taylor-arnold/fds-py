@@ -449,7 +449,7 @@ Practice Notebooks
 <section id="setup" class="level2" data-number="20.1">
 <h2 data-number="20.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">20.1</span> Setup</h2>
 <p>Load all of the modules and datasets needed for the chapter. In addition to the standard tools, we will use OpenCV (cv2) for image processing, PIL for image display, and the Ultralytics library for accessing pre-trained YOLO models.</p>
-<div id="44c53c2f" class="cell" data-execution_count="2">
+<div id="e07a6a1a" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -478,7 +478,7 @@ Practice Notebooks
 <section id="image-arrays" class="level2" data-number="20.3">
 <h2 data-number="20.3" class="anchored" data-anchor-id="image-arrays"><span class="header-section-number">20.3</span> Image Arrays</h2>
 <p>We will work with the birds image dataset, which contains photographs of ten species of birds. Each image has been preprocessed to a standard size and format, making it suitable for comparative analysis. The dataset includes species with distinctive coloration, from the brilliant yellow of canaries to the iridescent blues and greens of peacocks.</p>
-<div id="a86727c5" class="cell" data-execution_count="3">
+<div id="eaf05da1" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>birds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
 <div><style>
@@ -591,7 +591,7 @@ Practice Notebooks
 </div>
 <p>The dataset contains a <code>filepath</code> column pointing to each image file and a <code>label</code> column identifying the species. This structure, with metadata in a table and actual image files stored separately, is a common pattern for working with image datasets. It allows us to use familiar tabular data tools for filtering, grouping, and summarizing while keeping the image files in their native format.</p>
 <p>To work with an image programmatically, we need to read it into Python as a numerical array. The OpenCV library provides the <code>imread</code> function for this purpose. Let’s load the first image in our dataset.</p>
-<div id="83e7c383" class="cell" data-execution_count="4">
+<div id="66682aba" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.imread(birds.select(pl.col(<span class="st">"filepath"</span>).get(<span class="dv">0</span>)).item())</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>img</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
@@ -648,7 +648,7 @@ Practice Notebooks
 </div>
 <p>What we see is a NumPy array filled with numbers. Each number represents the intensity of a color channel at a specific pixel location. The values range from 0 (no intensity) to 255 (maximum intensity), using 8 bits per channel, which is the standard format for most digital images.</p>
 <p>The shape of this array reveals the structure of the image data.</p>
-<div id="9dd9e209" class="cell" data-execution_count="5">
+<div id="4744d4fb" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>img.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>(224, 224, 3)</code></pre>
@@ -656,7 +656,7 @@ Practice Notebooks
 </div>
 <p>The three dimensions correspond to height (number of rows of pixels), width (number of columns), and color channels. Most color images use three channels: red, green, and blue (RGB). However, OpenCV reads images in BGR order (blue, green, red), a historical convention from early computer vision libraries. This ordering rarely matters for analysis but becomes important when displaying images or converting between color spaces.</p>
 <p>We can examine a small region of the array to see the actual pixel values. Here are the values for a 4×4 block of pixels in the upper-left corner.</p>
-<div id="43569d60" class="cell" data-execution_count="6">
+<div id="56039292" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>img[:<span class="dv">4</span>, :<span class="dv">4</span>, :]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <pre><code>array([[[18, 20, 21],
@@ -682,7 +682,7 @@ Practice Notebooks
 </div>
 <p>Each pixel is represented by three values, one for each color channel. A pixel with values <code>[255, 255, 255]</code> would be pure white, while <code>[0, 0, 0]</code> would be pure black. Values like <code>[255, 0, 0]</code> represent pure blue (remember, OpenCV uses BGR ordering), <code>[0, 255, 0]</code> is green, and <code>[0, 0, 255]</code> is red.</p>
 <p>One of the simplest statistics we can compute from an image is the mean of all pixel values.</p>
-<div id="0a9f9c4f" class="cell" data-execution_count="7">
+<div id="1476b4c7" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>img.mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>np.float64(119.86716757015306)</code></pre>
@@ -693,7 +693,7 @@ Practice Notebooks
 <section id="brightness" class="level2" data-number="20.4">
 <h2 data-number="20.4" class="anchored" data-anchor-id="brightness"><span class="header-section-number">20.4</span> Brightness</h2>
 <p>Let’s compute the mean brightness for every image in our bird dataset. This requires iterating through all images, loading each one, and computing its mean pixel value. We store the results and add them as a new column to our DataFrame.</p>
-<div id="3bd69d04" class="cell" data-execution_count="8">
+<div id="93e2afba" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> []</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> birds.iter_rows(named<span class="op">=</span><span class="va">True</span>):</span>
@@ -825,7 +825,7 @@ Practice Notebooks
 </div>
 </div>
 <p>Now we have a brightness value for each image. What can this simple statistic tell us about our photographs? Let’s examine the darkest images in the collection.</p>
-<div id="5a99ed8c" class="cell" data-execution_count="9">
+<div id="b2d25963" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    birds</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    .sort(c.brightness)</span>
@@ -842,7 +842,7 @@ Practice Notebooks
 </div>
 <p>We see that the darkest images tend to have black backgrounds. This makes sense: a large area of pure black pixels (value 0) dramatically reduces the mean. The birds themselves may be brightly colored, but the dark backgrounds dominate the overall brightness calculation.</p>
 <p>The brightest images show the opposite pattern.</p>
-<div id="4d4bc39f" class="cell" data-execution_count="10">
+<div id="8eba20ba" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    birds</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    .sort(c.brightness, descending<span class="op">=</span><span class="va">True</span>)</span>
@@ -859,7 +859,7 @@ Practice Notebooks
 </div>
 <p>These images feature white or light-colored backgrounds, which push the mean toward higher values. This observation reveals an important limitation of simple pixel statistics: they capture properties of the entire image, including background, lighting conditions, and photographic style, not just the subject we care about. A dark bird photographed against a white background will have a higher brightness score than the same bird against a dark background.</p>
 <p>Despite this limitation, brightness can reveal interesting patterns across categories. Here are the distributions of brightness by species.</p>
-<div id="1605342e" class="cell" data-execution_count="11">
+<div id="c43445cf" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    birds</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"reorder(label, brightness)"</span>, <span class="st">"brightness"</span>))</span>
@@ -909,7 +909,7 @@ H = \begin{cases}
 \]</span></p>
 <p>The value component is simply the maximum RGB value. Saturation measures how much the color differs from gray by comparing the range of RGB values to the maximum. Hue is computed by determining which RGB component is dominant and calculating the position around the color wheel.</p>
 <p>OpenCV provides built-in functions for color space conversion. Here is how to convert an image from BGR to HSV.</p>
-<div id="646196f3" class="cell" data-execution_count="12">
+<div id="a6e3bdd1" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.imread(birds.select(pl.col(<span class="st">"filepath"</span>).get(<span class="dv">0</span>)).item())</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>img_hsv <span class="op">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2HSV)</span>
@@ -924,7 +924,7 @@ H = \begin{cases}
 <h2 data-number="20.6" class="anchored" data-anchor-id="colors"><span class="header-section-number">20.6</span> Colors</h2>
 <p>With images represented in HSV color space, we can classify pixels by their dominant color. The hue value tells us where each pixel falls on the color wheel, allowing us to count how many pixels are predominantly red, orange, yellow, green, and so on.</p>
 <p>Our helper method <code>DSImage.compute_colors</code> takes an HSV image and returns a dictionary with the proportion of pixels falling into each color category. It bins the hue values into segments corresponding to common color names and also accounts for the saturation and value (very dark or desaturated pixels are classified separately as black, white, or gray).</p>
-<div id="33fea9c9" class="cell" data-execution_count="13">
+<div id="9ef4b1db" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>DSImage.compute_colors(img_hsv)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="13">
 <pre><code>{'red': np.float64(6.048708545918367),
@@ -940,7 +940,7 @@ H = \begin{cases}
 </div>
 <p>The output shows what fraction of pixels in this image fall into each color category. The proportions sum to 1, giving us a complete description of the color distribution.</p>
 <p>We will cycle through the entire DataFrame and compute these color proportions for all images.</p>
-<div id="98e0a298" class="cell" data-execution_count="14">
+<div id="356cbcc3" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> []</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> birds.iter_rows(named<span class="op">=</span><span class="va">True</span>):</span>
@@ -1192,7 +1192,7 @@ H = \begin{cases}
 </div>
 </div>
 <p>Now our dataset includes columns for each color category, enabling systematic analysis of color distributions across species. Let’s examine which images contain the most yellow.</p>
-<div id="f527b8d4" class="cell" data-execution_count="15">
+<div id="0df1c097" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    birds</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    .sort(c.yellow, descending<span class="op">=</span><span class="va">True</span>)</span>
@@ -1209,7 +1209,7 @@ H = \begin{cases}
 </div>
 <p>The images with the highest yellow proportions include many hummingbirds photographed near yellow-green foliage, as well as the expected yellow birds. This demonstrates how color analysis captures not just the subject but the entire scene.</p>
 <p>We can compare the yellow content across species systematically.</p>
-<div id="5a0c11cc" class="cell" data-execution_count="16">
+<div id="0fae26cb" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    birds</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"reorder(label, yellow)"</span>, <span class="st">"yellow"</span>))</span>
@@ -1225,7 +1225,7 @@ H = \begin{cases}
 </div>
 <p>Canaries, as expected, have the highest yellow content on average. Their bright yellow plumage dominates the images. Other species show less yellow, with the distribution reflecting both the birds’ coloration and their typical photographic environments.</p>
 <p>Peacocks, known for their brilliant blue-green displays, should show high values in the cyan range.</p>
-<div id="5ffc769f" class="cell" data-execution_count="17">
+<div id="05b80c19" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    birds</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"reorder(label, cyan)"</span>, <span class="st">"cyan"</span>))</span>
@@ -1258,11 +1258,11 @@ H = \begin{cases}
 <p>where IoU is the intersection over union of the boxes, <span class="math inline">\(\rho(b, b^{gt})\)</span> is the Euclidean distance between box centers, <span class="math inline">\(c\)</span> is the diagonal length of the smallest enclosing box, and <span class="math inline">\(v\)</span> measures aspect ratio consistency.</p>
 <p>The objectness loss <span class="math inline">\(\mathcal{L}_{\text{obj}}\)</span> trains the model to predict whether each grid cell contains an object. The classification loss <span class="math inline">\(\mathcal{L}_{\text{cls}}\)</span> trains the model to correctly identify the class of detected objects. The <span class="math inline">\(\lambda\)</span> coefficients balance these components during training.</p>
 <p>Let’s load a pre-trained YOLO model and apply it to historical photographs.</p>
-<div id="e60af6a4" class="cell" data-execution_count="18">
+<div id="27d3702a" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">"yolo11n.pt"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>For this analysis, we will use a collection of color photographs from the FSA-OWI (Farm Security Administration - Office of War Information) project, a remarkable documentary photography initiative from the 1930s and 1940s. These images captured American life during the Great Depression and World War II.</p>
-<div id="08f1d03d" class="cell" data-execution_count="19">
+<div id="0d16d155" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>fsac</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="19">
 <div><style>
@@ -1335,16 +1335,16 @@ H = \begin{cases}
 </div>
 </div>
 <p>Here is an example of running object detection on one of these historical photographs.</p>
-<div id="12fc4c43" class="cell" data-execution_count="20">
+<div id="cab9bcc5" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>pred <span class="op">=</span> model.predict(<span class="st">"media/fsac/1a35210v.jpg"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-image 1/1 /Users/admin/gh/fds-py/media/fsac/1a35210v.jpg: 544x640 3 persons, 33.8ms
-Speed: 1.0ms preprocess, 33.8ms inference, 0.8ms postprocess per image at shape (1, 3, 544, 640)</code></pre>
+image 1/1 /Users/admin/gh/fds-py/media/fsac/1a35210v.jpg: 544x640 3 persons, 33.7ms
+Speed: 1.0ms preprocess, 33.7ms inference, 0.5ms postprocess per image at shape (1, 3, 544, 640)</code></pre>
 </div>
 </div>
 <p>The model returns predictions that include bounding boxes, class labels, and confidence scores. We can visualize the detections by overlaying them on the original image.</p>
-<div id="5f12bd53" class="cell" data-execution_count="21">
+<div id="6a251a4c" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>rgb <span class="op">=</span> cv2.cvtColor(pred[<span class="dv">0</span>].plot(), cv2.COLOR_BGR2RGB)</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>pil_img <span class="op">=</span> Image.fromarray(rgb)</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>pil_img</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1358,7 +1358,7 @@ Speed: 1.0ms preprocess, 33.8ms inference, 0.8ms postprocess per image at shape 
 </div>
 <p>The visualization shows bounding boxes around detected objects, each labeled with the predicted class and confidence score. The model has been trained on the COCO dataset, which includes 80 common object categories such as person, car, dog, chair, and bicycle.</p>
 <p>Let’s systematically count the number of people detected in each image across our collection.</p>
-<div id="9251f094" class="cell" data-execution_count="22">
+<div id="5aaa546f" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> []</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> fsac.iter_rows(named<span class="op">=</span><span class="va">True</span>):</span>
@@ -1459,7 +1459,7 @@ Speed: 1.0ms preprocess, 33.8ms inference, 0.8ms postprocess per image at shape 
 </div>
 </div>
 <p>We can examine the images with the most detected people.</p>
-<div id="866ae11e" class="cell" data-execution_count="23">
+<div id="29ed9afb" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    fsac</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    .sort(c.people, descending<span class="op">=</span><span class="va">True</span>)</span>
@@ -1476,7 +1476,7 @@ Speed: 1.0ms preprocess, 33.8ms inference, 0.8ms postprocess per image at shape 
 </div>
 <p>The model successfully identifies crowd scenes, though the exact count becomes less reliable as the number of people increases. In dense crowds, overlapping individuals and partial occlusions make precise counting challenging. Nevertheless, the detection provides a useful proxy for the scale of human presence in each photograph.</p>
 <p>The number of people varies considerably by photographer, reflecting different documentary styles and subject matter choices.</p>
-<div id="d0b03760" class="cell" data-execution_count="24">
+<div id="2bab8495" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    fsac</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"reorder(photographer, people)"</span>, <span class="st">"people"</span>))</span>
@@ -1502,7 +1502,7 @@ Speed: 1.0ms preprocess, 33.8ms inference, 0.8ms postprocess per image at shape 
 \]</span></p>
 <p>This is the binary cross-entropy loss computed over all <span class="math inline">\(N\)</span> pixels in the mask region, where <span class="math inline">\(y_i\)</span> is the ground-truth label (1 if the pixel belongs to the object, 0 otherwise) and <span class="math inline">\(\hat{y}_i\)</span> is the predicted probability. The loss penalizes both false positives (predicting object when the pixel is background) and false negatives (predicting background when the pixel is object).</p>
 <p>YOLO includes segmentation variants that maintain real-time performance while producing pixel-accurate masks.</p>
-<div id="37a766a7" class="cell" data-execution_count="25">
+<div id="e1219878" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">"yolo11n-seg.pt"</span>)</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>pred <span class="op">=</span> model.predict(<span class="st">"media/fsac/1a35210v.jpg"</span>)</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1511,8 +1511,8 @@ Speed: 1.0ms preprocess, 33.8ms inference, 0.8ms postprocess per image at shape 
 <span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>pil_img</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-image 1/1 /Users/admin/gh/fds-py/media/fsac/1a35210v.jpg: 544x640 3 persons, 43.9ms
-Speed: 0.7ms preprocess, 43.9ms inference, 1.3ms postprocess per image at shape (1, 3, 544, 640)</code></pre>
+image 1/1 /Users/admin/gh/fds-py/media/fsac/1a35210v.jpg: 544x640 3 persons, 45.7ms
+Speed: 0.7ms preprocess, 45.7ms inference, 1.3ms postprocess per image at shape (1, 3, 544, 640)</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="25">
 <div>
@@ -1524,7 +1524,7 @@ Speed: 0.7ms preprocess, 43.9ms inference, 1.3ms postprocess per image at shape 
 </div>
 <p>The visualization now shows colored masks overlaid on detected objects, precisely delineating their boundaries rather than just enclosing them in rectangles. This pixel-level precision enables more nuanced analysis of image content.</p>
 <p>We can use segmentation to compute what percentage of each image is occupied by people, providing a measure of how prominently human figures feature in the composition.</p>
-<div id="aa6cdabd" class="cell" data-execution_count="26">
+<div id="65845818" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> []</span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> fsac.iter_rows(named<span class="op">=</span><span class="va">True</span>):</span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    preds <span class="op">=</span> model.predict(row[<span class="st">"filepath"</span>], verbose<span class="op">=</span><span class="va">False</span>)[<span class="dv">0</span>]</span>
@@ -1643,7 +1643,7 @@ Speed: 0.7ms preprocess, 43.9ms inference, 1.3ms postprocess per image at shape 
 </div>
 </div>
 <p>The <code>people_prop</code> column now contains the percentage of each image covered by detected people. Let’s see which images have the highest human coverage.</p>
-<div id="906c59a7" class="cell" data-execution_count="27">
+<div id="0a5f2aa4" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    fsac</span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    .sort(c.people_prop, descending<span class="op">=</span><span class="va">True</span>)</span>
@@ -1660,7 +1660,7 @@ Speed: 0.7ms preprocess, 43.9ms inference, 1.3ms postprocess per image at shape 
 </div>
 <p>These tend to be closely framed portraits where the subject fills most of the frame. The segmentation-based measure captures a different aspect of photographic style than simple person counts: a single person in a tight portrait can have higher coverage than a dozen people in a wide street scene.</p>
 <p>The relationship between person coverage and photographer reveals stylistic differences.</p>
-<div id="8b8e30d3" class="cell" data-execution_count="28">
+<div id="cb1614cc" class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    fsac</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    .group_by(c.photographer)</span>
@@ -1693,7 +1693,7 @@ Speed: 0.7ms preprocess, 43.9ms inference, 1.3ms postprocess per image at shape 
 \]</span></p>
 <p>where <span class="math inline">\(H_k(x, y)\)</span> is the ground-truth heatmap (typically a 2D Gaussian centered on the keypoint) and <span class="math inline">\(\hat{H}_k(x, y)\)</span> is the predicted heatmap.</p>
 <p>Let’s apply pose detection to our historical photographs.</p>
-<div id="39363de2" class="cell" data-execution_count="29">
+<div id="d4d5a2ab" class="cell" data-execution_count="29">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">"yolo11n-pose.pt"</span>)</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>pred <span class="op">=</span> model.predict(<span class="st">"media/fsac/1a35210v.jpg"</span>)</span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1703,8 +1703,8 @@ Speed: 0.7ms preprocess, 43.9ms inference, 1.3ms postprocess per image at shape 
 <span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>pil_img</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-image 1/1 /Users/admin/gh/fds-py/media/fsac/1a35210v.jpg: 544x640 3 persons, 35.0ms
-Speed: 0.7ms preprocess, 35.0ms inference, 0.4ms postprocess per image at shape (1, 3, 544, 640)</code></pre>
+image 1/1 /Users/admin/gh/fds-py/media/fsac/1a35210v.jpg: 544x640 3 persons, 35.9ms
+Speed: 0.6ms preprocess, 35.9ms inference, 0.4ms postprocess per image at shape (1, 3, 544, 640)</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="29">
 <div>
@@ -1716,7 +1716,7 @@ Speed: 0.7ms preprocess, 35.0ms inference, 0.4ms postprocess per image at shape 
 </div>
 <p>The visualization shows detected poses as skeleton overlays, with lines connecting keypoints according to anatomical structure. The colored points indicate individual keypoints, while the connecting lines show the body structure.</p>
 <p>We can use pose information to analyze photographic composition in sophisticated ways. Let’s compute the proportion of image height occupied by the torso of the largest detected person. This metric indicates how prominently human figures are framed in each photograph.</p>
-<div id="389089a2" class="cell" data-execution_count="30">
+<div id="0bf9710f" class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> []</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> fsac.iter_rows(named<span class="op">=</span><span class="va">True</span>):</span>
@@ -1868,7 +1868,7 @@ Speed: 0.7ms preprocess, 35.0ms inference, 0.4ms postprocess per image at shape 
 </div>
 </div>
 <p>The computation identifies the shoulder and hip keypoints (indices 5, 6 for shoulders and 11, 12 for hips), calculates the midpoint of each pair, and measures the distance between them. This torso length, expressed as a percentage of image height, indicates how large human subjects appear in the frame.</p>
-<div id="7a2e5ec1" class="cell" data-execution_count="31">
+<div id="ff37801d" class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>    fsac</span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    .sort(c.torso, descending<span class="op">=</span><span class="va">True</span>)</span>
@@ -1885,7 +1885,7 @@ Speed: 0.7ms preprocess, 35.0ms inference, 0.4ms postprocess per image at shape 
 </div>
 <p>The images with the highest torso proportions are medium shots of workers and subjects, framed tightly enough that the torso occupies a substantial portion of the vertical space. These are neither extreme close-ups (which might exclude the torso entirely) nor distant shots (where the full figure would be small).</p>
 <p>This metric shows strong variation by photographer.</p>
-<div id="6d7d703a" class="cell" data-execution_count="32">
+<div id="d2a7612f" class="cell" data-execution_count="32">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    fsac</span>
 <span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.torso <span class="op">&gt;</span> <span class="dv">0</span>)</span>
@@ -1910,7 +1910,7 @@ Speed: 0.7ms preprocess, 35.0ms inference, 0.4ms postprocess per image at shape 
 <h2 data-number="20.10" class="anchored" data-anchor-id="training-yolo"><span class="header-section-number">20.10</span> Training YOLO</h2>
 <p>The pre-trained YOLO models we have used so far recognize objects from the COCO dataset: people, cars, dogs, and other common categories. But what if we want to detect objects specific to our domain? Training a custom YOLO model requires labeled data where humans have drawn bounding boxes around objects of interest and assigned class labels to each box.</p>
 <p>Our bird bounding box dataset contains exactly this information. Each row specifies an image filepath, a species label, and four coordinates defining the corners of a bounding box around the bird.</p>
-<div id="27d2747e" class="cell" data-execution_count="33">
+<div id="c0e628bb" class="cell" data-execution_count="33">
 <div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>birds_bbox</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="33">
 <div><style>
@@ -2049,20 +2049,20 @@ Speed: 0.7ms preprocess, 35.0ms inference, 0.4ms postprocess per image at shape 
 </div>
 <p>The <code>bbox_x0</code> and <code>bbox_y0</code> columns give the coordinates of the upper-left corner, while <code>bbox_x1</code> and <code>bbox_y1</code> give the lower-right corner. The <code>index</code> column indicates whether each image belongs to the training set or the test set, a split we made beforehand to enable honest evaluation of model performance.</p>
 <p>YOLO expects training data in a specific directory structure with images and label files organized into train and validation folders. Our helper function <code>DSImage.build_yolo_data</code> converts our tabular format into the required layout, creating a YAML configuration file that tells YOLO where to find the data and what classes to recognize.</p>
-<div id="b36c0c31" class="cell" data-execution_count="34">
+<div id="07da5538" class="cell" data-execution_count="34">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>DSImage.prepare_yolo_dataset(</span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    birds_bbox, root<span class="op">=</span><span class="st">"media/yolo_birds"</span>, yaml_name<span class="op">=</span><span class="st">"birds.yaml"</span></span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>With the data prepared, training proceeds by loading a pre-trained model and calling its <code>train</code> method. We start from <code>yolo11n.pt</code>, a model already trained on COCO, and fine-tune it on our bird data. This transfer learning approach leverages features the model has already learned from millions of general images, adapting them to our specific task.</p>
-<div id="b0d72dc8" class="cell" data-execution_count="35">
+<div id="10b95ff6" class="cell" data-execution_count="35">
 <div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">"yolo11n.pt"</span>)</span>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>model.train(data<span class="op">=</span><span class="st">"media/yolo_birds/birds.yaml"</span>, epochs<span class="op">=</span><span class="dv">50</span>, imgsz<span class="op">=</span><span class="dv">640</span>)</span>
 <span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>model.save(<span class="st">"yolo_birds_final.pt"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The <code>epochs</code> parameter controls how many complete passes through the training data the model makes, with each epoch updating the model weights based on the loss function described earlier. The <code>imgsz</code> parameter specifies the image size used during training; images are resized to 640×640 pixels regardless of their original dimensions.</p>
 <p>After training completes, we evaluate performance on the held-out test set using the <code>val</code> method. This computes standard object detection metrics that quantify how well the model’s predictions match ground-truth annotations.</p>
-<div id="0e0b3e3e" class="cell" data-message="false" data-execution_count="37">
+<div id="3b59e6a5" class="cell" data-message="false" data-execution_count="37">
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>metrics <span class="op">=</span> model.val(data<span class="op">=</span><span class="st">"media/yolo_birds/birds.yaml"</span>, imgsz<span class="op">=</span><span class="dv">640</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The primary metrics for object detection are variants of mean Average Precision (mAP), which measures how well the model balances finding all relevant objects (recall) with avoiding false detections (precision). To understand mAP, we first need to define when a predicted bounding box counts as a correct detection.</p>
@@ -2075,7 +2075,7 @@ Speed: 0.7ms preprocess, 35.0ms inference, 0.4ms postprocess per image at shape 
 \text{AP} = \int_0^1 p(r) \, dr
 \]</span></p>
 <p>where <span class="math inline">\(p(r)\)</span> is precision at recall level <span class="math inline">\(r\)</span>. In practice, this integral is approximated by interpolating the precision-recall curve at discrete points. The mAP50 metric uses an IoU threshold of 0.50, meaning a prediction counts as correct if it overlaps with the ground truth by at least 50%. This is a relatively lenient standard that rewards finding objects even if the bounding box is not perfectly aligned.</p>
-<div id="eec8011c" class="cell" data-execution_count="38">
+<div id="6a024376" class="cell" data-execution_count="38">
 <div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>metrics.box.map50</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The mAP50-95 averages performance across multiple IoU thresholds from 0.50 to 0.95 in steps of 0.05:</p>
@@ -2083,12 +2083,12 @@ Speed: 0.7ms preprocess, 35.0ms inference, 0.4ms postprocess per image at shape 
 \text{mAP50-95} = \frac{1}{10} \sum_{t \in \{0.50, 0.55, \ldots, 0.95\}} \text{mAP}_t
 \]</span></p>
 <p>This stricter metric rewards precise localization. A model might achieve high mAP50 by finding objects with roughly correct boxes, but achieving high mAP50-95 requires tight alignment between predictions and ground truth.</p>
-<div id="db1b3bc3" class="cell" data-execution_count="39">
+<div id="d7ed1e09" class="cell" data-execution_count="39">
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>metrics.box.<span class="bu">map</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The gap between these two metrics reveals how well the model localizes objects. A large gap suggests the model finds objects but draws imprecise boxes; a small gap indicates accurate localization.</p>
 <p>Finally, let’s see the trained model in action on a test image it has never seen during training.</p>
-<div id="98bd85f0" class="cell" data-execution_count="40">
+<div id="19d331aa" class="cell" data-execution_count="40">
 <div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> birds_bbox.<span class="bu">filter</span>(c.index <span class="op">==</span> <span class="st">"test"</span>).select(c.filepath.last()).item()</span>
 <span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>pred <span class="op">=</span> model.predict(path)</span>
 <span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -2097,8 +2097,8 @@ Speed: 0.7ms preprocess, 35.0ms inference, 0.4ms postprocess per image at shape 
 <span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>pil_img</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-image 1/1 /Users/admin/gh/fds-py/media/birds_1000/00996.png: 512x640 1 bird, 29.6ms
-Speed: 1.1ms preprocess, 29.6ms inference, 0.4ms postprocess per image at shape (1, 3, 512, 640)</code></pre>
+image 1/1 /Users/admin/gh/fds-py/media/birds_1000/00996.png: 512x640 1 bird, 29.5ms
+Speed: 0.9ms preprocess, 29.5ms inference, 0.3ms postprocess per image at shape (1, 3, 512, 640)</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="35">
 <div>
@@ -2117,7 +2117,7 @@ Speed: 1.1ms preprocess, 29.6ms inference, 0.4ms postprocess per image at shape 
 <p>The architecture of a VLM typically consists of three components: a vision encoder that processes the image into a sequence of visual tokens, a projection layer that maps these tokens into the same embedding space used by the language model, and a language model that generates text conditioned on both the visual tokens and any text prompt. During training, the model learns to associate visual patterns with their linguistic descriptions, enabling it to describe novel images it has never seen before.</p>
 <p>VLMs open new possibilities for image analysis. Rather than counting objects or measuring pixel proportions, we can ask open-ended questions: “What activity is taking place in this photograph?” or “Describe the mood conveyed by this image.” The responses, while subjective and sometimes imperfect, capture aspects of visual content that structured outputs cannot represent.</p>
 <p>Let’s use the OpenAI API to get a description of one of our FSA photographs. We will send the image to a vision-capable model and ask it to describe what it sees.</p>
-<div id="b42c4bf7" class="cell" data-execution_count="41">
+<div id="561af181" class="cell" data-execution_count="41">
 <div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> base64</span>
 <span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openai <span class="im">import</span> OpenAI</span>
 <span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -2156,7 +2156,7 @@ Speed: 1.1ms preprocess, 29.6ms inference, 0.4ms postprocess per image at shape 
 <span id="cb49-36"><a href="#cb49-36" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb49-37"><a href="#cb49-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(response.choices[<span class="dv">0</span>].message.content)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="fb8f3c71" class="cell" data-execution_count="42">
+<div id="15b8e0f0" class="cell" data-execution_count="42">
 <div class="cell-output cell-output-stdout">
 <pre><code>
 The photograph shows a close, waist-up group portrait of three young men in

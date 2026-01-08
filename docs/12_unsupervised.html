@@ -446,7 +446,7 @@ Practice Notebooks
 <section id="setup" class="level2" data-number="12.1">
 <h2 data-number="12.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">12.1</span> Setup</h2>
 <p>Load all of the modules and datasets needed for the chapter.</p>
-<div id="017cb4c0" class="cell" data-execution_count="2">
+<div id="3197fb8c" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -496,7 +496,7 @@ Standardization
 </div>
 </div>
 <p>Let’s apply PCA to our country dataset. We select four variables—the Human Development Index (hdi), GDP per capita (gdp), cellphone subscriptions per 100 people (cellphone), and a happiness score (happy)—and reduce them to two dimensions. The <code>DSSklearn.pca</code> method takes a list of feature columns, and the number of components to compute.</p>
-<div id="3a927a93" class="cell" data-execution_count="3">
+<div id="3bc5ffe0" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -579,7 +579,7 @@ Standardization
 </div>
 <p>The output is a DataFrame with two columns, <code>dr0</code> and <code>dr1</code>, representing the first and second principal components for each country. These new variables are uncorrelated with each other and together capture the maximum possible variance from the original four variables in just two dimensions.</p>
 <p>Often we want to retain the original data alongside the principal components for further analysis or visualization. The <code>full=True</code> option accomplishes this by appending the components to the original DataFrame rather than returning only the reduced representation.</p>
-<div id="d07c255a" class="cell" data-execution_count="4">
+<div id="69ac1be3" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -881,7 +881,7 @@ Standardization
 </div>
 </div>
 <p>With the components added to our data, we can create a visualization that projects all 188 countries into two dimensions while preserving information about their region and identity. This type of plot reveals structure that would be impossible to see by examining the four original variables separately.</p>
-<div id="297a0325" class="cell" data-execution_count="5">
+<div id="6538e836" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -903,7 +903,7 @@ Standardization
 </div>
 <p>The visualization shows countries positioned according to their scores on the first two principal components. Countries that are similar across the four original variables appear close together in this reduced space. We can see regional patterns emerging: European countries cluster together, as do Sub-Saharan African countries, reflecting shared characteristics in development, wealth, technology adoption, and well-being. The horizontal axis (first principal component) appears to capture an overall development gradient, while the vertical axis (second principal component) picks up variation not explained by this primary dimension.</p>
 <p>For certain applications, particularly when feeding the reduced data into another model, it can be convenient to store all components in a single array column rather than separate columns. The <code>array=True</code> option provides this format.</p>
-<div id="bc414162" class="cell" data-execution_count="6">
+<div id="3b34b31d" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -978,7 +978,7 @@ Standardization
 <p>The intuition behind UMAP is that data often lie on or near a lower-dimensional manifold embedded in the high-dimensional space. Imagine a sheet of paper (a two-dimensional surface) crumpled and placed in a three-dimensional room. Points that are close together on the paper remain close when the paper is crumpled, even though they might appear far apart if we only measured straight-line distance in three dimensions. UMAP attempts to “uncrumple” such structures, finding the lower-dimensional representation that best preserves the local neighborhood relationships.</p>
 <p>The mathematical details of UMAP involve concepts from topology and manifold learning that go beyond the scope of this text. In practice, what matters is understanding how the method behaves and how its parameters affect the results.</p>
 <p>The <code>DSSklearn.umap</code> method provides access to UMAP with the same interface we used for PCA.</p>
-<div id="9e7e8e1e" class="cell" data-execution_count="7">
+<div id="bdae9e6c" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -1002,7 +1002,7 @@ Standardization
 <p>Two parameters are particularly important for controlling UMAP’s behavior. The <code>n_neighbors</code> parameter determines how many neighboring points UMAP considers when constructing the high-dimensional graph. Small values cause UMAP to focus on very local structure, potentially fragmenting the data into many small clusters. Large values emphasize global structure, producing smoother embeddings that may lose fine-grained detail. The default is typically 15.</p>
 <p>The <code>min_dist</code> parameter controls how tightly UMAP packs points together in the low-dimensional representation. Small values allow points to cluster very closely, which can be useful for identifying tight groupings but may result in overlapping points that are hard to distinguish visually. Larger values spread points out more evenly. The default is 0.1.</p>
 <p>Let’s see how changing these parameters affects the embedding.</p>
-<div id="de870bf3" class="cell" data-execution_count="8">
+<div id="d1a4d0e0" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -1048,7 +1048,7 @@ Reproducibility
 <p>The name comes from the use of the t-distribution (which we encountered in <a href="10_inference.html" class="quarto-xref"><span>Chapter 10</span></a> for hypothesis testing) to model distances in the low-dimensional space. This choice has a specific benefit: the heavy tails of the t-distribution allow moderately distant points in high dimensions to be placed farther apart in low dimensions without incurring a large penalty. This helps t-SNE create clearer separation between clusters.</p>
 <p>In mathematical terms, t-SNE first computes, for each pair of points, a probability that reflects their similarity in high-dimensional space. Points that are close together have high probability; points far apart have low probability. It then does the same in the low-dimensional embedding and adjusts the positions of points to minimize the difference between these two probability distributions. The objective function being minimized is the Kullback-Leibler divergence, a measure of how one probability distribution differs from another.</p>
 <p>The interface for t-SNE matches what we have seen for PCA and UMAP.</p>
-<div id="128df148" class="cell" data-execution_count="9">
+<div id="2df92421" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -1070,7 +1070,7 @@ Reproducibility
 </div>
 <p>The t-SNE embedding often produces visually striking plots with clear cluster separation. However, interpreting these plots requires caution. Unlike PCA, distances in t-SNE plots are not directly meaningful—two clusters that appear far apart are not necessarily more different than two clusters that appear close together. The method is optimized for preserving local neighborhoods, not global distances.</p>
 <p>The most important parameter for t-SNE is <code>perplexity</code>, which can be thought of as a smooth measure of how many neighbors each point considers. The perplexity is related to the effective number of nearest neighbors and typically ranges from 5 to 50. Lower values focus on very local structure, while higher values incorporate more global information. The perplexity must be smaller than the number of observations in the dataset.</p>
-<div id="45543258" class="cell" data-execution_count="10">
+<div id="317c3b3f" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -1119,7 +1119,7 @@ Choosing between methods
 \]</span></p>
 <p>Here <span class="math inline">\(C_j\)</span> denotes the set of observations assigned to cluster <span class="math inline">\(j\)</span>, and the inner sum measures how spread out the observations are around their cluster’s centroid. The algorithm minimizes this objective by alternating between two steps: assign each observation to the cluster with the nearest centroid, and update each centroid to be the mean of its assigned observations. This process repeats until no observations change their cluster assignment.</p>
 <p>The <code>DSSklearn.kmeans</code> method provides access to k-means. The <code>n_clusters</code> parameter specifies the number of clusters to create.</p>
-<div id="07c8a4dc" class="cell" data-execution_count="11">
+<div id="fc1efef8" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -1151,48 +1151,48 @@ Choosing between methods
 </thead>
 <tbody>
 <tr class="odd">
+<td>1</td>
+<td>0.898742</td>
+</tr>
+<tr class="even">
 <td>3</td>
-<td>0.919302</td>
+<td>0.432613</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>1.437611</td>
 </tr>
 <tr class="even">
-<td>0</td>
-<td>0.454159</td>
+<td>4</td>
+<td>0.736308</td>
 </tr>
 <tr class="odd">
 <td>1</td>
-<td>1.450775</td>
-</tr>
-<tr class="even">
-<td>1</td>
-<td>1.072312</td>
-</tr>
-<tr class="odd">
-<td>0</td>
-<td>1.738327</td>
+<td>1.804269</td>
 </tr>
 <tr class="even">
 <td>…</td>
 <td>…</td>
 </tr>
 <tr class="odd">
-<td>0</td>
-<td>0.41251</td>
+<td>3</td>
+<td>0.430951</td>
 </tr>
 <tr class="even">
-<td>0</td>
-<td>1.075817</td>
-</tr>
-<tr class="odd">
-<td>0</td>
-<td>1.289606</td>
-</tr>
-<tr class="even">
-<td>1</td>
-<td>0.540287</td>
+<td>2</td>
+<td>0.82221</td>
 </tr>
 <tr class="odd">
 <td>3</td>
-<td>0.284654</td>
+<td>1.229334</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>0.640985</td>
+</tr>
+<tr class="odd">
+<td>1</td>
+<td>0.282839</td>
 </tr>
 </tbody>
 </table>
@@ -1201,7 +1201,7 @@ Choosing between methods
 </div>
 <p>The output includes two columns: <code>label_</code>, an integer indicating which cluster each observation belongs to, and <code>dist_</code>, the distance from each observation to its assigned cluster centroid. Observations with larger distances are farther from the center of their cluster and might be considered less typical members of that group.</p>
 <p>To visualize the clustering results, we can combine k-means with dimensionality reduction. First we cluster the data in the original four-dimensional space, then we project the data to two dimensions using PCA for visualization. This approach lets k-means use all available information for clustering while still allowing us to see the results.</p>
-<div id="eecda933" class="cell" data-execution_count="12">
+<div id="8d2a7bbc" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -1251,7 +1251,7 @@ Choosing k
 <p>Two parameters control DBSCAN’s behavior. The <code>eps</code> parameter (epsilon) specifies the maximum distance between two points for them to be considered neighbors. The <code>min_samples</code> parameter specifies how many neighbors a point needs within distance <code>eps</code> to be considered a core point. Clusters form by connecting core points that are neighbors of each other, along with any border points in their neighborhoods.</p>
 <p>More precisely, a point <span class="math inline">\(x_i\)</span> is a core point if at least <code>min_samples</code> points (including itself) lie within distance <code>eps</code> of <span class="math inline">\(x_i\)</span>. Two core points belong to the same cluster if they are within distance <code>eps</code> of each other, or if there is a chain of core points connecting them where each consecutive pair is within distance <code>eps</code>. Border points are assigned to the cluster of the nearest core point within their <code>eps</code> neighborhood.</p>
 <p>Let’s apply DBSCAN to the country data with default parameters.</p>
-<div id="5b485f6f" class="cell" data-execution_count="13">
+<div id="fbae052a" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -1332,7 +1332,7 @@ Choosing k
 </div>
 <p>The output shows cluster labels for each country. A label of -1 indicates that the observation was classified as noise—it doesn’t belong to any cluster. This is a key difference from k-means, which forces every observation into a cluster.</p>
 <p>We can visualize the DBSCAN results using the same approach we used for k-means: cluster in the original space, then project to two dimensions for plotting.</p>
-<div id="97502b25" class="cell" data-execution_count="14">
+<div id="550ed2c3" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -1358,7 +1358,7 @@ Choosing k
 </div>
 <p>With default parameters, DBSCAN identifies distinct clusters while leaving some points unassigned. The noise points (label -1) often correspond to countries that don’t fit neatly into any dense group—they may have unusual combinations of characteristics that make them outliers.</p>
 <p>The <code>eps</code> parameter is the most important tuning parameter for DBSCAN. Smaller values of <code>eps</code> require points to be closer together to be considered neighbors, resulting in more and smaller clusters. Larger values allow more distant points to be grouped together, producing fewer and larger clusters. Finding the right value requires experimentation and understanding of the data’s scale.</p>
-<div id="2445abea" class="cell" data-execution_count="15">
+<div id="826ad5be" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -1405,7 +1405,7 @@ K-means versus DBSCAN
 <h2 data-number="12.8" class="anchored" data-anchor-id="unsupervised-supervised"><span class="header-section-number">12.8</span> Unsupervised + Supervised</h2>
 <p>The unsupervised methods we have covered—dimensionality reduction and clustering—are valuable not only for exploration and visualization but also as preprocessing steps for supervised learning. Reducing the dimensionality of features can improve the performance and interpretability of predictive models, while cluster labels can serve as new features that capture structure not easily represented by the original variables.</p>
 <p>To illustrate this combination, let’s use PCA to reduce our four country indicators to two principal components, then use these components as features in a regression model predicting life expectancy.</p>
-<div id="95e332f4" class="cell" data-execution_count="16">
+<div id="847cf64c" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> (</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -1422,7 +1422,7 @@ K-means versus DBSCAN
 <span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="8ff6ccce" class="cell" data-execution_count="17">
+<div id="dbbd07f1" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>model.coef()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="17">
 <div><style>
@@ -1464,7 +1464,7 @@ K-means versus DBSCAN
 </div>
 <p>The model uses the two principal components (stored in the array column <code>dr</code>) to predict life expectancy. The coefficients tell us how changes in each principal component relate to changes in life expectancy. Since the first principal component typically captures overall development, we would expect it to have a strong positive relationship with life expectancy.</p>
 <p>We can apply the same approach to classification tasks. Here we use the principal components to predict which region a country belongs to.</p>
-<div id="9006d249" class="cell" data-execution_count="18">
+<div id="3551f0b1" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> (</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    .pipe(</span>
@@ -1482,7 +1482,7 @@ K-means versus DBSCAN
 <span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="8c675f24" class="cell" data-execution_count="19">
+<div id="c4bf3f55" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>model.coef()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="19">
 <div><style>
@@ -1515,27 +1515,27 @@ K-means versus DBSCAN
 <tbody>
 <tr class="odd">
 <td>"Intercept"</td>
-<td>-0.478147</td>
-<td>0.792355</td>
-<td>1.467746</td>
-<td>0.537812</td>
-<td>-2.319765</td>
+<td>-0.478412</td>
+<td>0.792121</td>
+<td>1.467526</td>
+<td>0.53761</td>
+<td>-2.318845</td>
 </tr>
 <tr class="even">
 <td>"col0"</td>
-<td>-3.469841</td>
+<td>-3.469932</td>
 <td>0.0</td>
-<td>-0.681172</td>
-<td>1.329568</td>
-<td>1.503939</td>
+<td>-0.681216</td>
+<td>1.329494</td>
+<td>1.502739</td>
 </tr>
 <tr class="odd">
 <td>"col1"</td>
-<td>1.130189</td>
-<td>0.440165</td>
-<td>-0.039666</td>
-<td>-0.040162</td>
-<td>-0.36487</td>
+<td>1.129954</td>
+<td>0.439896</td>
+<td>-0.03993</td>
+<td>-0.040427</td>
+<td>-0.365391</td>
 </tr>
 </tbody>
 </table>
@@ -1543,7 +1543,7 @@ K-means versus DBSCAN
 </div>
 </div>
 <p>The coefficient table now shows, for each region, how the two principal components contribute to the probability of a country belonging to that region. The multinomial logistic regression (introduced in <a href="11_supervised.html" class="quarto-xref"><span>Chapter 11</span></a>) estimates these relationships jointly across all regions.</p>
-<div id="ce0650b5" class="cell" data-execution_count="20">
+<div id="8f982c30" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>model.predict(full<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="20">
 <div><style>
