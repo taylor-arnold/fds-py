@@ -452,7 +452,7 @@ Practice Notebooks
 <section id="setup" class="level2" data-number="10.1">
 <h2 data-number="10.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">10.1</span> Setup</h2>
 <p>Load all of the modules and datasets needed for the chapter. There are a number of relatively small datasets specifically designed to satisfy the assumptions of the statistical models presented below. As always, full details for each can be found in <a href="22_datasets.html" class="quarto-xref"><span>Chapter 22</span></a>.</p>
-<div id="fca7ff1f" class="cell" data-execution_count="2">
+<div id="a7930444" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -514,7 +514,7 @@ Q(p) = x_{(\lceil np \rceil)}
 <p>Here, the ceiling function returns the smallest integer greater than or equal to <code>n * p</code>. For example, if we have <code>n = 100</code> observations and want the 0.20 quantile (<code>p = 0.20</code>), then <code>n * p = 20</code>, so the 0.20 quantile is the 20th smallest observation in the ordered data. The median is the special case <code>p = 0.5</code>, giving the observation at position <code>ceiling(n/2)</code> in the ordered data.</p>
 <p>The median is approximately the 0.50 quantile, meaning that 50 percent of the observations fall below it. Similarly, the 0.20 quantile is the value below which 20 percent of the observations fall. Quantiles are useful for understanding the shape of a distribution beyond its center.</p>
 <p>The code below demonstrates how to compute these measures using Polars. It uses the dataset <code>marriage</code>, which has a single column indicating the age at first marriage for 5,534 U.S. women from the 2010 National Survey of Family Growth (NSFG) conducted by the CDC. We calculate the mean, median, and 0.20 quantile of the age variable in the <code>marriage</code> dataset.</p>
-<div id="ae5de3e3" class="cell" data-execution_count="3">
+<div id="edda129f" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    marriage</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    .select(</span>
@@ -588,7 +588,7 @@ s = \sqrt{s^2} = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n}(x_i - \bar{x})^2}
 <p>The standard deviation measures the typical distance of observations from the mean.</p>
 <p>A useful heuristic for interpreting the standard deviation comes from considering normal (bell-shaped) distributions. For data that approximately follow this shape, roughly 68 percent of observations fall within plus or minus one standard deviation of the mean, about 95 percent fall within two standard deviations of the mean, and nearly all observations fall within three standard deviations of the mean. While this rule of thumb does not apply exactly to all distributions, it provides a useful starting point for thinking about what the standard deviation tells us.</p>
 <p>We can compute the standard deviation and variance using the <code>.select</code> method in Polars along with the summary methods <code>.std()</code> and <code>.var()</code>. Note that we would use <code>.agg</code> to compute these statistics within specific groups of the data.</p>
-<div id="1df17815" class="cell" data-execution_count="4">
+<div id="0a6f1673" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    marriage</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .select(</span>
@@ -668,7 +668,7 @@ t = \frac{\bar{x} - \mu_0}{s / \sqrt{n}}
 \bar{x} \pm t^* \cdot \frac{s}{\sqrt{n}}
 \]</span></p>
 <p>To apply a one-sample t-test, we will use the <code>ttest1</code> method from a wrapper class called <code>DSStatsmodels</code>, which uses the Python statsmodels package. The model-fitting process is designed to be used as part of a chain of methods called via the <code>.pipe</code> function, as we did in <a href="03_graphics.html" class="quarto-xref"><span>Chapter 3</span></a> with <code>ggplot</code>. The model-fitting function takes a string that defines a formula using the consistent model description we will use throughout this chapter. A formula has a column name followed by the <code>~</code> (tilde) symbol followed by one or more additional column names. The idea is that we are trying to “predict” the first column in terms of zero or more of the other columns. In the case of a one-sample t-test, there are no predictor variables; therefore we use the notation <code>1</code> to indicate that the left-hand column is modeled using only a single mean.</p>
-<div id="b8a92a9d" class="cell" data-execution_count="5">
+<div id="fc9cd0ca" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    marriage</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .pipe(DSStatsmodels.ttest1, <span class="st">"age ~ 1"</span>)</span>
@@ -728,7 +728,7 @@ t = \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}}
 <p>Researchers, interested in the relationship between school absenteeism and certain demographic characteristics of children, collected data from 146 randomly sampled students in rural New South Wales, Australia, during a particular school year.</p>
 </blockquote>
 <p>The dataset includes the number of days a student was absent during a school year, along with demographic data such as sex, age (in buckets), and learning status. We will use a two-sample t-test to determine whether absenteeism differs significantly between male and female students. We again use <code>DSStatsmodels</code>, this time the method <code>.ttest2</code>. The formula now has both a left-hand side (the column whose mean we’re interested in) and a right-hand side that indicates the two groups the data are divided into.</p>
-<div id="d5f0bef4" class="cell" data-execution_count="6">
+<div id="a4643d31" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    absent</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .pipe(DSStatsmodels.ttest2, <span class="st">"days ~ sex"</span>)</span>
@@ -801,7 +801,7 @@ F = \frac{\text{MS}_{\text{between}}}{\text{MS}_{\text{within}}}
 \]</span></p>
 <p>If between-group variability is large relative to within-group variability, the F-statistic will be large and the p-value small, providing evidence against the null hypothesis that the group means are equal.</p>
 <p>We will again use the absenteeism data to illustrate the one-way ANOVA test by determining whether the number of days absent is related to the students’ age bucket (F0, F1, F2, and F3). To do this, we use the <code>DSStatsmodels</code> class with the <code>.anova()</code> method. The formula works exactly as it did in the two-sample case: put the column whose mean you want to compare on the left-hand side and the column that describes the groups on the right-hand side.</p>
-<div id="4156f5dd" class="cell" data-execution_count="7">
+<div id="2bbda7ca" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    absent</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    .pipe(DSStatsmodels.anova, <span class="st">"days ~ age"</span>)</span>
@@ -853,7 +853,7 @@ F = \frac{\text{MS}_{\text{between}}}{\text{MS}_{\text{within}}}
 </div>
 </div>
 <p>The output provides the F-statistic and the associated p-value for the test of whether mean absenteeism differs across age groups. The p-value is 0.02, which indicates that the observed variation is unlikely to have arisen from a population in which absenteeism is unrelated to age group. A visualization can help us understand the pattern of differences.</p>
-<div id="0c5fbdd1" class="cell" data-execution_count="8">
+<div id="75089150" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    absent</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"age"</span>, <span class="st">"days"</span>))</span>
@@ -873,7 +873,7 @@ F = \frac{\text{MS}_{\text{between}}}{\text{MS}_{\text{within}}}
 <h2 data-number="10.9" class="anchored" data-anchor-id="chi-squared-test"><span class="header-section-number">10.9</span> Chi-squared Test</h2>
 <p>The inferential methods we’ve discussed so far all involve comparing means of numerical variables. When both variables of interest are categorical, we need a different approach. The chi-squared test (also written chi-square or represented by the Greek letter χ²) assesses whether there is an association between two categorical variables.</p>
 <p>We can understand how the test works by constructing a contingency table that shows the counts of observations for each combination of categories. As an example, we use experimental data that study the efficacy of treating patients who had a heart attack with a drug called sulphinpyrazone. The data indicate whether a patient was in the treatment group (given the drug) or the control group (given a placebo), and whether the patient lived or died. Using Polars functions, we can build a table showing the number of patients in each group by outcome.</p>
-<div id="fd31b9b4" class="cell" data-execution_count="9">
+<div id="1043b59d" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    sulph</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .group_by(c.outcome, c.group)</span>
@@ -939,7 +939,7 @@ Expected counts
 </div>
 </div>
 <p>We can compute the chi-squared test using the <code>.chi2()</code> method of <code>DSStatsmodels</code> and specifying the two variables in the formula. Below is an example with the sulphinpyrazone dataset.</p>
-<div id="e70f9370" class="cell" data-execution_count="10">
+<div id="759f4f09" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    sulph</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .pipe(DSStatsmodels.chi2, <span class="st">"outcome ~ group"</span>)</span>
@@ -983,7 +983,7 @@ Expected counts
 G = 2 \sum_{i,j} O_{ij}\log\left(\frac{O_{ij}}{E_{ij}}\right)
 \]</span></p>
 <p>The expected counts are calculated in the same way as for the chi-squared test. The factor of 2 in front of the summation ensures that the G-statistic approximately follows the same distribution as the chi-squared statistic under the null hypothesis, allowing us to use the same critical values and p-value calculations. We can replace the method “.chi2” with “.gtest” to obtain the G-test result.</p>
-<div id="07386956" class="cell" data-execution_count="11">
+<div id="306c46ed" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    sulph</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    .pipe(DSStatsmodels.gtest, <span class="st">"outcome ~ group"</span>)</span>
@@ -1041,7 +1041,7 @@ y = \alpha + \beta x + \varepsilon
 <p>There are two separate hypothesis tests that we can construct with a simple linear regression. We can test the null hypothesis <span class="math inline">\(H_0: \alpha = 0\)</span> (the intercept is zero) and the null hypothesis <span class="math inline">\(H_0: \beta = 0\)</span>. The second is usually the most important because it tests whether there is a change in the mean of the response <span class="math inline">\(y\)</span> when there is a change in the predictor <span class="math inline">\(x\)</span>. We will not go into the specific formulas for these hypothesis tests, but note that they take the form of a <span class="math inline">\(t\)</span>-distribution with <span class="math inline">\(n-2\)</span> degrees of freedom.</p>
 <p>To illustrate the application of a linear regression model, we will use a survey dataset of 1,325 UCLA students who completed a survey asking about their height, their fastest driving speed, and their gender. We will fit a model predicting their fastest driving speed (MPH) as a function of their height (inches).</p>
 <p>Once again, running linear regression involves using <code>DSStatsmodels</code> function, this time with the <code>.ols</code> method. The formula object specifies the response variable on the left-hand side and the predictor variable on the right. This is intuitive because the formula format comes directly from the standard way of writing the equation of a line in mathematics (<span class="math inline">\(y = mx + b\)</span>).</p>
-<div id="fd6585fd" class="cell" data-execution_count="12">
+<div id="d7d56cf6" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    speed</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .pipe(DSStatsmodels.ols, <span class="st">"speed ~ height"</span>)</span>
@@ -1102,7 +1102,7 @@ y = \alpha + \beta x + \varepsilon
 </div>
 <p>The output shows the estimated intercept and slope, along with standard errors, t-statistics, and p-values for each coefficient. The p-value for the slope tests the null hypothesis that there is no linear relationship between the predictor and response (that is, that the true slope equals zero). As usual, a small p-value provides evidence that the relationship is statistically significant. Here we see a very small p-value (when rounded, it equals zero), indicating strong evidence of a relationship between top-driven speed and height.</p>
 <p>We already discussed the idea of a line of best fit in <a href="03_graphics.html" class="quarto-xref"><span>Chapter 3</span></a>, where we used the <code>geom_smooth</code> function to fit a line to a scatterplot. This line is produced by the same method shown in the model above. Let’s visualize this line here to compare it to the model.</p>
-<div id="d2ef9058" class="cell" data-execution_count="13">
+<div id="8fd289f7" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    speed</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    .pipe(ggplot, aes(<span class="st">"height"</span>, <span class="st">"speed"</span>))</span>
@@ -1128,7 +1128,7 @@ y = \alpha + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_k x_k + \varepsilon
 \]</span></p>
 <p>Each coefficient beta_j represents the expected change in y for a one-unit increase in x_j, holding all other predictors constant. This “holding constant” interpretation is crucial: it means we are isolating the unique contribution of each predictor after accounting for the others.</p>
 <p>Let’s look at a dataset collected from 104 possums captured in Australia and New Guinea. The dataset includes measurements of the sizes of parts of their bodies and location data about where they were captured. We will try to predict the width of the possum’s skull based on other body measurements. Using simple linear regression, we see a positive relationship between skull width and tail length: each additional millimeter of tail length is associated with about 0.4 millimeters of extra skull width.</p>
-<div id="7cdd6441" class="cell" data-execution_count="14">
+<div id="aeaebd6f" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    possum</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    .pipe(DSStatsmodels.ols, <span class="st">"skull_w ~ tail_l"</span>)</span>
@@ -1188,7 +1188,7 @@ y = \alpha + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_k x_k + \varepsilon
 </div>
 </div>
 <p>In order to run a multiple regression model, we add terms (with a plus sign) to the right-hand side of the <code>formula</code> object. The resulting table provides the estimates of <span class="math inline">\(\alpha\)</span> and all of the corresponding <span class="math inline">\(\beta_j\)</span>s. Let’s add a variable for the possum’s total length in addition to tail length.</p>
-<div id="95aeea5c" class="cell" data-execution_count="15">
+<div id="f9c1326e" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    possum</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .pipe(DSStatsmodels.ols, <span class="st">"skull_w ~ total_l + tail_l"</span>)</span>
@@ -1278,7 +1278,7 @@ Order of coefficents
 <h2 data-number="10.12" class="anchored" data-anchor-id="indicator-variables"><span class="header-section-number">10.12</span> Indicator Variables</h2>
 <p>In many cases, we want to fit a multivariate regression model where some predictors are categorical rather than numeric. Fortunately, this is an easy challenge to overcome.</p>
 <p>Consider again the speed dataset, where we are trying to estimate the average maximum speed a student reported driving based on demographic information. We already used height alone and found that taller students are more likely to report driving at higher speeds. Male students tend to be taller and are sometimes thought—particularly when younger—to be a bit more reckless on average. It’s possible that the relationship with height exists only because it’s acting as a proxy for student sex. A multivariate regression could help here, but how do we include sex in the model? A common technique is to create a numeric variable that’s 1 for one category and 0 for the other. We will create a variable called <code>is_male</code> and add it to the model as follows.</p>
-<div id="609ddbc6" class="cell" data-execution_count="16">
+<div id="cf4556fd" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    speed</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
@@ -1351,7 +1351,7 @@ Order of coefficents
 </div>
 <p>In the results, we see that the <code>is_male</code> coefficient is 5.2458. In the prediction, this coefficient is added to any prediction where the student is male (since <code>is_male</code> equals 1) and ignored for students who are female. This means that its statistical test and associated p-value (here, 0.0) test the following null hypothesis: “<span class="math inline">\(H_0\)</span>: sex has no effect on maximum driving speed after accounting for height”. The height coefficient is smaller (1.2391 -&gt; 0.8608), but still positive. Its p-value (also 0.0) tests the null hypothesis: “<span class="math inline">\(H_0\)</span>: height has no effect on driving speed after accounting for sex”. The results show that there is strong evidence to reject both null hypotheses. In other words, it seems that both height and being male are associated with an increase in the maximum reported driving speed.</p>
 <p>The new column <code>is_male</code> that we created above is called an <em>indicator variable</em> because it indicates (with a 0 or 1) whether a certain feature is present. This is such a common approach when working with categorical variables in regression that <code>statsmodels</code> lets us include categorical variables directly in the model and will create the indicator variables for us. Let’s repeat the above analysis by including <code>height</code> and <code>sex</code> directly in the model.</p>
-<div id="214b4e5c" class="cell" data-execution_count="17">
+<div id="c1965514" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    speed</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    .pipe(DSStatsmodels.ols, <span class="st">"speed ~ height + sex"</span>)</span>
@@ -1482,7 +1482,7 @@ Logistic transformation
 </div>
 </div>
 <p>Let’s finish by returning to the possum dataset, this time predicting whether a possum comes from Victoria. To run the model, we use the <code>logit</code> method of <code>DSStatsmodels</code> along with the corresponding formula object. Unlike indicator variables used as predictors, we must manually create the indicator variable used as the response in logistic regression.</p>
-<div id="b1c7c466" class="cell" data-execution_count="18">
+<div id="5a8f8986" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    possum</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>

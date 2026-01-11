@@ -463,7 +463,7 @@ Practice Notebooks
 <section id="setup" class="level2" data-number="13.1">
 <h2 data-number="13.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">13.1</span> Setup</h2>
 <p>Load all of the modules and datasets needed for the chapter. We load two submodules of the torch module to build neural network models. The <code>mnist</code> dataset contains a sample of 1,000 images of handwritten digits from the well-known MNIST collection. Full details are available in <a href="22_datasets.html" class="quarto-xref"><span>Chapter 22</span></a>.</p>
-<div id="8f8ec0f5" class="cell" data-execution_count="2">
+<div id="2adfe7c7" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -488,7 +488,7 @@ Practice Notebooks
 <h2 data-number="13.3" class="anchored" data-anchor-id="mnist-data"><span class="header-section-number">13.3</span> MNIST Data</h2>
 <p>To understand the true power of deep learning we need to work with a dataset where there is a disconnect between the information contained in the object and the raw format of the data that we are given. This, for example, is the case with text, image, video, and sound data. There is a wide gap between the data stored on one hand in the individual pixels of an image, characters in a text, or sound pressure at a specific millisecond and the semantic meaning represented by these objects when processed by the human perceptive system.</p>
 <p>In order to better understand how this works, we will work in this chapter with a subset of the MNIST (Modified National Institute of Standards and Technology database) hand-written digits dataset. This is one of the earliest popular image processing datasets. It consists of small, standardized images of hand-written digits from 0 to 9. The goal is to build a supervised model that recognizes which digit is written based on the image. All of the image datasets in this text use a format where we have metadata about the images in one table. This table includes a <code>filepath</code> column that contains the location of each of the image files. In this case, each image is a greyscale file of a square image that is 28 pixels tall and wide. Here is the dataset:</p>
-<div id="51f09c8b" class="cell" data-execution_count="3">
+<div id="a0b7d4c8" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mnist</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
 <div><style>
@@ -574,7 +574,7 @@ Practice Notebooks
 </div>
 </div>
 <p>We have a helper function called <code>DSImage.plot_image_grid</code> that allows us to see a collection of the images from within Python along with their labels. Here is an example of what the data looks like for 30 randomly selected images.</p>
-<div id="c8b7ef49" class="cell" data-execution_count="4">
+<div id="d87cea14" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>DSImage.plot_image_grid(mnist.sample(<span class="dv">30</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
@@ -585,13 +585,13 @@ Practice Notebooks
 </div>
 </div>
 <p>In order to load the data into Python, we have another helper function called <code>DSTorch.load_image</code> that takes the dataset and some parameters and generates objects corresponding to the features and responses of the data. We have both the data split into a training and testing set as well as the complete original data. The latter is useful if we later want to add information back into the <code>mnist</code> table.</p>
-<div id="7b57d88e" class="cell" data-execution_count="5">
+<div id="4a276f79" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>X, X_train, X_test, y, y_train, y_test, cn <span class="op">=</span> DSTorch.load_image(</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    mnist, scale<span class="op">=</span><span class="va">True</span>, flatten<span class="op">=</span><span class="va">True</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Notice that we set the option <code>flatten</code> to <code>True</code> above. This takes the pixel data from the images and converts them to a single vector that has no implicit encoding of the shape of the image. In this case, this means that the 28-by-28 grid of pixel intensities has been converted into a single string of <span class="math inline">\(28 * 28 = 784\)</span> values. We can see the shape of the <code>X</code> object below.</p>
-<div id="4e79a086" class="cell" data-execution_count="6">
+<div id="4c0a34b7" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>X.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <pre><code>torch.Size([1000, 784])</code></pre>
@@ -799,7 +799,7 @@ Backpropagation
 <h2 data-number="13.6" class="anchored" data-anchor-id="dense-nn-in-pytorch"><span class="header-section-number">13.6</span> Dense NN in PyTorch</h2>
 <p>We are now ready to implement a dense neural network in Python using PyTorch. PyTorch is one of the two dominant deep learning libraries (the other being TensorFlow). It provides the building blocks for constructing neural networks along with efficient implementations of stochastic gradient descent and backpropagation.</p>
 <p>In PyTorch, we define a neural network by creating a class that inherits from <code>nn.Module</code>. The class must define two methods: <code>__init__</code>, which sets up the layers of the network, and <code>forward</code>, which describes how data flows through those layers. The code below defines a dense neural network for classifying our MNIST digits.</p>
-<div id="4746f1d7" class="cell" data-execution_count="7">
+<div id="5ec94673" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DenseNet(nn.Module):</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
@@ -817,49 +817,49 @@ Backpropagation
 <p>The architecture defined above uses <code>nn.Sequential</code> to chain together the layers in order. The first <code>nn.Linear(784, 128)</code> creates a fully connected layer that takes our 784-dimensional input (the flattened 28×28 pixel image) and produces 128 hidden values. Each of the 784 inputs is connected to each of the 128 outputs through a learned weight, plus a bias term for each output. This layer alone contains <span class="math inline">\(784 \times 128 + 128 = 100{,}480\)</span> trainable parameters. The ReLU activation function is applied after this linear transformation to introduce non-linearity.</p>
 <p>The second linear layer reduces from 128 hidden values down to 64, again followed by a ReLU activation. The final layer maps from 64 values to 10 outputs, one for each digit class (0 through 9). Notice that there is no activation function after the final layer. This is because we will use a loss function during training that internally applies the softmax transformation and computes the cross-entropy loss, which is the standard approach for multi-class classification problems.</p>
 <p>With the network architecture defined, we next create an instance of the model and an optimizer. The optimizer implements the gradient descent update rule. Here we use the Adam optimizer, which implements a version of stochastic gradient descent with an adaptive learning rate. We set the initial learning rate to 0.001, a good starting point for this particular model.</p>
-<div id="caa67c4b" class="cell" data-execution_count="8">
+<div id="93281959" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> DenseNet()</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> optim.Adam(model.parameters(), lr<span class="op">=</span><span class="fl">0.001</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Training the model involves repeatedly showing it batches of training examples and updating the parameters to reduce the prediction error. The <code>DSTorch.train</code> method handles this process. It takes the model, optimizer, training data, and several hyperparameters: the number of epochs (complete passes through the training data) and the batch size (number of examples processed before each parameter update).</p>
-<div id="98ef595d" class="cell" data-execution_count="9">
+<div id="58044069" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>DSTorch.train(</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    model, optimizer, X_train, y_train, num_epochs<span class="op">=</span><span class="dv">20</span>, batch_size<span class="op">=</span><span class="dv">64</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Epoch 1/20, Loss: 2.4077
-Epoch 2/20, Loss: 1.9432
-Epoch 3/20, Loss: 1.3106
-Epoch 4/20, Loss: 0.8377
-Epoch 5/20, Loss: 0.5983
-Epoch 6/20, Loss: 0.4519
-Epoch 7/20, Loss: 0.3727
-Epoch 8/20, Loss: 0.3168
-Epoch 9/20, Loss: 0.2759
-Epoch 10/20, Loss: 0.2401
-Epoch 11/20, Loss: 0.2076
-Epoch 12/20, Loss: 0.1782
-Epoch 13/20, Loss: 0.1456
-Epoch 14/20, Loss: 0.1240
-Epoch 15/20, Loss: 0.1107
-Epoch 16/20, Loss: 0.0945
-Epoch 17/20, Loss: 0.0798
-Epoch 18/20, Loss: 0.0707
-Epoch 19/20, Loss: 0.0635
-Epoch 20/20, Loss: 0.0626</code></pre>
+<pre><code>Epoch 1/20, Loss: 2.4004
+Epoch 2/20, Loss: 1.9434
+Epoch 3/20, Loss: 1.3079
+Epoch 4/20, Loss: 0.8367
+Epoch 5/20, Loss: 0.5980
+Epoch 6/20, Loss: 0.4693
+Epoch 7/20, Loss: 0.3788
+Epoch 8/20, Loss: 0.3187
+Epoch 9/20, Loss: 0.2602
+Epoch 10/20, Loss: 0.2237
+Epoch 11/20, Loss: 0.1882
+Epoch 12/20, Loss: 0.1651
+Epoch 13/20, Loss: 0.1384
+Epoch 14/20, Loss: 0.1173
+Epoch 15/20, Loss: 0.1043
+Epoch 16/20, Loss: 0.0847
+Epoch 17/20, Loss: 0.0735
+Epoch 18/20, Loss: 0.0629
+Epoch 19/20, Loss: 0.0586
+Epoch 20/20, Loss: 0.0477</code></pre>
 </div>
 </div>
 <p>The output shows the training loss decreasing over epochs, which indicates that the model is learning to fit the training data. However, the loss on training data alone does not tell us how well the model will perform on new, unseen examples. To evaluate generalization performance, we use the <code>DSTorch.score_image</code> method, which computes predictions and compares them to the true labels.</p>
-<div id="0adb4cab" class="cell" data-execution_count="10">
+<div id="32920491" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>DSTorch.score_image(model, X_train, y_train, cn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="10">
-<pre><code>0.9959999918937683</code></pre>
+<pre><code>1.0</code></pre>
 </div>
 </div>
-<div id="870eb2af" class="cell" data-execution_count="11">
+<div id="dd703c09" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>DSTorch.score_image(model, X_test, y_test, cn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="11">
-<pre><code>0.8360000252723694</code></pre>
+<pre><code>0.8560000061988831</code></pre>
 </div>
 </div>
 <p>The training accuracy tells us how well the model fits the data it was trained on, while the test accuracy measures how well it generalizes to new examples. A large gap between these two numbers would indicate overfitting, where the model has memorized the training examples rather than learning patterns that transfer to new data. With the architecture and hyperparameters used here, we achieve strong performance on both sets, demonstrating that a dense neural network can effectively learn to recognize handwritten digits.</p>

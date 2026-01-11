@@ -237,6 +237,8 @@ cell_wide = (
 cell_wide
 ```
 
+It is possible that some combinations of the new rows and columns do not exist in the original DataFrame. When this happens, Python will fill in `null` values for the missing combinations. Sometimes, particularly if these are counts that we are looking at, we may want to convert all of these missing values to zeros (or another default). To do that, we can call the method `.fill_null(0)`. The value zero can be changed to any other value that makes sense. This can also be used on individual columns as needed in other analyses.
+
 Now, what if we want to go the other way? That is, suppose we stored the data originally in the format above (`cell_wide`) but want to return to the version we started with. This can be achieved by using the `.unpivot()` method, which requires specifying the index column to use. The new columns created to store the data are given the default names `variable` and `value`. These can be changed by setting the `variable_name` and `value_name` arguments.
 
 ```{python}

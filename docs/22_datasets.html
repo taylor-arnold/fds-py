@@ -410,7 +410,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="setup" class="level2" data-number="22.1">
 <h2 data-number="22.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">22.1</span> Setup</h2>
 <p>Load all of the modules and datasets needed for the chapter. In each of the sections below we briefly present the datasets used in this text and the supplemental materials. The <code>glimpse</code> method is used to show all of the column names, data types, and the first few rows of the dataset.</p>
-<div id="c02c89d8" class="cell" data-execution_count="2">
+<div id="040c14bc" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -423,7 +423,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="countries" class="level2" data-number="22.2">
 <h2 data-number="22.2" class="anchored" data-anchor-id="countries"><span class="header-section-number">22.2</span> Countries</h2>
 <p>Sourced from GapMinder and WikiData, the countries dataset provides a snapshot of 135 nations, identifying each by its full standard name and three-letter ISO code. Geographically, entries are categorized into broad regions and specific subregions, accompanied by precise latitude and longitude coordinates. The data captures essential socioeconomic health through metrics such as total population (in millions), life expectancy, and the Human Development Index (HDI). Economic conditions are represented by GDP figures and the Gini coefficient, which measures income inequality, while broader well-being is gauged via a happiness index. Additionally, the dataset includes infrastructure and cultural details, specifically tracking cellphone adoption rates, the percentage of the population with access to improved water sources, and the primary languages spoken.</p>
-<div id="3329ad0c" class="cell" data-execution_count="3">
+<div id="1ac2517d" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>countries <span class="op">=</span> pl.read_csv(<span class="st">"data/countries.csv"</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>countries.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -448,7 +448,7 @@ $ lang         &lt;str&gt; 'pbp|fra|wol', 'spa|vsl', 'fin|swe', 'eng', 'sin|sin|
 </div>
 </div>
 <p>Also sourced from GapMinder, the cellphone dataset is a longitudinal record containing 3,480 observations that track the adoption of mobile technology over time. Unlike the previous cross-sectional dataset, this table uses a time-series format, recording data for specific nations identified by their three-letter iso codes across multiple years. The primary metric, cell, quantifies mobile phone subscriptions (expressed per 100 people), allowing for the analysis of growth trends and technological saturation within different countries over the recorded period.</p>
-<div id="a780d2d9" class="cell" data-execution_count="4">
+<div id="734905d5" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cellphone <span class="op">=</span> pl.read_csv(<span class="st">"data/countries_cellphone.csv"</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>cellphone.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -461,7 +461,7 @@ $ cell &lt;f64&gt; 0.87978, 2.54662, 4.91711, 9.9133, 18.0167, 29.8268, 38.2289,
 </div>
 </div>
 <p>Sourced from Wikidata, the borders dataset provides a relational map of international boundaries, containing 829 entries that define connections between nations. Each row represents a single land border, linking a primary country (iso) to one of its adjacent neighbors (iso_neighbor) using their three-letter ISO codes. Because a single country often shares borders with multiple neighbors, the iso column contains repeated values, effectively creating an adjacency list that allows for the analysis of geographic clustering, continent connectivity, and geopolitical relationships.</p>
-<div id="625eeba6" class="cell" data-execution_count="5">
+<div id="4c73388d" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>borders <span class="op">=</span> pl.read_csv(<span class="st">"data/countries_borders.csv"</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>borders.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -476,7 +476,7 @@ $ iso_neighbor &lt;str&gt; 'IRN', 'PAK', 'CHN', 'TJK', 'TKM', 'UZB', 'COD', 'GAB
 <section id="food-items" class="level2" data-number="22.3">
 <h2 data-number="22.3" class="anchored" data-anchor-id="food-items"><span class="header-section-number">22.3</span> Food Items</h2>
 <p>The food dataset profiles 61 common culinary items, providing a comprehensive nutritional and descriptive breakdown for each. It categorizes items into broad food_group classifications (such as fruits, vegetables, grains, and meats) and details their dietary composition through macronutrients—including total and saturated fats, carbohydrates, sugar, fiber, and protein—as well as cholesterol and calorie counts. The dataset also tracks micronutrient content, specifically sodium, iron, and vitamins A and C. Beyond nutritional metrics, the table includes metadata sourced from WikiData, such as a URL slug (wiki), a textual description defining the item, and its primary visual color.</p>
-<div id="165a847c" class="cell" data-execution_count="7">
+<div id="99bf10fd" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>food <span class="op">=</span> pl.read_csv(<span class="st">"data/food.csv"</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>food.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -503,7 +503,7 @@ $ color       &lt;str&gt; 'red', 'green', 'green', 'yellow', 'brown', 'green', '
 </div>
 </div>
 <p>The diet dataset is a small reference table containing 6 rows that define dietary compliance for major food groups. It links broad food_group categories (such as fruit, vegetable, grains, meat, fish, and dairy) to specific restrictive diets. Boolean-style columns (yes/no) indicate whether each group is permissible within vegan, vegetarian, and pescatarian lifestyles, effectively serving as a lookup table for filtering food items based on dietary restrictions.</p>
-<div id="90177045" class="cell" data-execution_count="8">
+<div id="bb3efb92" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>diet <span class="op">=</span> pl.read_csv(<span class="st">"data/food_diet_restrictions.csv"</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>diet.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -517,7 +517,7 @@ $ pescatarian &lt;str&gt; 'yes', 'yes', 'yes', 'no', 'yes', 'yes'
 </div>
 </div>
 <p>The recipe dataset provides a structural breakdown of culinary dishes, listing the specific components required to prepare them. Organized in a “long” format, each row represents a single ingredient for a given recipe, rather than a single row per dish. This means complex recipes like “Pot Roast” or “Guacamole” appear across multiple lines, each detailing a constituent item and its corresponding amount (in grams). This granular structure facilitates the aggregation of nutritional data by allowing individual ingredients to be linked back to detailed food profiles.</p>
-<div id="258d95e0" class="cell" data-execution_count="9">
+<div id="bc21705e" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>recipe <span class="op">=</span> pl.read_csv(<span class="st">"data/food_recipes.csv"</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>recipe.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -533,7 +533,7 @@ $ amount     &lt;i64&gt; 1200, 400, 1000, 500, 200, 5, 1000, 500, 500, 150
 <section id="majors-and-salary" class="level2" data-number="22.4">
 <h2 data-number="22.4" class="anchored" data-anchor-id="majors-and-salary"><span class="header-section-number">22.4</span> Majors and Salary</h2>
 <p>Sourced from the U.S. Bureau of Labor Statistics, the major dataset offers a high-resolution profile of the earnings distribution for various undergraduate fields of study. Unlike summary tables that report only a median income, this dataset uses a long-format structure to trace the entire salary curve, containing 8,316 rows that correspond to 99 percentile ranks for roughly 84 distinct majors. For each major, the data lists the percentile (from 1 to 99) and the associated earnings value at that rank. This granular approach allows for a deeper analysis of financial outcomes, enabling comparisons of income inequality within fields and assessing the risk-reward profiles—such as the reliable “floor” versus the potential “ceiling” of wages—across different career paths.</p>
-<div id="5e6cb346" class="cell" data-execution_count="11">
+<div id="ef937b61" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>major <span class="op">=</span> pl.read_csv(<span class="st">"data/majors.csv"</span>)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>major.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -550,7 +550,7 @@ $ earnings   &lt;f64&gt; 1.538733, 1.673857, 1.760265, 1.816639, 1.872135, 1.933
 <h2 data-number="22.5" class="anchored" data-anchor-id="criterion-films"><span class="header-section-number">22.5</span> Criterion Films</h2>
 <p>The film dataset contains 1,479 entries from the Criterion Collection, a prestigious home-video distribution company dedicated to preserving and publishing “important classic and contemporary films” from around the world. Often regarded as a canon of cinema as an art form, the collection includes technically restored and historically significant works.</p>
 <p>The dataset identifies each film by its standard title, release year, and unique imdb_id. It captures the creative backbone of each work through columns for directors, writers, and genre classifications, alongside production details like the country of origin, primary languages, and runtime. Critical reception is well-documented with aggregated scores from IMDb (including vote counts), Rotten Tomatoes, and Metacritic. Additionally, the table is enriched with encyclopedic context via Wikipedia extracts and descriptions, and occasionally includes financial metrics like production budgets and box office returns.</p>
-<div id="c2e08660" class="cell" data-execution_count="13">
+<div id="3b27de32" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>film <span class="op">=</span> pl.read_csv(<span class="st">"data/criterion.csv"</span>)</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>film.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -581,7 +581,7 @@ $ box_office_raw        &lt;i64&gt; null, null, null, null, 634000, null, null, 
 <section id="fifty-years-of-movies" class="level2" data-number="22.6">
 <h2 data-number="22.6" class="anchored" data-anchor-id="fifty-years-of-movies"><span class="header-section-number">22.6</span> Fifty Years of Movies</h2>
 <p>The movie dataset serves as the central hub, containing 5,000 observations that represent the top-100 grossing U.S. films for each year from 1970 to 2020. It captures essential metadata such as the film’s title, release year, MPA rating, and runtime, alongside measures of commercial and critical success like gross revenue, IMDb user ratings/vote counts, and Metacritic scores. Uniquely, it also includes computer vision metrics derived from the film’s promotional poster, quantifying visual attributes such as poster_brightness, saturation, and edgeness (a measure of visual complexity).</p>
-<div id="f6c3eafd" class="cell" data-execution_count="15">
+<div id="4d7b6b24" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>movie <span class="op">=</span> pl.read_csv(<span class="st">"data/movies_50_years.csv"</span>)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>movie.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -590,20 +590,20 @@ Columns: 12
 $ year              &lt;i64&gt; 1970, 1970, 1970, 1970, 1970, 1970, 1970, 1970, 1970, 1970
 $ title             &lt;str&gt; 'Love Story', 'Airport', 'MASH', 'Patton', 'The AristoCats', 'Little Big Man', 'Tora! Tora! Tora!', 'Catch-22', 'The Owl and the Pussycat', 'Joe'
 $ mpa               &lt;str&gt; 'PG', 'G', 'R', 'GP', 'G', 'PG-13', 'G', 'R', 'PG', 'R'
-$ runtime           &lt;str&gt; '100', '137', '116', '172', '78', '139', '144', '122', '95', '107'
-$ gross             &lt;str&gt; '106.4', '100.49', '81.6', '61.7', '37.68', '31.56', '29.55', '24.91', '23.68', '19.32'
+$ runtime           &lt;i64&gt; 100, 137, 116, 172, 78, 139, 144, 122, 95, 107
+$ gross             &lt;f64&gt; 106.4, 100.49, 81.6, 61.7, 37.68, 31.56, 29.55, 24.91, 23.68, 19.32
 $ rating_count      &lt;i64&gt; 28330, 16512, 64989, 90461, 87551, 31412, 30347, 20997, 3107, 2633
-$ rating            &lt;str&gt; '6.9', '6.6', '7.5', '7.9', '7.1', '7.6', '7.5', '7.2', '6.5', '6.8'
-$ metacritic        &lt;str&gt; 'NA', '42', 'NA', 'NA', 'NA', 'NA', '46', 'NA', 'NA', 'NA'
-$ poster_brightness &lt;str&gt; '79.039734052134', '70.73515993593905', '74.5400023238925', '83.12899118937443', '79.79474571281945', '67.96583791250038', '39.79528775599128', '62.28054483453459', '67.22113941912305', '31.826858122949158'
-$ poster_saturation &lt;str&gt; '8.029792248510015', '29.28457189363516', '40.103629182765395', '17.433849565817365', '12.481991945072151', '9.016387405954426', '48.60645939534094', '35.96620937559402', '10.24255420931898', '27.578054400938452'
-$ poster_edgeness   &lt;str&gt; '4.586166444178613', '4.954734636760736', '3.5102847848915624', '3.657573618987647', '4.400358220849864', '5.359519670438313', '2.1121361608919753', '3.6546805917391145', '4.894551155673808', '4.229543347907548'
+$ rating            &lt;f64&gt; 6.9, 6.6, 7.5, 7.9, 7.1, 7.6, 7.5, 7.2, 6.5, 6.8
+$ metacritic        &lt;i64&gt; null, 42, null, null, null, null, 46, null, null, null
+$ poster_brightness &lt;f64&gt; 79.039734052134, 70.73515993593905, 74.5400023238925, 83.12899118937443, 79.79474571281945, 67.96583791250038, 39.79528775599128, 62.28054483453459, 67.22113941912305, 31.82685812294916
+$ poster_saturation &lt;f64&gt; 8.029792248510015, 29.28457189363516, 40.103629182765395, 17.433849565817365, 12.481991945072153, 9.016387405954426, 48.60645939534094, 35.96620937559402, 10.24255420931898, 27.578054400938452
+$ poster_edgeness   &lt;f64&gt; 4.586166444178613, 4.954734636760736, 3.5102847848915624, 3.657573618987647, 4.400358220849864, 5.359519670438313, 2.1121361608919753, 3.6546805917391145, 4.894551155673808, 4.229543347907548
 $ description       &lt;str&gt; 'A boy and a girl from different backgrounds fall in love regardless of their upbringing - and then tragedy strikes.', 'A bomber on board an airplane, an airport almost closed by snow, and various personal problems of the people involved.', 'The staff of a Korean War field hospital use humor and high jinks to keep their sanity in the face of the horror of war.', 'The World War II phase of the career of controversial American general George S. Patton.', 'With the help of a smooth talking tomcat, a family of Parisian felines set to inherit a fortune from their owner try to make it back home after a jealous butler kidnaps them and leaves them in the country.', 'Jack Crabb, looking back from extreme old age, tells of his life being raised by Native Americans and fighting with General Custer.', 'In 1941, following months of economic embargo, Japan prepares to open its war against the United States with a surprise attack on the US naval base at Pearl Harbor.', 'A man is trying desperately to be certified insane during World War II, so he can stop flying missions.', 'A stuffy author enters into an explosive relationship with his neighbor, a foul-mouthed, freewheeling prostitute.', "Two men, Bill, a wealthy conservative, and Joe, a far-right factory worker, form a dangerous bond after Bill confesses to murdering his daughter's drug dealer boyfriend to Joe."
 </code></pre>
 </div>
 </div>
 <p>The color dataset provides a detailed breakdown of the color palettes used in the film posters. Structured in a long format, it links each movie to multiple rows representing specific color categories—spanning hues like “red” or “blue” and greyscale tones like “black” or “white.” The percentage column quantifies the dominance of each color, enabling the analysis of visual trends in movie marketing over the last half-century (such as the rise of darker or more saturated poster designs).</p>
-<div id="3bcf5041" class="cell" data-execution_count="16">
+<div id="f7c97463" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>color <span class="op">=</span> pl.read_csv(<span class="st">"data/movies_50_years_color.csv"</span>)</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>color.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -618,7 +618,7 @@ $ percentage &lt;f64&gt; 2.6356547746208077, 3.0933561204870754, 0.0542085024567
 </div>
 </div>
 <p>The genre dataset acts as a mapping table to handle the one-to-many relationship between films and their narrative categories. Since a single movie often fits into multiple classifications (e.g., a film that is both “Action” and “Sci-Fi”), this table lists each genre tag on a separate row. This structure allows for precise filtering and aggregation, facilitating analysis of how genre popularity—like the decline of Westerns or the rise of Superhero films—has shifted over the 50-year period.</p>
-<div id="ebab0ae8" class="cell" data-execution_count="17">
+<div id="9bcdc8ce" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>genre <span class="op">=</span> pl.read_csv(<span class="st">"data/movies_50_years_genre.csv"</span>)</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>genre.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -631,7 +631,7 @@ $ genre &lt;str&gt; 'Drama', 'Romance', 'Action', 'Drama', 'Thriller', 'Comedy',
 </div>
 </div>
 <p>The people dataset details the key creative talent behind each film, listing the director and the top four billed actors (“starring”) ranked by prominence. Beyond simply naming the individuals, this table enriches the data with demographic inference: it includes predicted gender classifications and a confidence score (gender_conf) for each name. These predictions are derived from U.S. Social Security name data, allowing for longitudinal studies of gender representation in top-tier Hollywood productions.</p>
-<div id="b1f2d4af" class="cell" data-execution_count="18">
+<div id="8e9edf7f" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>people <span class="op">=</span> pl.read_csv(<span class="st">"data/movies_50_years_people.csv"</span>)</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>people.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -643,7 +643,7 @@ $ role        &lt;str&gt; 'director', 'starring', 'starring', 'starring', 'starr
 $ rank        &lt;i64&gt; 1, 1, 2, 3, 4, 1, 2, 1, 2, 3
 $ person      &lt;str&gt; 'Arthur Hiller', 'Ali MacGraw', "Ryan O'Neal", 'John Marley', 'Ray Milland', 'George Seaton', 'Henry Hathaway', 'Burt Lancaster', 'Dean Martin', 'George Kennedy'
 $ gender      &lt;str&gt; 'male', 'male', 'male', 'male', 'male', 'male', 'male', 'male', 'male', 'male'
-$ gender_conf &lt;str&gt; '0.9937', '0.6877', '0.9768', '0.9961', '0.984', '0.9932', '0.9935', '1', '0.9875', '0.9932'
+$ gender_conf &lt;f64&gt; 0.9937, 0.6877, 0.9768, 0.9961, 0.984, 0.9932, 0.9935, 1.0, 0.9875, 0.9932
 </code></pre>
 </div>
 </div>
@@ -652,7 +652,7 @@ $ gender_conf &lt;str&gt; '0.9937', '0.6877', '0.9768', '0.9961', '0.984', '0.99
 <h2 data-number="22.7" class="anchored" data-anchor-id="rva-flights"><span class="header-section-number">22.7</span> RVA Flights</h2>
 <p>Sourced from the U.S. Bureau of Transportation, these five datasets provide a comprehensive record of commercial aviation activity departing from Richmond International Airport (RIC) during its record-breaking year of 2019.</p>
 <p>The rva dataset is the central fact table, containing 24,808 rows that represent the complete set of commercial departures from Richmond for the year. It captures the pulse of daily operations, logging scheduling data (planned vs.&nbsp;actual departure/arrival times), delays, and routing information (origin to dest). It also serves as the connector for the other tables, linking to them via keys like carrier, tailnum, and time_hour.</p>
-<div id="318ce4fe" class="cell" data-execution_count="20">
+<div id="19444740" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>rva <span class="op">=</span> pl.read_csv(<span class="st">"data/flightsrva_flights.csv.gz"</span>, null_values<span class="op">=</span>[<span class="st">"NA"</span>])</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>rva.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -681,7 +681,7 @@ $ time_hour      &lt;str&gt; '2019-01-01T05:00:00Z', '2019-01-01T06:00:00Z', '20
 </div>
 </div>
 <p>The weather dataset offers an hourly meteorological log for the airport, containing 8,735 observations. It tracks environmental conditions—such as wind speed, visibility, and humidity—that are critical for analyzing flight delays. The time_hour column allows this data to be precisely joined with flight departures to assess the impact of weather on airport performance.</p>
-<div id="97d12d50" class="cell" data-execution_count="21">
+<div id="136572c7" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>weather <span class="op">=</span> pl.read_csv(<span class="st">"data/flightsrva_weather.csv.gz"</span>, null_values<span class="op">=</span>[<span class="st">"NA"</span>])</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>weather.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -706,7 +706,7 @@ $ time_hour  &lt;str&gt; '2019-01-01T05:00:00Z', '2019-01-01T06:00:00Z', '2019-0
 </div>
 </div>
 <p>The airport dataset acts as a geospatial lookup table for the 1,251 US destinations accessible from Richmond. It maps three-letter FAA codes (like “ATL” or “ORD”) to their full names, time zones, and exact latitude/longitude coordinates, enabling the mapping of flight paths and the calculation of distance-based metrics.</p>
-<div id="59953b9d" class="cell" data-execution_count="22">
+<div id="8f3b4be9" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>airport <span class="op">=</span> pl.read_csv(<span class="st">"data/flightsrva_airports.csv.gz"</span>, null_values<span class="op">=</span>[<span class="st">"NA"</span>])</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>airport.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -724,7 +724,7 @@ $ tzone &lt;str&gt; 'America/New_York', 'America/Chicago', 'America/New_York', '
 </div>
 </div>
 <p>The airline dataset is a small reference table linking the 14 unique two-letter carrier codes found in the flight logs (e.g., “AA”, “DL”) to their full corporate names (e.g., “American Airlines Inc.”, “Delta Air Lines Inc.”).</p>
-<div id="a5324551" class="cell" data-execution_count="23">
+<div id="f8984816" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>airline <span class="op">=</span> pl.read_csv(<span class="st">"data/flightsrva_airlines.csv.gz"</span>, null_values<span class="op">=</span>[<span class="st">"NA"</span>])</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>airline.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -736,7 +736,7 @@ $ name    &lt;str&gt; 'Endeavor Air Inc.', 'American Airlines Inc.', 'JetBlue Ai
 </div>
 </div>
 <p>The plane dataset provides a technical registry for the aircraft used in these flights. Indexed by unique tail numbers, it details the hardware specifications for 3,120 individual planes, including their manufacturer, model year, engine type, and seating capacity, allowing for analysis of fleet modernization and equipment usage.</p>
-<div id="7c00f056" class="cell" data-execution_count="24">
+<div id="335dcf11" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>plane <span class="op">=</span> pl.read_csv(<span class="st">"data/flightsrva_planes.csv.gz"</span>, null_values<span class="op">=</span>[<span class="st">"NA"</span>])</span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>plane.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -758,7 +758,7 @@ $ engine       &lt;str&gt; 'Turbo-fan', 'Turbo-fan', 'Turbo-fan', 'Turbo-fan', '
 <section id="what-we-eat-in-america" class="level2" data-number="22.8">
 <h2 data-number="22.8" class="anchored" data-anchor-id="what-we-eat-in-america"><span class="header-section-number">22.8</span> What We Eat in America</h2>
 <p>The <code>wweia</code> dataset serves as a granular log of dietary intake events, containing over 173,000 observations where each row represents a specific food item consumed by a participant. It captures the “what, when, and where” of eating habits: identifying the item via a standard food_code, pinpointing the occasion with temporal markers (time, day_of_week, meal_name), and noting the origin (food_source) and location (at_home). Crucially, this transactional table details the nutritional impact of each specific portion, recording the mass in grams and providing a breakdown of energy (kcal), macronutrients (protein, carbs, fat, sugar), and other constituents like caffeine and alcohol.</p>
-<div id="dcdc1ec7" class="cell" data-execution_count="26">
+<div id="703f7955" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>wweia <span class="op">=</span> pl.read_csv(<span class="st">"data/wweia_food.csv"</span>, ignore_errors<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>wweia.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -783,7 +783,7 @@ $ alcohol     &lt;i64&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 </div>
 </div>
 <p>The <code>demo</code> dataset provides the socioeconomic and demographic context for the 13,724 survey participants, linked to the food log by a unique id. It constructs a profile for each individual, tracking fundamental attributes such as age, gender, and race, alongside indicators of social status like education level (edu_level) and family structure. Economic wellbeing is quantified by the ratio_to_poverty (the ratio of family income to the federal poverty threshold), allowing researchers to analyze how diet quality varies across different income brackets and population segments.</p>
-<div id="e7f34103" class="cell" data-execution_count="27">
+<div id="c073f49c" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>demo <span class="op">=</span> pl.read_csv(<span class="st">"data/wweia_demo.csv"</span>)</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>demo.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -801,7 +801,7 @@ $ lang_interview   &lt;str&gt; 'English', 'English', 'English', 'English', 'Engl
 </div>
 </div>
 <p>The <code>meta</code> dataset acts as the definitive taxonomy for the survey, containing 7,444 entries that map the numeric food_code found in the consumption logs to human-readable definitions. It organizes the vast array of food items into a hierarchical structure, linking specific descriptions (e.g., “Milk, low sodium, whole”) to broader category_descriptions (e.g., “Milk, whole”) and high-level food_group classifications (e.g., “Milk and Dairy”). This reference table is essential for aggregating granular food data into meaningful dietary patterns consistent with nutritional guidelines.</p>
-<div id="fcfb6ad9" class="cell" data-execution_count="28">
+<div id="42af9c02" class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>meta <span class="op">=</span> pl.read_csv(<span class="st">"data/wweia_meta.csv"</span>)</span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>meta.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -821,7 +821,7 @@ $ food_group            &lt;str&gt; 'Baby Foods', 'Milk and Dairy', 'Milk and Da
 <section id="inference-data" class="level2" data-number="22.9">
 <h2 data-number="22.9" class="anchored" data-anchor-id="inference-data"><span class="header-section-number">22.9</span> Inference Data</h2>
 <p>Derived from the CDC’s 2010 National Survey of Family Growth (NSFG), the <code>marriage</code> dataset is a focused univariate collection regarding family formation trends. It consists of a single column, age, which records the age in years at which 5,534 U.S. women entered into their first marriage. This simple numeric vector serves as a foundational sample for estimating population parameters—such as the median age of first marriage—and analyzing shifts in nuptiality over time.</p>
-<div id="3d0e64ae" class="cell" data-execution_count="30">
+<div id="0e59e416" class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>marriage <span class="op">=</span> pl.read_csv(<span class="st">"data/inference_age_at_mar.csv"</span>)</span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>marriage.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -832,7 +832,7 @@ $ age &lt;i64&gt; 32, 25, 24, 26, 32, 29, 23, 23, 29, 27
 </div>
 </div>
 <p>Originating from a study in rural New South Wales, Australia, the <code>absent</code> dataset investigates the factors influencing school attendance among 146 primary school students. The target variable, days, counts the total days a student was absent during the school year. These figures are contextualized by categorical demographic and academic indicators, including ethnicity (eth), gender (sex), age group (age), and lrn, a classification of the student’s learning status.</p>
-<div id="5d246f68" class="cell" data-execution_count="31">
+<div id="d0a1bc1e" class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>absent <span class="op">=</span> pl.read_csv(<span class="st">"data/inference_absenteeism.csv"</span>)</span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>absent.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -847,7 +847,7 @@ $ days &lt;i64&gt; 2, 11, 14, 5, 5, 13, 20, 22, 6, 6
 </div>
 </div>
 <p>The <code>sulph</code> dataset captures the results of a clinical control trial testing the efficacy of the drug sulphinpyrazone in post-heart attack care. It tracks 1,475 patients, dividing them into experimental and placebo arms via the group column. The primary endpoint is recorded in the binary outcome column (“lived” or “died”), creating a classic contingency structure used to calculate odds ratios and determine if the drug provides a statistically significant survival benefit compared to the control.</p>
-<div id="0ffe08e1" class="cell" data-execution_count="32">
+<div id="332735b2" class="cell" data-execution_count="32">
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>sulph <span class="op">=</span> pl.read_csv(<span class="st">"data/inference_sulphinpyrazone.csv"</span>)</span>
 <span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>sulph.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -859,7 +859,7 @@ $ outcome &lt;str&gt; 'died', 'died', 'died', 'died', 'died', 'died', 'died', 'd
 </div>
 </div>
 <p>Sourced from a survey of 1,325 UCLA students, the <code>speed</code> dataset combines physiological metrics with self-reported risk behavior. It logs the student’s sex and height (in inches), alongside a behavioral metric: speed, representing the fastest speed the student has ever driven a vehicle (presumably in mph). This combination allows for inference tasks such as testing for gender-based differences in driving habits or exploring correlations between physical stature and risk-taking.</p>
-<div id="bb8d03d3" class="cell" data-execution_count="33">
+<div id="341626c1" class="cell" data-execution_count="33">
 <div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>speed <span class="op">=</span> pl.read_csv(<span class="st">"data/inference_speed_sex_height.csv"</span>)</span>
 <span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>speed.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -872,7 +872,7 @@ $ height &lt;f64&gt; 69.0, 71.0, 64.0, 60.0, 70.0, 61.0, 65.0, 65.0, 61.0, 69.0
 </div>
 </div>
 <p>The <code>possum</code> dataset provides a morphometric profile of 104 brushtail possums captured across Australia and New Guinea. Aside from sex and age estimates, the data tracks geographic provenance through site codes and population regions (pop, e.g., “Vic” for Victoria). The dataset is defined by its precise biological measurements in millimeters—specifically head_l (head length), skull_w (skull width), total_l (total body length), and tail_l (tail length)—which are often used to classify subspecies or study regional physical variations.</p>
-<div id="212a43e8" class="cell" data-execution_count="34">
+<div id="3dd1e17d" class="cell" data-execution_count="34">
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>possum <span class="op">=</span> pl.read_csv(<span class="st">"data/inference_possum.csv"</span>)</span>
 <span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>possum.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -893,7 +893,7 @@ $ tail_l  &lt;f64&gt; 36.0, 36.5, 39.0, 38.0, 36.0, 35.5, 36.0, 37.0, 37.0, 37.5
 <section id="keylogging" class="level2" data-number="22.10">
 <h2 data-number="22.10" class="anchored" data-anchor-id="keylogging"><span class="header-section-number">22.10</span> Keylogging</h2>
 <p>The klog dataset is a high-resolution behavioral log capturing the precise keystroke dynamics of students writing in English. With over 1.1 million observations, each row represents a single key press or input event. The data records the temporal flow of writing through timestamps (t0 for press, t1 for release) and calculated durations (dur), offering insight into motor processing and cognitive hesitation. The input and code columns differentiate between the resulting character (e.g., “I”) and the physical key actuated (e.g., “KeyI” or “Space”), allowing for the reconstruction of the text and the analysis of editing behaviors like backspacing or pausing.</p>
-<div id="1d84d2f4" class="cell" data-execution_count="36">
+<div id="42c25637" class="cell" data-execution_count="36">
 <div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>klog <span class="op">=</span> pl.read_csv(<span class="st">"data/keylog.csv.gz"</span>)</span>
 <span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>klog.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -910,7 +910,7 @@ $ code      &lt;str&gt; 'KeyI', 'KeyF', 'Space', 'KeyI', 'Space', 'KeyC', 'KeyO'
 </div>
 </div>
 <p>The meta dataset provides the demographic and linguistic context for the 823 participants tracked in the keylogs. It links each unique session id to the writer’s age and, crucially, their native language background (lang). The dataset also includes a cefr rating (Common European Framework of Reference for Languages) , which categorizes their English proficiency into standard levels such as “B1/B2” (independent user) or “C1/C2” (proficient user). This metadata enables comparative analysis of how L1 background and L2 proficiency manifest in low-level typing patterns.</p>
-<div id="a94fd503" class="cell" data-execution_count="37">
+<div id="c6944112" class="cell" data-execution_count="37">
 <div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>meta <span class="op">=</span> pl.read_csv(<span class="st">"data/keylog-meta.csv.gz"</span>)</span>
 <span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>meta.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -927,7 +927,7 @@ $ cefr &lt;str&gt; 'C1/C2', 'B1/B2', 'B1/B2', 'C1/C2', 'B1/B2', 'C1/C2', 'C1/C2'
 <section id="paris-metro" class="level2" data-number="22.11">
 <h2 data-number="22.11" class="anchored" data-anchor-id="paris-metro"><span class="header-section-number">22.11</span> Paris Metro <img style="height:0.8em; width: auto" src="img/spatial.png"></h2>
 <p>The pmetro dataset captures the geospatial layout of the Paris Métro system, containing 371 entries that represent individual station stops or track segments. Each row identifies a station by name and links it to its specific line number and official branding line_color (provided as a hex code). Uniquely, the dataset is structured to facilitate network visualization rather than just point plotting: in addition to the station’s own coordinates (lat, lon), it includes lat_end and lon_end columns. This “start-to-end” structure effectively defines the edges between stations, allowing for the reconstruction of the connected path of each subway line.</p>
-<div id="2043bdeb" class="cell" data-execution_count="39">
+<div id="c8327658" class="cell" data-execution_count="39">
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>pmetro <span class="op">=</span> pl.read_csv(<span class="st">"data/paris_metro_stops.csv"</span>)</span>
 <span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>pmetro.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -947,7 +947,7 @@ $ lat_end    &lt;str&gt; '48.88863121777117', '48.884708201322525', '48.88119152
 <section id="us-city-population" class="level2" data-number="22.12">
 <h2 data-number="22.12" class="anchored" data-anchor-id="us-city-population"><span class="header-section-number">22.12</span> US City Population <img style="height:0.8em; width: auto" src="img/spatial.png"></h2>
 <p>The us_pop dataset traces the demographic evolution of the United States through a historical record of urban growth. Spanning from the first census in 1790 through 2010, it logs the population (measured in thousands) for distinct cities identified by name and state. The data appears to track modern cities backward in time, showing values of 0.0 for years prior to a city’s founding or incorporation (e.g., Anchorage in 1790). Enriched with geospatial coordinates (lat and lon), this longitudinal collection facilitates the analysis of urbanization patterns, capturing the country’s westward expansion and the explosive growth of metropolitan hubs over two centuries.</p>
-<div id="effa8583" class="cell" data-execution_count="41">
+<div id="aa5fd48d" class="cell" data-execution_count="41">
 <div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>us_pop <span class="op">=</span> pl.read_csv(<span class="st">"data/us_city_population.csv"</span>)</span>
 <span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>us_pop.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -967,7 +967,7 @@ $ lat        &lt;f64&gt; 61.177549, 33.5274441, 34.7842707, 30.668426, 32.346251
 <h2 data-number="22.13" class="anchored" data-anchor-id="us-metropolitan-regions"><span class="header-section-number">22.13</span> US Metropolitan Regions <img style="height:0.8em; width: auto" src="img/spatial.png"></h2>
 <p>Sourced from the Census Bureau’s American Community Survey, this collection of datasets provides a multi-dimensional view of U.S. demographics and economics, centered on Metropolitan Statistical Areas (CBSAs).</p>
 <p>The metro dataset is the primary analytic table, profiling 934 metropolitan areas identified by a unique geoid. It aggregates key socioeconomic indicators, including population size (pop), population density, and the median age of residents. Economic health is captured through median household income and housing metrics like home ownership rates (percent_own) and the median cost of a one-bedroom rental. Geographically, each metro is assigned to a broad census region (quad) and division, and is precisely located via latitude/longitude coordinates. The accompanying metro_geo dataset provides the corresponding polygon geometries for these areas, enabling choropleth mapping and spatial analysis.</p>
-<div id="02e44759" class="cell" data-execution_count="43">
+<div id="42af2789" class="cell" data-execution_count="43">
 <div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>metro <span class="op">=</span> pl.read_csv(<span class="st">"data/acs_cbsa.csv"</span>)</span>
 <span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>metro.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -990,7 +990,7 @@ $ division         &lt;str&gt; 'Middle Atlantic', 'Pacific', 'East North Central
 </div>
 </div>
 <p>The next several datasets handle the higher-level state geography. The state table serves as a reference for the 50 U.S. states, providing names, abbreviations, and total populations, while state_geo contains their boundaries.</p>
-<div id="45fa9ca7" class="cell" data-execution_count="44">
+<div id="8213768e" class="cell" data-execution_count="44">
 <div class="sourceCode cell-code" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>state <span class="op">=</span> pl.read_csv(<span class="st">"data/acs_state.csv"</span>)</span>
 <span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>state.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1003,7 +1003,7 @@ $ pop   &lt;f64&gt; 4.997675, 0.735951, 7.079203, 3.006309, 39.455353, 5.723176,
 </div>
 </div>
 <p>The metro_cw (crosswalk) table bridges the two geographic levels, handling the complexity of metropolitan areas that span multiple state lines (e.g., the New York metro area covering parts of NY, NJ, and PA). It uses the prop column to indicate what fraction of a metro area’s footprint or population falls within a specific state.</p>
-<div id="4fc531ac" class="cell" data-execution_count="45">
+<div id="d999b6a4" class="cell" data-execution_count="45">
 <div class="sourceCode cell-code" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>metro_cw <span class="op">=</span> pl.read_csv(<span class="st">"data/acs_cbsa_to_state.csv"</span>)</span>
 <span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>metro_cw.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1016,7 +1016,7 @@ $ prop  &lt;f64&gt; 0.6483270833289084, 0.3486404584192905, 0.003032458251801092
 </div>
 </div>
 <p>The transit dataset provides a breakdown of transportation modes, listing the percentage of the population that commutes via car, public transportation, bicycle, or other means, as well as those who work from home.</p>
-<div id="9fc449a4" class="cell" data-execution_count="46">
+<div id="567d1942" class="cell" data-execution_count="46">
 <div class="sourceCode cell-code" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>transit <span class="op">=</span> pl.read_csv(<span class="st">"data/acs_cbsa_commute_type.csv"</span>)</span>
 <span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>transit.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1037,7 +1037,7 @@ $ worked_from_home      &lt;f64&gt; 10.59, 11.25, 10.91, 11.15, 8.69, 15.41, 11.
 </div>
 </div>
 <p>Complementing this, the commute dataset uses a “long” format to capture the distribution of travel times. Instead of a single average, it breaks commute durations into specific time bins (defined by time_min and time_max), with the per column indicating the percentage of commuters falling into each interval.</p>
-<div id="5004120a" class="cell" data-execution_count="47">
+<div id="929b3fb7" class="cell" data-execution_count="47">
 <div class="sourceCode cell-code" id="cb68"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>commute <span class="op">=</span> pl.read_csv(<span class="st">"data/acs_cbsa_commute_time.csv"</span>)</span>
 <span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>commute.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1053,7 +1053,7 @@ $ time_max &lt;f64&gt; 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 10.0
 </div>
 </div>
 <p>The hh dataset offers a granular look at economic disparity by mapping the full distribution of household income for each metro area. Like the commute data, it is structured in a long format, where each row represents a specific income bracket (bounded by band_min and band_max). The per column quantifies the share of households within that bracket, allowing for a more nuanced analysis of wealth distribution—such as identifying the “middle class” squeeze or poverty rates—than a simple median value could provide.</p>
-<div id="0305137f" class="cell" data-execution_count="48">
+<div id="a9ac63f8" class="cell" data-execution_count="48">
 <div class="sourceCode cell-code" id="cb70"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>hh <span class="op">=</span> pl.read_csv(<span class="st">"data/acs_cbsa_hh_income.csv"</span>)</span>
 <span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>hh.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1069,7 +1069,7 @@ $ band_max &lt;str&gt; '10000', '14999', '19999', '24999', '29999', '34999', '39
 </div>
 </div>
 <p>A geographic file that contains the polygons for each of the US states. There are keys to join to the other structured datasets above.</p>
-<div id="8cdd0bd3" class="cell" data-execution_count="49">
+<div id="57ad0716" class="cell" data-execution_count="49">
 <div class="sourceCode cell-code" id="cb72"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>state_geo <span class="op">=</span> DSGeo.read_file(<span class="st">"data/acs_state.geojson"</span>)</span>
 <span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>state_geo.drop(c.geometry).glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1082,7 +1082,7 @@ $ fips &lt;str&gt; '23', '33', '10', '45', '31', '53', '35', '46', '48', '06'
 </div>
 </div>
 <p>And another geographic file that contains the polygons for each of the metro regions. There are keys to join to the other structured datasets above.</p>
-<div id="3f2aaf4c" class="cell" data-execution_count="50">
+<div id="2c6e30cd" class="cell" data-execution_count="50">
 <div class="sourceCode cell-code" id="cb74"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>metro_geo <span class="op">=</span> DSGeo.read_file(<span class="st">"data/acs_cbsa_geo.geojson"</span>)</span>
 <span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>metro_geo.drop(c.geometry).glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1098,7 +1098,7 @@ $ pop   &lt;f64&gt; 20.011812, 13.202558, 9.607711, 7.54334, 7.048954, 6.332069,
 <section id="covid" class="level2" data-number="22.14">
 <h2 data-number="22.14" class="anchored" data-anchor-id="covid"><span class="header-section-number">22.14</span> COVID <img style="height:0.8em; width: auto" src="img/spatial.png"></h2>
 <p>The covid dataset is a longitudinal record tracking the daily impact of the COVID-19 pandemic across France’s administrative departments. It uses a time-series structure where each row represents the status of a specific department (departement) on a given date. The metrics capture the strain on the healthcare system and the severity of the outbreak, recording cumulative statistics for deceased patients and recovered cases, as well as real-time snapshots of patients currently hospitalised or in intensive care (reanimation). Additionally, some columns track daily flows, such as new hospital admissions (hospitalised_new), allowing for analysis of infection waves and healthcare capacity over time.</p>
-<div id="fee60cf1" class="cell" data-execution_count="52">
+<div id="5a0019e0" class="cell" data-execution_count="52">
 <div class="sourceCode cell-code" id="cb76"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>covid <span class="op">=</span> pl.read_csv(<span class="st">"data/france_departement_covid.csv"</span>)</span>
 <span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>covid.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1117,7 +1117,7 @@ $ reanimation_new  &lt;str&gt; 'NA', 'NA', 'NA', 'NA', 'NA', 'NA', 'NA', 'NA', '
 </div>
 </div>
 <p>The pop dataset is a concise demographic reference table listing the total resident population for each of the 101 French departments. Indexed by the standard two-character departement code (e.g., “01” for Ain, “75” for Paris), this table serves as a critical normalization tool. It allows researchers to convert raw counts from the COVID-19 or economic datasets into standardized rates (such as cases per 100,000 inhabitants), enabling fair comparisons between densely populated urban areas and rural regions.</p>
-<div id="47d14ed8" class="cell" data-execution_count="53">
+<div id="9f4fd674" class="cell" data-execution_count="53">
 <div class="sourceCode cell-code" id="cb78"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>pop <span class="op">=</span> pl.read_csv(<span class="st">"data/france_departement_population.csv"</span>)</span>
 <span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>pop.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1129,7 +1129,7 @@ $ population  &lt;i64&gt; 643350, 534490, 337988, 163915, 141284, 1083310, 32571
 </div>
 </div>
 <p>The fr_city dataset focuses on the country’s major urban centers, providing geospatial and demographic details for 58 significant cities. It identifies each city by name and links it to its broader administrative region (admin_name), such as “Ile-de-France” or “Nouvelle-Aquitaine.” The data includes precise lat and lon coordinates for mapping and a population figure that represents the broader urban or metropolitan area (agglomeration) rather than just the municipal limits. This dataset allows for spatial analysis of city-level hubs distinct from the broader departmental data.</p>
-<div id="c4367bfd" class="cell" data-execution_count="54">
+<div id="e93b0d60" class="cell" data-execution_count="54">
 <div class="sourceCode cell-code" id="cb80"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>fr_city <span class="op">=</span> pl.read_csv(<span class="st">"data/france_cities.csv"</span>)</span>
 <span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>fr_city.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1144,7 +1144,7 @@ $ admin_name &lt;str&gt; 'Ile-de-France', 'Auvergne-Rhone-Alpes', "Provence-Alpe
 </div>
 </div>
 <p>The gdp dataset provides an economic profile of the country at the departmental level. It maps each departement (identified by both code and name) to its Gross Domestic Product (GDP) per capita in Euros. This metric serves as a proxy for regional standard of living and economic productivity, allowing for correlations with health outcomes or infrastructure availability.</p>
-<div id="c46c0d66" class="cell" data-execution_count="55">
+<div id="fc3e3d7a" class="cell" data-execution_count="55">
 <div class="sourceCode cell-code" id="cb82"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>gdp <span class="op">=</span> pl.read_csv(<span class="st">"data/france_departement_gdp.csv"</span>)</span>
 <span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a>gdp.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1157,7 +1157,7 @@ $ gdp_eur          &lt;i64&gt; 28296, 25556, 27657, 28149, 28672, 38488, 24720, 
 </div>
 </div>
 <p>The dep dataset serves as the geospatial backbone for mapping French administrative divisions. It contains the boundaries for the 101 departments, linking the standard departement codes and names to a hidden geometry column (polygons). By joining this spatial file with the covid, pop, or gdp tables, users can visualize data through choropleth maps, revealing geographic patterns such as regional economic clusters or the spatial spread of the pandemic.</p>
-<div id="25010960" class="cell" data-execution_count="56">
+<div id="ef53a4a0" class="cell" data-execution_count="56">
 <div class="sourceCode cell-code" id="cb84"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>dep <span class="op">=</span> DSGeo.read_file(<span class="st">"data/france_departement_sml.geojson"</span>)</span>
 <span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>dep.drop(c.geometry).glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1169,7 +1169,7 @@ $ departement_name &lt;str&gt; 'Ain', 'Aisne', 'Allier', 'Alpes-de-Haute-Provenc
 </div>
 </div>
 <p>We have a second covid dataset consisting of a granular time-series record tracking the spread of the virus across Italy’s administrative landscape. Unlike national or regional summaries, this table drills down to the provincial level (roughly equivalent to U.S. counties), providing a daily count of total cases for each province and its parent region. With over 68,000 observations, it allows for the analysis of local outbreaks and the specific trajectory of the pandemic within distinct geographic pockets from February 2020 onwards.</p>
-<div id="70df56fc" class="cell" data-execution_count="58">
+<div id="7c0e9a32" class="cell" data-execution_count="58">
 <div class="sourceCode cell-code" id="cb86"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>covid <span class="op">=</span> pl.read_csv(<span class="st">"data/it_province_covid.csv"</span>)</span>
 <span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>covid.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1183,7 +1183,7 @@ $ cases    &lt;i64&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 </div>
 </div>
 <p>The it_city dataset serves as a geospatial reference for 388 distinct Italian urban centers. It identifies cities by name—ranging from major metropolises like Rome and Milan to smaller regional hubs—and provides their precise latitude (lat) and longitude (lon) coordinates. Additionally, the pop column lists the resident population for each city, enabling analysis that correlates population density or urban size with other socioeconomic or health indicators.</p>
-<div id="d47e639d" class="cell" data-execution_count="59">
+<div id="788db09b" class="cell" data-execution_count="59">
 <div class="sourceCode cell-code" id="cb88"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>it_city <span class="op">=</span> pl.read_csv(<span class="st">"data/it_cities.csv"</span>)</span>
 <span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a>it_city.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1197,7 +1197,7 @@ $ pop       &lt;i64&gt; 2318895, 1236837, 959470, 870456, 648260, 580223, 366133
 </div>
 </div>
 <p>The prov dataset provides the essential spatial geometry required to map the provincial data. It contains the administrative boundaries for Italy’s 107 provinces, identifying each by its standard name (e.g., “Torino”, “Firenze”). By linking this geospatial file with the covid dataset via the province column, users can construct choropleth maps to visualize the spatial distribution and evolution of case counts across the peninsula.</p>
-<div id="72c15d2d" class="cell" data-execution_count="60">
+<div id="4aed3d45" class="cell" data-execution_count="60">
 <div class="sourceCode cell-code" id="cb90"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>prov <span class="op">=</span> DSGeo.read_file(<span class="st">"data/it_province.geojson"</span>)</span>
 <span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>prov.drop(c.geometry).glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1211,7 +1211,7 @@ $ province &lt;str&gt; 'Torino', 'Vercelli', 'Novara', 'Cuneo', 'Asti', 'Alessan
 <section id="u.s.-storms" class="level2" data-number="22.15">
 <h2 data-number="22.15" class="anchored" data-anchor-id="u.s.-storms"><span class="header-section-number">22.15</span> U.S. Storms <img style="height:0.8em; width: auto" src="img/spatial.png"></h2>
 <p>Sourced from NOAA’s National Hurricane Center, these three datasets provide a historical record of North Atlantic tropical cyclones. The storm dataset records the comprehensive trajectory and intensity history of tropical cyclones since 1950. It contains over 25,000 timestamped observations, logging the status of a storm every six hours. The data captures the storm’s precise geographic position (lat, lon), its maximum sustained wind speed (wind) in knots, and its Saffir-Simpson category (ranging from 0 for tropical storms/depressions to 5 for catastrophic hurricanes).</p>
-<div id="313dd926" class="cell" data-execution_count="62">
+<div id="36f8064c" class="cell" data-execution_count="62">
 <div class="sourceCode cell-code" id="cb92"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>storm <span class="op">=</span> pl.read_csv(<span class="st">"data/storms.csv"</span>)</span>
 <span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a>storm.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1233,7 +1233,7 @@ $ wind     &lt;i64&gt; 35, 40, 45, 50, 50, 50, 55, 55, 60, 60
 </div>
 </div>
 <p>The gender dataset classifies 262 distinct storm names by gender. It provides the name, the assigned gender (male or female), and a prob score reflecting the confidence of that assignment based on U.S. naming conventions. This table supports behavioral research, such as investigations into whether the gender of a storm’s name psychologically impacts public risk perception and preparedness levels.</p>
-<div id="24c5bfbf" class="cell" data-execution_count="63">
+<div id="3bcd7b0b" class="cell" data-execution_count="63">
 <div class="sourceCode cell-code" id="cb94"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>gender <span class="op">=</span> pl.read_csv(<span class="st">"data/storm_gender.csv"</span>)</span>
 <span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a>gender.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1246,7 +1246,7 @@ $ prob   &lt;f64&gt; 1.0, 1.0, 1.0, 1.0, 0.9634, 1.0, 1.0, 0.9936, 0.9987, 0.986
 </div>
 </div>
 <p>The storm_type dataset acts as a lookup table for the meteorological classifications found in the main tracking data. It maps the two-letter status codes (like ‘HU’ or ‘TD’) to their full descriptions (e.g., ‘hurricane’ or ‘tropical depression’), clarifying the specific developmental stage or physical nature of the cyclone at each observation point.</p>
-<div id="dafa846d" class="cell" data-execution_count="64">
+<div id="d32edfd0" class="cell" data-execution_count="64">
 <div class="sourceCode cell-code" id="cb96"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>storm_type <span class="op">=</span> pl.read_csv(<span class="st">"data/storm_codes.csv"</span>)</span>
 <span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a>storm_type.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1261,7 +1261,7 @@ $ status_name &lt;str&gt; 'tropical depression', 'tropical storm', 'hurricane', 
 <section id="shakespeare-plays" class="level2" data-number="22.16">
 <h2 data-number="22.16" class="anchored" data-anchor-id="shakespeare-plays"><span class="header-section-number">22.16</span> Shakespeare Plays <img style="height:0.8em; width: auto" src="img/text.png"></h2>
 <p>A catalog of Shakespeare’s 37 plays, capturing each work’s identity and publication metadata. This serves as the metadata reference table, with each play assigned a short identifier (like “ham” for Hamlet) that links to all other tables. The data comes from the Folger Shakespeare Library’s scholarly editions.</p>
-<div id="1fe633ec" class="cell" data-execution_count="66">
+<div id="d3f13008" class="cell" data-execution_count="66">
 <div class="sourceCode cell-code" id="cb98"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>play <span class="op">=</span> pl.read_csv(<span class="st">"data/shakespeare_plays.csv"</span>)</span>
 <span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a>play.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1275,7 +1275,7 @@ $ short_title &lt;str&gt; 'MND', 'AWW', 'Ant', 'AYL', 'Cor', 'Cym', 'Ham', '1H4'
 </div>
 </div>
 <p>The dramatis personae across all plays—1,126 characters from Hamlet to Puck to Lady Macbeth. Each character is tied to their play and includes role descriptions where available (e.g., “duke of Athens” for Theseus, “father to Hermia” for Egeus). This table enables analysis of character networks, naming patterns, and the social structures Shakespeare constructed.</p>
-<div id="5cd30b54" class="cell" data-execution_count="67">
+<div id="33444582" class="cell" data-execution_count="67">
 <div class="sourceCode cell-code" id="cb100"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>char <span class="op">=</span> pl.read_csv(<span class="st">"data/shakespeare_characters.csv"</span>)</span>
 <span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a>char.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1289,7 +1289,7 @@ $ role_description &lt;str&gt; null, null, null, null, 'duke of Athens', 'queen 
 </div>
 </div>
 <p>The spoken text of the plays, segmented into 80,592 individual lines of verse or prose. Each line is attributed to a specific character and located within the play’s structure (act, scene, line number). This is the core table for literary analysis—studying who speaks, how much, in what style (verse vs.&nbsp;prose), and how dialogue flows through each scene.</p>
-<div id="6bcf9f8b" class="cell" data-execution_count="68">
+<div id="1246178d" class="cell" data-execution_count="68">
 <div class="sourceCode cell-code" id="cb102"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>line <span class="op">=</span> pl.read_csv(<span class="st">"data/shakespeare_lines.csv.gz"</span>)</span>
 <span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a>line.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1307,7 +1307,7 @@ $ text         &lt;str&gt; 'Now, fair Hippolyta, our nuptial hour', 'Draws on ap
 </div>
 </div>
 <p>A granular, linguistically-annotated word table with nearly 600,000 tokens. Each word is linked back to its line, character, and play, and includes its lemma (base form) and part-of-speech tag. This enables computational stylistics: vocabulary richness, word frequency analysis, grammatical patterns, and comparative studies of how different characters or plays use language.</p>
-<div id="27dfdc83" class="cell" data-execution_count="69">
+<div id="ce8a958b" class="cell" data-execution_count="69">
 <div class="sourceCode cell-code" id="cb104"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>word <span class="op">=</span> pl.read_csv(<span class="st">"data/shakespeare_words.csv.gz"</span>)</span>
 <span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a>word.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1330,7 +1330,7 @@ $ location     &lt;str&gt; '1.1.1', '1.1.1', '1.1.1', '1.1.1', '1.1.1', '1.1.1',
 <h2 data-number="22.17" class="anchored" data-anchor-id="wikipedia-authors"><span class="header-section-number">22.17</span> Wikipedia Authors <img style="height:0.8em; width: auto" src="img/text.png"></h2>
 <p>Sourced from Wikipedia, these six datasets provide a multi-faceted view of 75 prominent British authors, ranging from medieval poets like Chaucer to modern literary figures.</p>
 <p>The wiki dataset serves as the biographical master table for the collection. It anchors each author (doc_id) with key vital statistics, including their years of birth and death, assigned literary era (e.g., “Early”, “Sixteenth C”), and gender. To facilitate linking with the other tables, it includes the URL slug for their Wikipedia page (link) and a shortened name (short) for cleaner visualization.</p>
-<div id="4ea888b0" class="cell" data-execution_count="71">
+<div id="204fc745" class="cell" data-execution_count="71">
 <div class="sourceCode cell-code" id="cb106"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a>wiki <span class="op">=</span> pl.read_csv(<span class="st">"data/wiki_uk_meta.csv.gz"</span>, ignore_errors<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a>wiki.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1347,7 +1347,7 @@ $ short  &lt;str&gt; 'Marie d. F.', 'Chaucer', 'Gower', 'Langland', 'Kempe', 'Ma
 </div>
 </div>
 <p>The ptext dataset contains the full text of each of the Wikipedia pages for each of the authors.</p>
-<div id="96711251" class="cell" data-execution_count="72">
+<div id="88803fed" class="cell" data-execution_count="72">
 <div class="sourceCode cell-code" id="cb108"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a>ptext <span class="op">=</span> pl.read_csv(<span class="st">"data/wiki_uk_authors_text.csv"</span>, ignore_errors<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a>ptext.drop(c.text).glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1358,7 +1358,7 @@ $ doc_id &lt;str&gt; 'Marie de France', 'Geoffrey Chaucer', 'John Gower', 'Willi
 </div>
 </div>
 <p>The anno dataset is a large, token-level linguistic corpus derived from the text of the authors’ Wikipedia biographies. With over 400,000 rows, it breaks down every sentence into individual words (token), providing deep grammatical analysis including the lemma, part-of-speech tags (upos, xpos), and morphological features (feats). It also captures dependency parsing relationships (relation, tid_source), enabling syntactic analysis of how these figures are described in encyclopedic text.</p>
-<div id="997417d1" class="cell" data-execution_count="73">
+<div id="cd03e15a" class="cell" data-execution_count="73">
 <div class="sourceCode cell-code" id="cb110"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a>anno <span class="op">=</span> pl.read_csv(<span class="st">"data/wiki_uk_authors_anno.csv.gz"</span>, ignore_errors<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a>anno.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1379,7 +1379,7 @@ $ relation      &lt;str&gt; 'nsubj', 'flat', 'flat', 'cop', 'det', 'root', 'advm
 </div>
 </div>
 <p>The cite dataset maps the direct “knowledge graph” between these authors within Wikipedia. It functions as a directed adjacency list, where each row represents a hyperlink connecting one author’s page (doc_id) to another’s (doc_id2). This structure allows researchers to construct a citation network, revealing which authors are explicitly referenced in the biographies of their peers—for example, showing how Geoffrey Chaucer is linked to later writers like Charles Dickens or William Shakespeare.</p>
-<div id="37f8523c" class="cell" data-execution_count="74">
+<div id="3cd2b86e" class="cell" data-execution_count="74">
 <div class="sourceCode cell-code" id="cb112"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a>cite <span class="op">=</span> pl.read_csv(<span class="st">"data/wiki_uk_citations.csv"</span>, ignore_errors<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>cite.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1391,7 +1391,7 @@ $ doc_id2 &lt;str&gt; 'Geoffrey Chaucer', 'William Langland', 'John Gower', 'Joh
 </div>
 </div>
 <p>The cocite dataset captures latent connections between authors by tracking how often they appear together in other Wikipedia articles. Rather than direct links, it counts the co-occurrences (count) between a primary author (doc_id) and another figure (doc_id_out).</p>
-<div id="f591e1dd" class="cell" data-execution_count="75">
+<div id="59fe61ed" class="cell" data-execution_count="75">
 <div class="sourceCode cell-code" id="cb114"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a>cocite <span class="op">=</span> pl.read_csv(<span class="st">"data/wiki_uk_cocitations.csv"</span>, ignore_errors<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb114-2"><a href="#cb114-2" aria-hidden="true" tabindex="-1"></a>cocite.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1404,7 +1404,7 @@ $ count      &lt;i64&gt; 1, 2, 1, 1, 1, 1, 1, 1, 1, 2
 </div>
 </div>
 <p>The rev dataset provides a longitudinal history of the Wikipedia articles themselves, logging over 35,000 individual edits. Each row records a specific revision, detailing the user who made the change, the timestamp (datetime), and the resulting file size. It also captures the editor’s comment, offering a window into the community collaboration and content disputes that shape the public narrative around these literary figures.</p>
-<div id="aa13cbf8" class="cell" data-execution_count="76">
+<div id="baf26d4d" class="cell" data-execution_count="76">
 <div class="sourceCode cell-code" id="cb116"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a>rev <span class="op">=</span> pl.read_csv(<span class="st">"data/wiki_uk_page_revisions.csv"</span>, ignore_errors<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb116-2"><a href="#cb116-2" aria-hidden="true" tabindex="-1"></a>rev.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1419,7 +1419,7 @@ $ comment  &lt;str&gt; 'robot  Adding: [[it:Maria di Francia]]', 'robot  Adding:
 </div>
 </div>
 <p>The views dataset tracks the public interest in these authors through daily page view statistics. It records the number of visits (views) to each author’s Wikipedia page for every day in August 2023. This time-series data allows for the analysis of current popularity trends, revealing how historical figures maintain relevance or experience spikes in attention due to news, anniversaries, or cultural events.</p>
-<div id="a431b12d" class="cell" data-execution_count="77">
+<div id="bc21a075" class="cell" data-execution_count="77">
 <div class="sourceCode cell-code" id="cb118"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a>views <span class="op">=</span> pl.read_csv(<span class="st">"data/wiki_uk_page_views.csv"</span>, ignore_errors<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb118-2"><a href="#cb118-2" aria-hidden="true" tabindex="-1"></a>views.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1434,7 +1434,7 @@ $ views  &lt;i64&gt; 121, 138, 138, 129, 104, 139, 107, 109, 127, 117
 </div>
 </div>
 <p>We also have a dataset ptext_fr, which is a version of the French Wikipedia pages for the same authors. Here are the texts.</p>
-<div id="92d17dfb" class="cell" data-execution_count="78">
+<div id="e10672ab" class="cell" data-execution_count="78">
 <div class="sourceCode cell-code" id="cb120"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a>ptext_fr <span class="op">=</span> pl.read_csv(<span class="st">"data/wiki_uk_authors_text_fr.csv"</span>, ignore_errors<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb120-2"><a href="#cb120-2" aria-hidden="true" tabindex="-1"></a>ptext_fr.drop(c.text).glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1445,7 +1445,7 @@ $ doc_id &lt;str&gt; 'Marie de France', 'Geoffrey Chaucer', 'John Gower', 'Willi
 </div>
 </div>
 <p>And likewise, anno_fr captures the French-language specific annotations.</p>
-<div id="9120a654" class="cell" data-execution_count="79">
+<div id="4d89415c" class="cell" data-execution_count="79">
 <div class="sourceCode cell-code" id="cb122"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a>anno_fr <span class="op">=</span> pl.read_csv(<span class="st">"data/wiki_uk_authors_anno_fr.csv.gz"</span>, ignore_errors<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb122-2"><a href="#cb122-2" aria-hidden="true" tabindex="-1"></a>anno_fr.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1469,7 +1469,7 @@ $ relation      &lt;str&gt; 'nsubj', 'case', 'nmod', 'cop', 'det', 'root', 'case
 <section id="imdb-reviews" class="level2" data-number="22.18">
 <h2 data-number="22.18" class="anchored" data-anchor-id="imdb-reviews"><span class="header-section-number">22.18</span> IMDb Reviews <img style="height:0.8em; width: auto" src="img/text.png"></h2>
 <p>The imdb5k dataset is a curated, 5,000-observation subset of the classic IMDb movie review corpus, designed for rapid prototyping and lightweight sentiment analysis experiments. Each row represents a single review, categorized by a binary sentiment label (“positive” or “negative”) and assigned to a specific data partition (index, e.g., “train” or “test”). Although hidden from the preview for brevity, the dataset is fully equipped for modern NLP tasks: it includes the raw text of the critique and e5, a pre-computed 1024-dimensional embedding vector.</p>
-<div id="8a9e7d66" class="cell" data-execution_count="81">
+<div id="38c4890b" class="cell" data-execution_count="81">
 <div class="sourceCode cell-code" id="cb124"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a>imdb5k <span class="op">=</span> pl.read_parquet(<span class="st">"data/imdb5k_pca.parquet"</span>)</span>
 <span id="cb124-2"><a href="#cb124-2" aria-hidden="true" tabindex="-1"></a>imdb5k.drop(c.e5, c.text).glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1482,7 +1482,7 @@ $ index &lt;str&gt; 'test', 'test', 'test', 'train', 'test', 'train', 'train', '
 </div>
 </div>
 <p>The imdb dataset represents the complete, 50,000-row standard benchmark for binary sentiment classification. Balanced between positive and negative polarities, it provides the robust volume of data necessary for training deep learning models. Like the smaller version, it contains metadata for experimental reproducibility (id and index). Crucially, it pairs the unstructured content of the reviews (text) with high-fidelity, 1024-dimensional vector representations (e5), enabling advanced machine learning applications—such as semantic search or clustering—straight out of the box.</p>
-<div id="62cccc72" class="cell" data-execution_count="82">
+<div id="2d1908a4" class="cell" data-execution_count="82">
 <div class="sourceCode cell-code" id="cb126"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a>imdb <span class="op">=</span> pl.read_parquet(<span class="st">"data/imdb_pca.parquet"</span>)</span>
 <span id="cb126-2"><a href="#cb126-2" aria-hidden="true" tabindex="-1"></a>imdb.drop(c.e5, c.text).glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1498,7 +1498,7 @@ $ index &lt;str&gt; 'train', 'train', 'train', 'train', 'train', 'train', 'train
 <section id="ag-news" class="level2" data-number="22.19">
 <h2 data-number="22.19" class="anchored" data-anchor-id="ag-news"><span class="header-section-number">22.19</span> AG News <img style="height:0.8em; width: auto" src="img/text.png"></h2>
 <p>The agnews dataset is a widely used benchmark for multiclass topic classification, comprising 127,600 news articles harvested from more than 2,000 sources. Unlike the binary sentiment datasets, this corpus challenges models to distinguish between four distinct thematic categories: World, Sports, Business, and Sci/Tech. Each entry is assigned a specific label and partitioned into training or testing sets via the index column. While the preview displays only the metadata, the dataset is fully enriched with the raw article text and pre-computed, 1024-dimensional e5 embeddings, streamlining the workflow for developing and evaluating advanced NLP models.</p>
-<div id="59649a33" class="cell" data-execution_count="84">
+<div id="71238e1a" class="cell" data-execution_count="84">
 <div class="sourceCode cell-code" id="cb128"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a>agnews <span class="op">=</span> pl.read_parquet(<span class="st">"data/agnews_pca.parquet"</span>)</span>
 <span id="cb128-2"><a href="#cb128-2" aria-hidden="true" tabindex="-1"></a>agnews.drop(c.e5, c.text).glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1514,7 +1514,7 @@ $ index &lt;str&gt; 'train', 'train', 'train', 'train', 'train', 'train', 'train
 <section id="amazon-reviews" class="level2" data-number="22.20">
 <h2 data-number="22.20" class="anchored" data-anchor-id="amazon-reviews"><span class="header-section-number">22.20</span> Amazon Reviews <img style="height:0.8em; width: auto" src="img/text.png"></h2>
 <p>The amazon dataset is a specialized subset of the massive Amazon Product Reviews corpus, containing 10,000 observations selected for the task of product category classification. Unlike standard sentiment analysis datasets, the challenge here is to predict the correct product department (e.g., “All Beauty”) based solely on the content of the review. The dataset includes standard metadata columns—a unique id, the target label, and an index assigning rows to training or testing partitions. Like the previous NLP collections, it comes fully prepared with both the raw text and pre-computed, 1024-dimensional e5 embeddings, enabling immediate experimentation with dense vector-based classification models.</p>
-<div id="ed558020" class="cell" data-execution_count="86">
+<div id="5d29e09a" class="cell" data-execution_count="86">
 <div class="sourceCode cell-code" id="cb130"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb130-1"><a href="#cb130-1" aria-hidden="true" tabindex="-1"></a>amazon <span class="op">=</span> pl.read_parquet(<span class="st">"data/amazon_pca.parquet"</span>)</span>
 <span id="cb130-2"><a href="#cb130-2" aria-hidden="true" tabindex="-1"></a>amazon.drop(c.e5, c.text).glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1530,7 +1530,7 @@ $ index &lt;str&gt; 'train', 'test', 'train', 'train', 'test', 'train', 'train',
 <section id="bbc-headlines" class="level2" data-number="22.21">
 <h2 data-number="22.21" class="anchored" data-anchor-id="bbc-headlines"><span class="header-section-number">22.21</span> BBC Headlines <img style="height:0.8em; width: auto" src="img/text.png"></h2>
 <p>The bbc dataset is a concise benchmark for multiclass document classification, derived from a collection of 2,225 articles published by BBC News. It organizes content into five distinct thematic categories: business, entertainment, politics, sport, and tech. Each row represents a single article, tagged with its ground-truth label and assigned to a specific partition (index) for training or evaluation. Designed for modern NLP workflows, the dataset comes enriched with both the raw text and pre-computed, 1024-dimensional e5 embeddings, allowing researchers to immediately apply vector-based machine learning techniques like clustering or topic modeling.</p>
-<div id="fde5af00" class="cell" data-execution_count="88">
+<div id="0edf7dc5" class="cell" data-execution_count="88">
 <div class="sourceCode cell-code" id="cb132"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb132-1"><a href="#cb132-1" aria-hidden="true" tabindex="-1"></a>bbc <span class="op">=</span> pl.read_parquet(<span class="st">"data/bbc_pca.parquet"</span>)</span>
 <span id="cb132-2"><a href="#cb132-2" aria-hidden="true" tabindex="-1"></a>bbc.drop(c.e5, c.text).glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1546,7 +1546,7 @@ $ index &lt;str&gt; 'train', 'train', 'train', 'train', 'train', 'train', 'train
 <section id="sentiment-treebank" class="level2" data-number="22.22">
 <h2 data-number="22.22" class="anchored" data-anchor-id="sentiment-treebank"><span class="header-section-number">22.22</span> Sentiment Treebank <img style="height:0.8em; width: auto" src="img/text.png"></h2>
 <p>The sst dataset contains the Stanford Sentiment Treebank (SST-5), a premier benchmark for fine-grained sentiment analysis. Unlike binary classification tasks, this corpus of 11,855 movie review excerpts challenges models to discern subtle emotional gradations across a five-point scale: “very negative”, “negative”, “neutral”, “positive”, and “very positive”. The dataset includes standard metadata columns for row identification (id) and data partitioning (index). Consistent with the other NLP collections in this series, it is provided with both the raw text and pre-computed, 1024-dimensional e5 embeddings, enabling nuanced research into how vector models capture intensity and neutrality in language.</p>
-<div id="48c7089d" class="cell" data-execution_count="90">
+<div id="001704e8" class="cell" data-execution_count="90">
 <div class="sourceCode cell-code" id="cb134"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a>sst <span class="op">=</span> pl.read_parquet(<span class="st">"data/sst5_pca.parquet"</span>)</span>
 <span id="cb134-2"><a href="#cb134-2" aria-hidden="true" tabindex="-1"></a>sst.drop(c.e5, c.text).glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1562,7 +1562,7 @@ $ index &lt;str&gt; 'train', 'train', 'train', 'train', 'train', 'train', 'train
 <section id="goemotions" class="level2" data-number="22.23">
 <h2 data-number="22.23" class="anchored" data-anchor-id="goemotions"><span class="header-section-number">22.23</span> GoEmotions <img style="height:0.8em; width: auto" src="img/text.png"></h2>
 <p>The goemo dataset represents GoEmotions, a large-scale, fine-grained corpus designed to capture the complexity of human emotional expression. Sourced from Reddit comments, this collection of over 54,000 observations moves far beyond simple positive/negative sentiment, categorizing text into a rich taxonomy of 27 distinct emotions—such as “admiration,” “remorse,” “curiosity,” and “confusion”—plus a “neutral” state. The data is structured for multi-label classification, with separate columns indicating the presence or absence of each specific emotion. As with the other NLP datasets in this series, it comes enriched with both the raw text and pre-computed, 1024-dimensional e5 embeddings, facilitating advanced research into the vector-space relationships between subtle emotional concepts.</p>
-<div id="4546d2f9" class="cell" data-execution_count="92">
+<div id="904472fd" class="cell" data-execution_count="92">
 <div class="sourceCode cell-code" id="cb136"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb136-1"><a href="#cb136-1" aria-hidden="true" tabindex="-1"></a>goemo <span class="op">=</span> pl.read_parquet(<span class="st">"data/goemotions_pca.parquet"</span>)</span>
 <span id="cb136-2"><a href="#cb136-2" aria-hidden="true" tabindex="-1"></a>goemo.drop(c.e5, c.text).glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1605,7 +1605,7 @@ $ neutral        &lt;str&gt; 'neutral', 'neutral', 'no neutral', 'no neutral', '
 <section id="fsa-owi-color-images" class="level2" data-number="22.24">
 <h2 data-number="22.24" class="anchored" data-anchor-id="fsa-owi-color-images"><span class="header-section-number">22.24</span> FSA-OWI Color Images <img style="height:0.8em; width: auto" src="img/vision.png"></h2>
 <p>Sourced from the Library of Congress, the fsac dataset contains a sample of 500 color photographs from the Farm Security Administration - Office of War Information (FSA-OWI) collection. This historic government project was originally established to document rural poverty during the Great Depression and later expanded to capture American mobilization for World War II. While the collection is famous for its iconic black-and-white imagery, this dataset highlights the less common, vibrant color work shot on early Kodachrome film. Each row represents a single photograph, accessible via the filepath, and includes rich provenance details such as the photographer (e.g., Russell Lee, Jack Delano) and a descriptive caption. The data is geocoded with city, state, and lat/lon coordinates.</p>
-<div id="a938a350" class="cell" data-execution_count="94">
+<div id="7f106c66" class="cell" data-execution_count="94">
 <div class="sourceCode cell-code" id="cb138"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb138-1"><a href="#cb138-1" aria-hidden="true" tabindex="-1"></a>fsac <span class="op">=</span> pl.read_csv(<span class="st">"data/fsac.csv"</span>)</span>
 <span id="cb138-2"><a href="#cb138-2" aria-hidden="true" tabindex="-1"></a>fsac.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1629,7 +1629,7 @@ $ latitude     &lt;f64&gt; 34.7650887, 32.725409, 34.2983884, 36.1658899, 32.794
 <section id="mnist" class="level2" data-number="22.25">
 <h2 data-number="22.25" class="anchored" data-anchor-id="mnist"><span class="header-section-number">22.25</span> MNIST <img style="height:0.8em; width: auto" src="img/vision.png"></h2>
 <p>The mnist dataset is a 1,000-sample subset of the classic MNIST database, widely considered the “Hello World” of computer vision. It consists of grayscale images of handwritten digits ranging from 0 to 9. The table links the ground-truth numeric label to the corresponding image file via the filepath column and assigns each observation to a specific data partition (index) for training or testing purposes.</p>
-<div id="e56be747" class="cell" data-execution_count="96">
+<div id="9c3c93bc" class="cell" data-execution_count="96">
 <div class="sourceCode cell-code" id="cb140"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb140-1"><a href="#cb140-1" aria-hidden="true" tabindex="-1"></a>mnist <span class="op">=</span> pl.read_csv(<span class="st">"data/mnist_1000.csv"</span>)</span>
 <span id="cb140-2"><a href="#cb140-2" aria-hidden="true" tabindex="-1"></a>mnist.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1642,7 +1642,7 @@ $ index    &lt;str&gt; 'test', 'test', 'train', 'test', 'train', 'train', 'train
 </div>
 </div>
 <p>The emnist dataset is a 10,000-sample subset of EMNIST (Extended MNIST), a more challenging dataset that expands the original digit recognition task to include handwritten letters. Unlike the standard MNIST, the label column here is alphanumeric, containing a mix of digits and both uppercase and lowercase characters (e.g., ‘g’, ‘P’, ‘4’), reflecting the greater complexity of the classification problem.</p>
-<div id="ca2b6e0c" class="cell" data-execution_count="97">
+<div id="d64e3534" class="cell" data-execution_count="97">
 <div class="sourceCode cell-code" id="cb142"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb142-1"><a href="#cb142-1" aria-hidden="true" tabindex="-1"></a>emnist <span class="op">=</span> pl.read_csv(<span class="st">"data/emnist_10000.csv"</span>)</span>
 <span id="cb142-2"><a href="#cb142-2" aria-hidden="true" tabindex="-1"></a>emnist.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1655,7 +1655,7 @@ $ index    &lt;str&gt; 'train', 'train', 'train', 'train', 'test', 'train', 'tra
 </div>
 </div>
 <p>The fmnist dataset represents a 10,000-sample subset of Fashion-MNIST, designed by Zalando Research as a modern, more difficult drop-in replacement for the original digit dataset. Instead of abstract numbers, the images depict distinct articles of clothing and accessories. The label column provides the text description of the class—such as “dress,” “pullover,” or “ankle boot”—making it intuitive to interpret model errors (e.g., confusing a “shirt” with a “t-shirt”).</p>
-<div id="f44cf9cf" class="cell" data-execution_count="98">
+<div id="af21bc94" class="cell" data-execution_count="98">
 <div class="sourceCode cell-code" id="cb144"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb144-1"><a href="#cb144-1" aria-hidden="true" tabindex="-1"></a>fmnist <span class="op">=</span> pl.read_csv(<span class="st">"data/fashionmnist_10000.csv"</span>)</span>
 <span id="cb144-2"><a href="#cb144-2" aria-hidden="true" tabindex="-1"></a>fmnist.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1671,7 +1671,7 @@ $ index    &lt;str&gt; 'test', 'test', 'train', 'test', 'train', 'train', 'train
 <section id="imagenet" class="level2" data-number="22.26">
 <h2 data-number="22.26" class="anchored" data-anchor-id="imagenet"><span class="header-section-number">22.26</span> ImageNet <img style="height:0.8em; width: auto" src="img/vision.png"></h2>
 <p>The inet dataset is a 1,000-sample subset of Imagenette, a corpus derived from the massive ImageNet database but restricted to ten distinct, easily distinguishable classes (e.g., “church,” “gas_pump,” “garbage_truck”). Designed as a lightweight benchmark for rapid prototyping, it links each ground-truth label to its source image via filepath. Crucially, this version comes pre-packaged with two state-of-the-art embedding vectors (vit and siglip), allowing researchers to immediately compare how different vision transformer architectures represent these visually distinct objects without needing to run heavy inference tasks.</p>
-<div id="48baff1e" class="cell" data-execution_count="100">
+<div id="e31fb05d" class="cell" data-execution_count="100">
 <div class="sourceCode cell-code" id="cb146"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb146-1"><a href="#cb146-1" aria-hidden="true" tabindex="-1"></a>inet <span class="op">=</span> pl.read_parquet(<span class="st">"data/imagenette_1000.parquet"</span>)</span>
 <span id="cb146-2"><a href="#cb146-2" aria-hidden="true" tabindex="-1"></a>inet.drop(c.vit, c.siglip).glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1684,7 +1684,7 @@ $ index    &lt;str&gt; 'train', 'train', 'test', 'train', 'train', 'train', 'tes
 </div>
 </div>
 <p>The woof dataset is a 1,000-sample subset of Imagewoof, a significantly harder classification challenge also drawn from ImageNet. Unlike the broad categories in Imagenette, this dataset focuses exclusively on ten specific dog breeds (e.g., “shih_tzu,” “border_terrier,” “dingo”), forcing models to discern fine-grained features rather than gross structural differences. Like its sibling dataset, it includes standard metadata (label, filepath, index) and is enriched with pre-computed vit and siglip embeddings, making it an ideal testbed for evaluating the discriminative power of modern vision models on subtle, fine-grained tasks.</p>
-<div id="17663392" class="cell" data-execution_count="101">
+<div id="7e7f9b59" class="cell" data-execution_count="101">
 <div class="sourceCode cell-code" id="cb148"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb148-1"><a href="#cb148-1" aria-hidden="true" tabindex="-1"></a>woof <span class="op">=</span> pl.read_parquet(<span class="st">"data/imagewoof_1000.parquet"</span>)</span>
 <span id="cb148-2"><a href="#cb148-2" aria-hidden="true" tabindex="-1"></a>woof.drop(c.vit, c.siglip).glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1700,7 +1700,7 @@ $ index    &lt;str&gt; 'test', 'train', 'train', 'test', 'test', 'test', 'train'
 <section id="oxford-flowers" class="level2" data-number="22.27">
 <h2 data-number="22.27" class="anchored" data-anchor-id="oxford-flowers"><span class="header-section-number">22.27</span> Oxford Flowers <img style="height:0.8em; width: auto" src="img/vision.png"></h2>
 <p>The flowers dataset is a 1,000-sample subset of the Oxford Flowers dataset, a standard benchmark for fine-grained image classification. Unlike general object recognition, this dataset focuses on distinguishing between closely related floral species, with label entries such as “foxglove,” “clematis,” and “bishop of llandaff.” Each row links the specific flower class to its image via filepath and assigns it to a training or testing partition (index). Consistent with the previous vision datasets, it is enriched with pre-computed vit and siglip embedding vectors, enabling researchers to immediately apply clustering or similarity search to explore how different models encode botanical features.</p>
-<div id="a2d103b4" class="cell" data-execution_count="103">
+<div id="c2ba84ec" class="cell" data-execution_count="103">
 <div class="sourceCode cell-code" id="cb150"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb150-1"><a href="#cb150-1" aria-hidden="true" tabindex="-1"></a>flowers <span class="op">=</span> pl.read_parquet(<span class="st">"data/flowers_1000.parquet"</span>)</span>
 <span id="cb150-2"><a href="#cb150-2" aria-hidden="true" tabindex="-1"></a>flowers.drop(c.vit, c.siglip).glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1716,7 +1716,7 @@ $ index    &lt;str&gt; 'test', 'train', 'train', 'train', 'train', 'train', 'tra
 <section id="caltech-ucsd-birds" class="level2" data-number="22.28">
 <h2 data-number="22.28" class="anchored" data-anchor-id="caltech-ucsd-birds"><span class="header-section-number">22.28</span> Caltech-UCSD Birds <img style="height:0.8em; width: auto" src="img/vision.png"></h2>
 <p>The birds dataset is a curated subset of the Caltech-UCSD Birds-200-2011 (CUB-200-2011) dataset, a renowned benchmark for fine-grained visual categorization. While the full collection covers 200 species, this version (birds10) likely restricts the task to 10 distinct classes (e.g., “canary”), making it more accessible for rapid model testing. Each entry links the species label to its image filepath and assigns it to a data partition (index). Like the other classification datasets in this series, it comes ready-to-use with pre-computed vit and siglip embeddings, allowing for immediate exploration of how transformer models distinguish between subtle avian features.</p>
-<div id="bcd4e2cd" class="cell" data-execution_count="105">
+<div id="c10d7d98" class="cell" data-execution_count="105">
 <div class="sourceCode cell-code" id="cb152"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb152-1"><a href="#cb152-1" aria-hidden="true" tabindex="-1"></a>birds <span class="op">=</span> pl.read_parquet(<span class="st">"data/birds10.parquet"</span>)</span>
 <span id="cb152-2"><a href="#cb152-2" aria-hidden="true" tabindex="-1"></a>birds.drop(c.vit, c.siglip).glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1729,7 +1729,7 @@ $ index    &lt;str&gt; 'test', 'train', 'train', 'train', 'train', 'test', 'trai
 </div>
 </div>
 <p>The birds_bbox dataset complements the classification data by focusing on object detection and localization. Also derived from the CUB-200-2011 collection, it contains 1,000 observations where the primary task is not just naming the bird, but locating it within the frame. In addition to the label and filepath, this dataset provides precise coordinates for a bounding box: bbox_x0 and bbox_y0 define the top-left corner, while bbox_x1 and bbox_y1 mark the bottom-right. This granular spatial data is essential for training models to separate the subject from complex natural backgrounds.</p>
-<div id="62c89d0b" class="cell" data-execution_count="106">
+<div id="87519a0b" class="cell" data-execution_count="106">
 <div class="sourceCode cell-code" id="cb154"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb154-1"><a href="#cb154-1" aria-hidden="true" tabindex="-1"></a>birds_bbox <span class="op">=</span> pl.read_csv(<span class="st">"data/birds_1000.csv"</span>)</span>
 <span id="cb154-2"><a href="#cb154-2" aria-hidden="true" tabindex="-1"></a>birds_bbox.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">

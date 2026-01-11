@@ -186,7 +186,7 @@ One of the first things that stands out in the output is that the regions are or
 )
 ```
 
-This function can be applied to other aesthetics, including color, to change the order of categories in the corresponding legend.
+This function can be applied to other aesthetics, including color, to change the order of categories in the corresponding legend. There is another similar function called `factor()` that is also added inside of the quotes passed to plotnine functions. This forces a variable to be treated as categorical, even if it is stored as a number. This can be helpful for a number of different applications as we will see in the notebooks.
 
 ## Statistics
 

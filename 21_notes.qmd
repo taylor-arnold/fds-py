@@ -51,7 +51,7 @@ Other input and output formats can be found in the Polars documentation.
 
 ## Transforming Data
 
-These methods return a subset of the rows from the original dataset:
+The following methods return a subset of the rows from the original dataset:
 
 ```{python}
 #| eval: false
@@ -73,7 +73,7 @@ The `.filter` method allows for selecting rows based on one or more conditions:
 .filter(~c.col1.is_in(["A", "B"]))  # select if col1 is neither "A" nor "B"
 ```
 
-These sort the rows of the dataset without changing their contents:
+These methods sort the rows of the dataset without changing their contents:
 
 ```{python}
 #|eval: false
@@ -89,6 +89,7 @@ The `.with_columns` method allows for creating or modifying one or more columns.
 .with_columns(
     new = c.col1 + c.col2,     # create a new column as sum of col1 and col2
     new2 = c.col3.sqrt(),      # create a new column from square root of col1
+    new3 = c.col4.fill_null(0) # replace missing values with '0'
 )
 ```
 
@@ -132,8 +133,13 @@ We can also group by one or more columns and then compute one or more aggregatio
 
 Common aggregation methods include the following:
 
-- `.mean()`, `.median()`, `.min()`, `.max()`, `.sum()`, `.quantile(<f64>)` - `.first()`, `.last()` - `.any()`, `.all()` - `.n_unique()`, `.count()`, `.len()`  - `pl.concat_str(c.col1, separator="<str>")`
+- `.mean()`, `.median()`, `.min()`, `.max()`, `.sum()`, `.quantile(<f64>)`
+- `.first()`, `.last()`
+- `.any()`, `.all()`
+- `.n_unique()`, `.count()`, `.len()` 
+- `pl.concat_str(c.col1, separator="<str>")`
 
+Note that calling mean on a Boolean (True/False) value yields the proportion of values where the condition is True. 
 
 ## Restructuring Data
 

@@ -191,7 +191,7 @@ This can be useful for various types of analysis. For example, we can determine 
 
 The following sections describe additional methods that can operate on grouped datasets.
 
-## Adding Columns
+## Modifying Columns
 
 Creating or modifying columns in a dataset is a fundamental operation in data analysis. Analysts often need to compute new variables from existing data, create indicator (dummy) variables, or transform variables for analysis.
 
@@ -204,7 +204,9 @@ The basic pattern for adding a new column is to use the `.with_columns()` method
 )
 ```
 
-Common mathematical transformations of variables can be accessed by using a `.` after the variable name, followed by a transformation function such as `sqrt()` or `log10()`. The following example demonstrates the method: take the square root and the sine of `population`, and save each as a new column.
+Common mathematical transformations of variables can be accessed by using a `.` after the variable name, followed by a transformation function such as `sqrt()` or `log10()`. There are also to fill in missing values: `fill_null()` to fill all values with a specified default, `fill_nan` to fill invalid numbers with a default, `forward_fill` to fill missing values with the first valid value above, and `backward_fill` to fill with the first valid value below.
+
+The following example demonstrates the method of using methods from the columns: take the square root and the sine of `population`, and save each as a new column. Neither of these are meaningful or particularly useful; they are just to demonstrate the technique.
 
 ```{python}
 #| eval: false
@@ -283,16 +285,18 @@ There are three ways to count the number of observations in a group. We can use 
 
 The syntax of chaining methods is very powerful. It makes our code more readable, avoids errors from naming intermediate values, and allows Polars to create internally optimized functions that chain the sequence of methods in the most efficient way. One possible roadblock to method chaining is that we only have access to methods built into Polars. To overcome this, Polars allows us to call an arbitrary function with the DataFrame as its first argument using the `.pipe` method. `.pipe` takes the function to apply as its first argument; additional arguments are passed on to the function.
 
-As a simple example, we can apply the built-in Python function `type` to a DataFrame using the `.pipe` method to verify the object's type. The output shows the full Python description of the DataFrame.
+As a simple example, we can apply the helper function `print_rows` to a DataFrame along with a number of rows to show a specific number of rows (instead of the default 10). Here for example, we select `4` to show the first two and the last two rows.
 
 ```{python}
 (
     country
-    .pipe(type)
+    .pipe(print_rows, 4)
 )
 ```
 
-This will be particularly helpful in @sec-graphics, where we will use the `.pipe` method to pass a `DataFrame` to the `ggplot` function to create a data visualization directly within a chain of methods.
+We can also exclude the the number and it will print all of the rows. This is particularly useful when we want to investigate all of the results after reducing the number of columns of the data and getting a final set of results.
+
+The pipe method will be particularly helpful in @sec-graphics, where we will use the `.pipe` method to pass a `DataFrame` to the `ggplot` function to create a data visualization directly within a chain of methods.
 
 ## Further Functions
 

@@ -364,7 +364,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#selecting-columns-1" id="toc-selecting-columns-1" class="nav-link" data-scroll-target="#selecting-columns-1"><span class="header-section-number">2.4</span> Selecting Columns</a></li>
   <li><a href="#selecting-rows" id="toc-selecting-rows" class="nav-link" data-scroll-target="#selecting-rows"><span class="header-section-number">2.5</span> Selecting Rows</a></li>
   <li><a href="#grouping-data" id="toc-grouping-data" class="nav-link" data-scroll-target="#grouping-data"><span class="header-section-number">2.6</span> Grouping Data</a></li>
-  <li><a href="#adding-columns" id="toc-adding-columns" class="nav-link" data-scroll-target="#adding-columns"><span class="header-section-number">2.7</span> Adding Columns</a></li>
+  <li><a href="#modifying-columns" id="toc-modifying-columns" class="nav-link" data-scroll-target="#modifying-columns"><span class="header-section-number">2.7</span> Modifying Columns</a></li>
   <li><a href="#aggregation" id="toc-aggregation" class="nav-link" data-scroll-target="#aggregation"><span class="header-section-number">2.8</span> Aggregation</a></li>
   <li><a href="#pipes" id="toc-pipes" class="nav-link" data-scroll-target="#pipes"><span class="header-section-number">2.9</span> Pipes</a></li>
   <li><a href="#further-functions" id="toc-further-functions" class="nav-link" data-scroll-target="#further-functions"><span class="header-section-number">2.10</span> Further Functions</a></li>
@@ -418,7 +418,7 @@ Practice Notebooks
 <section id="setup" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">2.1</span> Setup</h2>
 <p>We will begin this and every subsequent chapter by listing the core modules and datasets that must be loaded before getting started. Datasets and sources that require new functions will be loaded within the body of the text.</p>
-<div id="ec4d02cf" class="cell" data-execution_count="2">
+<div id="1e90eee6" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -437,7 +437,7 @@ Practice Notebooks
 <section id="sorting-rows" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="sorting-rows"><span class="header-section-number">2.3</span> Sorting Rows</h2>
 <p>Organizing data in a meaningful order is often crucial for understanding patterns and trends. We’ll use the <code>.sort()</code> method to reorder the dataset by arranging rows according to one or more columns. This is particularly useful for identifying extreme values, understanding distributions, or preparing data for specific types of analysis. Let’s look at an example of sorting the countries dataset by population, then break down how it works.</p>
-<div id="067c3070" class="cell" data-execution_count="3">
+<div id="e977995b" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    .sort(c.pop)</span>
@@ -699,7 +699,7 @@ Selecting columns
 </div>
 </div>
 <p>You can reverse the sorting order of <code>sort</code> by setting its <code>descending</code> parameter to <code>True</code>.</p>
-<div id="f60004fb" class="cell" data-execution_count="4">
+<div id="c14ed988" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .sort(c.pop, descending<span class="op">=</span><span class="va">True</span>)</span>
@@ -944,7 +944,7 @@ Selecting columns
 </div>
 </div>
 <p>Now the countries with the highest population appear first. This descending order is often useful when we want to focus on the most extreme cases or identify outliers in our data. For example, the code below sorts by region (alphabetical order) and then, within each region, by population.</p>
-<div id="73d0a235" class="cell" data-execution_count="5">
+<div id="330789b9" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .sort(c.region, c.pop)</span>
@@ -1189,7 +1189,7 @@ Selecting columns
 </div>
 </div>
 <p>Finally, store a copy of the dataset in a named variable using the following code:</p>
-<div id="750d48d0" class="cell" data-execution_count="6">
+<div id="53566969" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>country_saved <span class="op">=</span> (</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .sort(c.region, c.pop)</span>
@@ -1200,7 +1200,7 @@ Selecting columns
 <section id="selecting-columns-1" class="level2" data-number="2.4">
 <h2 data-number="2.4" class="anchored" data-anchor-id="selecting-columns-1"><span class="header-section-number">2.4</span> Selecting Columns</h2>
 <p>In some cases—particularly when a dataset grows large—you may want to select or reorder its columns. Use the <code>.select</code> method with the same <code>c.</code> notation to specify the columns to include.</p>
-<div id="b97d3de5" class="cell" data-execution_count="7">
+<div id="c7bf3824" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    .select(c.iso, c.lat, c.lon)</span>
@@ -1294,7 +1294,7 @@ Selecting columns
 <section id="selecting-rows" class="level2" data-number="2.5">
 <h2 data-number="2.5" class="anchored" data-anchor-id="selecting-rows"><span class="header-section-number">2.5</span> Selecting Rows</h2>
 <p>Often, we want to take a subset of rows from a dataset for a particular analysis or visualization. There are several functions for doing this, depending on the selection criteria. The <code>.head()</code> method, for example, returns a specified number of rows from the top of the dataset. The example below selects the first four rows.</p>
-<div id="973bf6ce" class="cell" data-execution_count="8">
+<div id="0f45c1ef" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .head(n<span class="op">=</span><span class="dv">4</span>)</span>
@@ -1421,7 +1421,7 @@ Selecting columns
 </div>
 <p>The method <code>.tail(n=&lt;int&gt;)</code> works the same way, except that it selects rows starting from the bottom of the table. The methods <code>.drop_nulls()</code> and <code>.drop_nans()</code> take no arguments and return only rows that contain no missing or invalid data values, respectively.</p>
 <p>The <code>.sample</code> method randomly selects rows. You can specify the number of rows with <code>n=&lt;int&gt;</code> or a fraction with <code>fraction=&lt;float&gt;</code>. Below is an example that takes a random 20% sample of the dataset.</p>
-<div id="cd37a39a" class="cell" data-execution_count="9">
+<div id="cc89b19f" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .sample(fraction<span class="op">=</span><span class="fl">0.2</span>)</span>
@@ -1474,191 +1474,191 @@ Selecting columns
 </thead>
 <tbody>
 <tr class="odd">
-<td>"IRN"</td>
-<td>"Iran, Islamic Republic of"</td>
+<td>"IRQ"</td>
+<td>"Iraq"</td>
 <td>"Asia"</td>
-<td>"Southern Asia"</td>
-<td>92.418</td>
-<td>79.07</td>
-<td>32.0</td>
-<td>53.0</td>
-<td>0.799</td>
-<td>16540</td>
-<td>40.9</td>
-<td>50.04</td>
-<td>69.8</td>
-<td>89.31666</td>
-<td>"fas"</td>
+<td>"Western Asia"</td>
+<td>47.021</td>
+<td>73.98</td>
+<td>33.0</td>
+<td>43.0</td>
+<td>0.695</td>
+<td>12554</td>
+<td>29.5</td>
+<td>54.75</td>
+<td>74.9</td>
+<td>95.45492</td>
+<td>"ara|kur"</td>
 </tr>
 <tr class="even">
-<td>"COG"</td>
-<td>"Congo"</td>
-<td>"Africa"</td>
-<td>"Middle Africa"</td>
-<td>6.484</td>
-<td>66.38</td>
-<td>-0.75</td>
-<td>15.383331</td>
-<td>0.649</td>
-<td>6377</td>
-<td>48.9</td>
-<td>49.54</td>
-<td>83.3</td>
-<td>20.17288</td>
-<td>"fra"</td>
+<td>"ARE"</td>
+<td>"United Arab Emirates"</td>
+<td>"Asia"</td>
+<td>"Western Asia"</td>
+<td>11.346</td>
+<td>74.94</td>
+<td>24.4</td>
+<td>54.3</td>
+<td>0.94</td>
+<td>72660</td>
+<td>26.0</td>
+<td>67.28</td>
+<td>157.5</td>
+<td>99.10363</td>
+<td>"ara"</td>
 </tr>
 <tr class="odd">
-<td>"SGP"</td>
-<td>"Singapore"</td>
-<td>"Asia"</td>
-<td>"South-eastern Asia"</td>
-<td>5.871</td>
-<td>85.63</td>
-<td>1.3</td>
-<td>103.8</td>
-<td>0.946</td>
-<td>137906</td>
-<td>null</td>
-<td>66.54</td>
-<td>145.5</td>
-<td>100.0</td>
-<td>"eng|msa|cmn|tam"</td>
-</tr>
-<tr class="even">
-<td>"POL"</td>
-<td>"Poland"</td>
+<td>"RUS"</td>
+<td>"Russian Federation"</td>
 <td>"Europe"</td>
 <td>"Eastern Europe"</td>
-<td>38.141</td>
-<td>79.1</td>
-<td>52.0</td>
-<td>19.0</td>
-<td>0.906</td>
-<td>47892</td>
-<td>30.2</td>
-<td>66.85</td>
-<td>123.2</td>
-<td>98.79661</td>
-<td>"pol"</td>
-</tr>
-<tr class="odd">
-<td>"AUT"</td>
-<td>"Austria"</td>
-<td>"Europe"</td>
-<td>"Western Europe"</td>
-<td>9.114</td>
-<td>83.17</td>
-<td>48.0</td>
-<td>14.0</td>
-<td>0.93</td>
-<td>64665</td>
-<td>30.2</td>
-<td>66.36</td>
-<td>146.3</td>
-<td>99.97291</td>
-<td>"asq|deu"</td>
+<td>143.997</td>
+<td>73.89</td>
+<td>66.416667</td>
+<td>94.25</td>
+<td>0.832</td>
+<td>40871</td>
+<td>36.0</td>
+<td>58.65</td>
+<td>165.1</td>
+<td>88.24222</td>
+<td>"rus"</td>
 </tr>
 <tr class="even">
-<td>…</td>
-<td>…</td>
-<td>…</td>
-<td>…</td>
-<td>…</td>
-<td>…</td>
-<td>…</td>
-<td>…</td>
-<td>…</td>
-<td>…</td>
-<td>…</td>
-<td>…</td>
-<td>…</td>
-<td>…</td>
-<td>…</td>
-</tr>
-<tr class="odd">
-<td>"MUS"</td>
-<td>"Mauritius"</td>
+<td>"COM"</td>
+<td>"Comoros"</td>
 <td>"Africa"</td>
 <td>"Eastern Africa"</td>
-<td>1.268</td>
-<td>76.35</td>
-<td>-20.2</td>
-<td>57.5</td>
-<td>0.806</td>
-<td>28927</td>
-<td>36.8</td>
-<td>57.59</td>
-<td>92.8</td>
-<td>95.45876</td>
-<td>"eng|fra"</td>
-</tr>
-<tr class="even">
-<td>"NIC"</td>
-<td>"Nicaragua"</td>
-<td>"Americas"</td>
-<td>"Central America"</td>
-<td>7.008</td>
-<td>76.51</td>
-<td>13.0</td>
-<td>-85.0</td>
-<td>0.706</td>
-<td>8023</td>
-<td>46.2</td>
-<td>63.62</td>
-<td>69.1</td>
-<td>72.87482</td>
-<td>"spa"</td>
+<td>0.883</td>
+<td>70.26</td>
+<td>-12.3</td>
+<td>43.7</td>
+<td>0.603</td>
+<td>3718</td>
+<td>45.3</td>
+<td>35.88</td>
+<td>25.2</td>
+<td>35.85662</td>
+<td>"ara|fra"</td>
 </tr>
 <tr class="odd">
-<td>"CHL"</td>
-<td>"Chile"</td>
-<td>"Americas"</td>
-<td>"South America"</td>
-<td>19.86</td>
-<td>81.39</td>
-<td>-33.0</td>
-<td>-71.0</td>
-<td>0.878</td>
-<td>31425</td>
-<td>44.9</td>
-<td>62.3</td>
-<td>115.5</td>
-<td>100.0</td>
-<td>"spa"</td>
+<td>"GHA"</td>
+<td>"Ghana"</td>
+<td>"Africa"</td>
+<td>"Western Africa"</td>
+<td>35.064</td>
+<td>67.41</td>
+<td>7.9465</td>
+<td>-1.0232</td>
+<td>0.628</td>
+<td>7404</td>
+<td>43.5</td>
+<td>42.98</td>
+<td>68.4</td>
+<td>22.67011</td>
+<td>"eng"</td>
 </tr>
 <tr class="even">
-<td>"MEX"</td>
-<td>"Mexico"</td>
-<td>"Americas"</td>
-<td>"Central America"</td>
-<td>131.947</td>
-<td>76.88</td>
-<td>23.0</td>
-<td>-102.0</td>
-<td>0.789</td>
-<td>22375</td>
-<td>45.4</td>
-<td>70.06</td>
-<td>80.4</td>
-<td>89.53789</td>
-<td>"spa|yua"</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
 </tr>
 <tr class="odd">
-<td>"JPN"</td>
-<td>"Japan"</td>
+<td>"BIH"</td>
+<td>"Bosnia and Herzegovina"</td>
+<td>"Europe"</td>
+<td>"Southern Europe"</td>
+<td>3.14</td>
+<td>77.91</td>
+<td>44.0</td>
+<td>18.0</td>
+<td>0.804</td>
+<td>21621</td>
+<td>33.0</td>
+<td>60.09</td>
+<td>81.6</td>
+<td>95.36024</td>
+<td>"bos|hrv|srp"</td>
+</tr>
+<tr class="even">
+<td>"TJK"</td>
+<td>"Tajikistan"</td>
 <td>"Asia"</td>
-<td>"Eastern Asia"</td>
-<td>123.103</td>
-<td>85.58</td>
-<td>35.0</td>
-<td>136.0</td>
-<td>0.925</td>
-<td>47815</td>
-<td>32.9</td>
-<td>59.1</td>
-<td>96.2</td>
-<td>99.95242</td>
-<td>"jpn"</td>
+<td>"Central Asia"</td>
+<td>10.787</td>
+<td>70.4</td>
+<td>38.583333</td>
+<td>71.366667</td>
+<td>0.691</td>
+<td>5122</td>
+<td>34.0</td>
+<td>53.79</td>
+<td>77.6</td>
+<td>96.05746</td>
+<td>"tgk"</td>
+</tr>
+<tr class="odd">
+<td>"FIN"</td>
+<td>"Finland"</td>
+<td>"Europe"</td>
+<td>"Northern Europe"</td>
+<td>5.623</td>
+<td>82.84</td>
+<td>65.0</td>
+<td>27.0</td>
+<td>0.948</td>
+<td>57574</td>
+<td>27.7</td>
+<td>76.99</td>
+<td>156.4</td>
+<td>99.44798</td>
+<td>"fin|swe"</td>
+</tr>
+<tr class="even">
+<td>"SVN"</td>
+<td>"Slovenia"</td>
+<td>"Europe"</td>
+<td>"Southern Europe"</td>
+<td>2.117</td>
+<td>82.45</td>
+<td>46.0</td>
+<td>15.0</td>
+<td>0.931</td>
+<td>50559</td>
+<td>24.4</td>
+<td>67.46</td>
+<td>103.8</td>
+<td>98.52463</td>
+<td>"slv"</td>
+</tr>
+<tr class="odd">
+<td>"KWT"</td>
+<td>"Kuwait"</td>
+<td>"Asia"</td>
+<td>"Western Asia"</td>
+<td>5.026</td>
+<td>82.62</td>
+<td>29.166667</td>
+<td>47.6</td>
+<td>0.852</td>
+<td>46572</td>
+<td>null</td>
+<td>71.3</td>
+<td>135.2</td>
+<td>100.0</td>
+<td>"ara"</td>
 </tr>
 </tbody>
 </table>
@@ -1666,7 +1666,7 @@ Selecting columns
 </div>
 </div>
 <p>We can select rows that meet a condition defined by the dataset’s variables using the <code>.filter()</code> method. Similar to the <code>sort()</code> method, we use the syntax <code>c.</code> followed by variable names to define relationships between variables. Below is code that selects only the rows where the Human Development Index (HDI) is greater than 0.9.</p>
-<div id="991946ed" class="cell" data-execution_count="10">
+<div id="d1833461" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.hdi <span class="op">&gt;</span> <span class="fl">0.9</span>)</span>
@@ -1911,7 +1911,7 @@ Selecting columns
 </div>
 </div>
 <p>We can also filter categorical variables using equality comparisons. To prevent the page from becoming too cluttered, we will avoid printing this and some other results in future examples.</p>
-<div id="5d23ba99" class="cell" data-execution_count="11">
+<div id="08b7611d" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region <span class="op">==</span> <span class="st">"Europe"</span>)</span>
@@ -1919,14 +1919,14 @@ Selecting columns
 </div>
 <p>This selects all countries in Europe. Note that we use the double-equals operator (<code>==</code>) to test equality; a single equals sign (<code>=</code>) is used only for assignment. The resulting dataset contains only rows where <code>region == "Europe"</code>.</p>
 <p>Often, we want to apply multiple conditions simultaneously. We can combine conditions using the <code>&amp;</code> (and) and <code>|</code> (or) operators. When using these operators, wrap each condition in parentheses:</p>
-<div id="c2f08a5f" class="cell" data-execution_count="12">
+<div id="2505b462" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>((c.region <span class="op">==</span> <span class="st">"Europe"</span>) <span class="op">&amp;</span> (c.hdi <span class="op">&gt;</span> <span class="fl">0.9</span>))</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Sometimes we want to know whether a value belongs to a larger set. We can do this with the <code>.is_in</code> method, as shown in the following code. Note that the collection of elements passed to <code>.is_in</code> must be enclosed in square brackets. A detailed explanation of the object being created is provided in <a href="06_program.html" class="quarto-xref"><span>Chapter 6</span></a>.</p>
-<div id="6a22188e" class="cell" data-execution_count="13">
+<div id="1ae6d98a" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(c.region.is_in([<span class="st">"Europe"</span>, <span class="st">"Africa"</span>]))</span>
@@ -2175,7 +2175,7 @@ Selecting columns
 <section id="grouping-data" class="level2" data-number="2.6">
 <h2 data-number="2.6" class="anchored" data-anchor-id="grouping-data"><span class="header-section-number">2.6</span> Grouping Data</h2>
 <p>There is a special method called <code>.group_by(...)</code> that allows you to group a dataset by one or more variables using a syntax similar to <code>.sort(...)</code>. When used in a method chain, the next method is applied separately to each group of rows that share the same value(s) for the grouping variable(s). For example, the following code selects the first country from each region in the dataset.</p>
-<div id="63a0696b" class="cell" data-execution_count="14">
+<div id="1f06a7e1" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    .group_by(c.region)</span>
@@ -2229,40 +2229,23 @@ Selecting columns
 </thead>
 <tbody>
 <tr class="odd">
-<td>"Oceania"</td>
-<td>"AUS"</td>
-<td>"Australia"</td>
-<td>"Australia and New Zealand"</td>
-<td>26.974</td>
-<td>83.79</td>
-<td>-25.0</td>
-<td>133.0</td>
-<td>0.958</td>
-<td>61943</td>
-<td>32.4</td>
-<td>70.25</td>
-<td>101.6</td>
-<td>99.99923</td>
-<td>"asf"</td>
+<td>"Africa"</td>
+<td>"SEN"</td>
+<td>"Senegal"</td>
+<td>"Western Africa"</td>
+<td>18.932</td>
+<td>70.43</td>
+<td>14.366667</td>
+<td>-14.283333</td>
+<td>0.53</td>
+<td>4871</td>
+<td>38.1</td>
+<td>50.93</td>
+<td>66.0</td>
+<td>54.93987</td>
+<td>"pbp|fra|wol"</td>
 </tr>
 <tr class="even">
-<td>"Asia"</td>
-<td>"LKA"</td>
-<td>"Sri Lanka"</td>
-<td>"Southern Asia"</td>
-<td>23.229</td>
-<td>78.51</td>
-<td>7.0</td>
-<td>81.0</td>
-<td>0.776</td>
-<td>14380</td>
-<td>39.3</td>
-<td>36.02</td>
-<td>83.1</td>
-<td>90.77437</td>
-<td>"sin|sin|tam|tam"</td>
-</tr>
-<tr class="odd">
 <td>"Europe"</td>
 <td>"FIN"</td>
 <td>"Finland"</td>
@@ -2278,6 +2261,23 @@ Selecting columns
 <td>156.4</td>
 <td>99.44798</td>
 <td>"fin|swe"</td>
+</tr>
+<tr class="odd">
+<td>"Oceania"</td>
+<td>"AUS"</td>
+<td>"Australia"</td>
+<td>"Australia and New Zealand"</td>
+<td>26.974</td>
+<td>83.79</td>
+<td>-25.0</td>
+<td>133.0</td>
+<td>0.958</td>
+<td>61943</td>
+<td>32.4</td>
+<td>70.25</td>
+<td>101.6</td>
+<td>99.99923</td>
+<td>"asf"</td>
 </tr>
 <tr class="even">
 <td>"Americas"</td>
@@ -2297,21 +2297,21 @@ Selecting columns
 <td>"spa|vsl"</td>
 </tr>
 <tr class="odd">
-<td>"Africa"</td>
-<td>"SEN"</td>
-<td>"Senegal"</td>
-<td>"Western Africa"</td>
-<td>18.932</td>
-<td>70.43</td>
-<td>14.366667</td>
-<td>-14.283333</td>
-<td>0.53</td>
-<td>4871</td>
-<td>38.1</td>
-<td>50.93</td>
-<td>66.0</td>
-<td>54.93987</td>
-<td>"pbp|fra|wol"</td>
+<td>"Asia"</td>
+<td>"LKA"</td>
+<td>"Sri Lanka"</td>
+<td>"Southern Asia"</td>
+<td>23.229</td>
+<td>78.51</td>
+<td>7.0</td>
+<td>81.0</td>
+<td>0.776</td>
+<td>14380</td>
+<td>39.3</td>
+<td>36.02</td>
+<td>83.1</td>
+<td>90.77437</td>
+<td>"sin|sin|tam|tam"</td>
 </tr>
 </tbody>
 </table>
@@ -2319,7 +2319,7 @@ Selecting columns
 </div>
 </div>
 <p>This can be useful for various types of analysis. For example, we can determine the largest countries by population in each region using the following code:</p>
-<div id="ba65dfbd" class="cell" data-execution_count="15">
+<div id="4376a173" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .sort(c.pop, descending<span class="op">=</span><span class="va">True</span>)</span>
@@ -2374,6 +2374,23 @@ Selecting columns
 </thead>
 <tbody>
 <tr class="odd">
+<td>"Americas"</td>
+<td>"USA"</td>
+<td>"United States of America"</td>
+<td>"Northern America"</td>
+<td>347.276</td>
+<td>79.83</td>
+<td>39.828175</td>
+<td>-98.5795</td>
+<td>0.938</td>
+<td>78389</td>
+<td>47.7</td>
+<td>65.21</td>
+<td>91.7</td>
+<td>99.72235</td>
+<td>"eng"</td>
+</tr>
+<tr class="even">
 <td>"Oceania"</td>
 <td>"AUS"</td>
 <td>"Australia"</td>
@@ -2389,6 +2406,23 @@ Selecting columns
 <td>101.6</td>
 <td>99.99923</td>
 <td>"asf"</td>
+</tr>
+<tr class="odd">
+<td>"Africa"</td>
+<td>"NGA"</td>
+<td>"Nigeria"</td>
+<td>"Western Africa"</td>
+<td>237.528</td>
+<td>66.07</td>
+<td>9.0</td>
+<td>8.0</td>
+<td>0.56</td>
+<td>5848</td>
+<td>35.1</td>
+<td>48.69</td>
+<td>52.4</td>
+<td>41.19972</td>
+<td>"eng"</td>
 </tr>
 <tr class="even">
 <td>"Europe"</td>
@@ -2408,23 +2442,6 @@ Selecting columns
 <td>"rus"</td>
 </tr>
 <tr class="odd">
-<td>"Americas"</td>
-<td>"USA"</td>
-<td>"United States of America"</td>
-<td>"Northern America"</td>
-<td>347.276</td>
-<td>79.83</td>
-<td>39.828175</td>
-<td>-98.5795</td>
-<td>0.938</td>
-<td>78389</td>
-<td>47.7</td>
-<td>65.21</td>
-<td>91.7</td>
-<td>99.72235</td>
-<td>"eng"</td>
-</tr>
-<tr class="even">
 <td>"Asia"</td>
 <td>"IND"</td>
 <td>"India"</td>
@@ -2441,23 +2458,6 @@ Selecting columns
 <td>63.83039</td>
 <td>"eng|hin"</td>
 </tr>
-<tr class="odd">
-<td>"Africa"</td>
-<td>"NGA"</td>
-<td>"Nigeria"</td>
-<td>"Western Africa"</td>
-<td>237.528</td>
-<td>66.07</td>
-<td>9.0</td>
-<td>8.0</td>
-<td>0.56</td>
-<td>5848</td>
-<td>35.1</td>
-<td>48.69</td>
-<td>52.4</td>
-<td>41.19972</td>
-<td>"eng"</td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -2465,11 +2465,11 @@ Selecting columns
 </div>
 <p>The following sections describe additional methods that can operate on grouped datasets.</p>
 </section>
-<section id="adding-columns" class="level2" data-number="2.7">
-<h2 data-number="2.7" class="anchored" data-anchor-id="adding-columns"><span class="header-section-number">2.7</span> Adding Columns</h2>
+<section id="modifying-columns" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="modifying-columns"><span class="header-section-number">2.7</span> Modifying Columns</h2>
 <p>Creating or modifying columns in a dataset is a fundamental operation in data analysis. Analysts often need to compute new variables from existing data, create indicator (dummy) variables, or transform variables for analysis.</p>
 <p>The basic pattern for adding a new column is to use the <code>.with_columns()</code> method. In the method call, specify the values you want to create or modify and define them in terms of existing columns. For example, the following multiplies the <code>population</code> column (values in millions) by 1,000 to obtain the population in thousands.</p>
-<div id="b7d29584" class="cell" data-execution_count="16">
+<div id="cf4e1d66" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    .with_columns(population_1k <span class="op">=</span> c.pop <span class="op">*</span> <span class="dv">1000</span>)</span>
@@ -2726,8 +2726,9 @@ Selecting columns
 </div>
 </div>
 </div>
-<p>Common mathematical transformations of variables can be accessed by using a <code>.</code> after the variable name, followed by a transformation function such as <code>sqrt()</code> or <code>log10()</code>. The following example demonstrates the method: take the square root and the sine of <code>population</code>, and save each as a new column.</p>
-<div id="6ab735ff" class="cell" data-execution_count="17">
+<p>Common mathematical transformations of variables can be accessed by using a <code>.</code> after the variable name, followed by a transformation function such as <code>sqrt()</code> or <code>log10()</code>. There are also to fill in missing values: <code>fill_null()</code> to fill all values with a specified default, <code>fill_nan</code> to fill invalid numbers with a default, <code>forward_fill</code> to fill missing values with the first valid value above, and <code>backward_fill</code> to fill with the first valid value below.</p>
+<p>The following example demonstrates the method of using methods from the columns: take the square root and the sine of <code>population</code>, and save each as a new column. Neither of these are meaningful or particularly useful; they are just to demonstrate the technique.</p>
+<div id="8e89931d" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
@@ -2757,7 +2758,7 @@ Alias method
 <section id="aggregation" class="level2" data-number="2.8">
 <h2 data-number="2.8" class="anchored" data-anchor-id="aggregation"><span class="header-section-number">2.8</span> Aggregation</h2>
 <p>Although examining individual rows can be informative, we often need summary statistics to understand the overall patterns in our data. Polars provides powerful aggregation tools that let us compute statistics across rows within specific groups. The <code>.agg()</code> method (short for “aggregate”) is the primary tool for computing summary statistics. It allows us to specify exactly which statistics to compute and for which columns.</p>
-<div id="e5f5a46b" class="cell" data-execution_count="18">
+<div id="593f0b65" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    .group_by(c.region)</span>
@@ -2787,24 +2788,24 @@ Alias method
 </thead>
 <tbody>
 <tr class="odd">
-<td>"Americas"</td>
-<td>0.783579</td>
-</tr>
-<tr class="even">
 <td>"Europe"</td>
 <td>0.898895</td>
 </tr>
+<tr class="even">
+<td>"Americas"</td>
+<td>0.783579</td>
+</tr>
 <tr class="odd">
-<td>"Oceania"</td>
-<td>0.948</td>
+<td>"Asia"</td>
+<td>0.760897</td>
 </tr>
 <tr class="even">
 <td>"Africa"</td>
 <td>0.583351</td>
 </tr>
 <tr class="odd">
-<td>"Asia"</td>
-<td>0.760897</td>
+<td>"Oceania"</td>
+<td>0.948</td>
 </tr>
 </tbody>
 </table>
@@ -2813,7 +2814,7 @@ Alias method
 </div>
 <p>In this example, we compute the average HDI across countries within each region. The syntax uses <code>c.</code> followed by the column name, then the aggregation function with parentheses. Note that only the grouping variable(s) and the columns created by the <code>.agg()</code> function appear in the result.</p>
 <p>We can compute multiple statistics at once by including additional items in our aggregation. It is often useful to include the special function <code>pl.len()</code>, which counts the number of rows in each group.</p>
-<div id="fc7e030b" class="cell" data-execution_count="19">
+<div id="00379576" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    country</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    .group_by(c.region)</span>
@@ -2855,18 +2856,6 @@ Alias method
 <td>39</td>
 </tr>
 <tr class="even">
-<td>"Europe"</td>
-<td>0.898895</td>
-<td>0.9115</td>
-<td>38</td>
-</tr>
-<tr class="odd">
-<td>"Americas"</td>
-<td>0.783579</td>
-<td>0.786</td>
-<td>19</td>
-</tr>
-<tr class="even">
 <td>"Africa"</td>
 <td>0.583351</td>
 <td>0.571</td>
@@ -2877,6 +2866,18 @@ Alias method
 <td>0.948</td>
 <td>0.948</td>
 <td>2</td>
+</tr>
+<tr class="even">
+<td>"Europe"</td>
+<td>0.898895</td>
+<td>0.9115</td>
+<td>38</td>
+</tr>
+<tr class="odd">
+<td>"Americas"</td>
+<td>0.783579</td>
+<td>0.786</td>
+<td>19</td>
 </tr>
 </tbody>
 </table>
@@ -2929,48 +2930,182 @@ Counting observations
 <section id="pipes" class="level2" data-number="2.9">
 <h2 data-number="2.9" class="anchored" data-anchor-id="pipes"><span class="header-section-number">2.9</span> Pipes</h2>
 <p>The syntax of chaining methods is very powerful. It makes our code more readable, avoids errors from naming intermediate values, and allows Polars to create internally optimized functions that chain the sequence of methods in the most efficient way. One possible roadblock to method chaining is that we only have access to methods built into Polars. To overcome this, Polars allows us to call an arbitrary function with the DataFrame as its first argument using the <code>.pipe</code> method. <code>.pipe</code> takes the function to apply as its first argument; additional arguments are passed on to the function.</p>
-<p>As a simple example, we can apply the built-in Python function <code>type</code> to a DataFrame using the <code>.pipe</code> method to verify the object’s type. The output shows the full Python description of the DataFrame.</p>
-<div id="239965f1" class="cell" data-execution_count="20">
+<p>As a simple example, we can apply the helper function <code>print_rows</code> to a DataFrame along with a number of rows to show a specific number of rows (instead of the default 10). Here for example, we select <code>4</code> to show the first two and the last two rows.</p>
+<div id="92f7f2ca" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    country</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    .pipe(<span class="bu">type</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    .pipe(print_rows, <span class="dv">4</span>)</span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="17">
-<pre><code>polars.dataframe.frame.DataFrame</code></pre>
+<div class="cell-output cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (135, 15)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">iso</th>
+<th data-quarto-table-cell-role="th">full_name</th>
+<th data-quarto-table-cell-role="th">region</th>
+<th data-quarto-table-cell-role="th">subregion</th>
+<th data-quarto-table-cell-role="th">pop</th>
+<th data-quarto-table-cell-role="th">lexp</th>
+<th data-quarto-table-cell-role="th">lat</th>
+<th data-quarto-table-cell-role="th">lon</th>
+<th data-quarto-table-cell-role="th">hdi</th>
+<th data-quarto-table-cell-role="th">gdp</th>
+<th data-quarto-table-cell-role="th">gini</th>
+<th data-quarto-table-cell-role="th">happy</th>
+<th data-quarto-table-cell-role="th">cellphone</th>
+<th data-quarto-table-cell-role="th">water_access</th>
+<th data-quarto-table-cell-role="th">lang</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>str</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>i64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>str</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"SEN"</td>
+<td>"Senegal"</td>
+<td>"Africa"</td>
+<td>"Western Africa"</td>
+<td>18.932</td>
+<td>70.43</td>
+<td>14.366667</td>
+<td>-14.283333</td>
+<td>0.53</td>
+<td>4871</td>
+<td>38.1</td>
+<td>50.93</td>
+<td>66.0</td>
+<td>54.93987</td>
+<td>"pbp|fra|wol"</td>
+</tr>
+<tr class="even">
+<td>"VEN"</td>
+<td>"Venezuela, Bolivarian Republic…</td>
+<td>"Americas"</td>
+<td>"South America"</td>
+<td>28.517</td>
+<td>76.18</td>
+<td>8.0</td>
+<td>-67.0</td>
+<td>0.709</td>
+<td>8899</td>
+<td>44.8</td>
+<td>57.65</td>
+<td>96.8</td>
+<td>95.66913</td>
+<td>"spa|vsl"</td>
+</tr>
+<tr class="odd">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="even">
+<td>"CYP"</td>
+<td>"Cyprus"</td>
+<td>"Asia"</td>
+<td>"Western Asia"</td>
+<td>1.371</td>
+<td>81.77</td>
+<td>35.0</td>
+<td>33.0</td>
+<td>0.913</td>
+<td>55720</td>
+<td>31.2</td>
+<td>60.71</td>
+<td>123.1</td>
+<td>99.41781</td>
+<td>"ell|tur"</td>
+</tr>
+<tr class="odd">
+<td>"PAK"</td>
+<td>"Pakistan"</td>
+<td>"Asia"</td>
+<td>"Southern Asia"</td>
+<td>255.22</td>
+<td>66.71</td>
+<td>30.0</td>
+<td>71.0</td>
+<td>0.544</td>
+<td>5717</td>
+<td>29.6</td>
+<td>45.49</td>
+<td>49.8</td>
+<td>61.92651</td>
+<td>"eng|urd"</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
-<p>This will be particularly helpful in <a href="03_graphics.html" class="quarto-xref"><span>Chapter 3</span></a>, where we will use the <code>.pipe</code> method to pass a <code>DataFrame</code> to the <code>ggplot</code> function to create a data visualization directly within a chain of methods.</p>
+</div>
+<p>We can also exclude the the number and it will print all of the rows. This is particularly useful when we want to investigate all of the results after reducing the number of columns of the data and getting a final set of results.</p>
+<p>The pipe method will be particularly helpful in <a href="03_graphics.html" class="quarto-xref"><span>Chapter 3</span></a>, where we will use the <code>.pipe</code> method to pass a <code>DataFrame</code> to the <code>ggplot</code> function to create a data visualization directly within a chain of methods.</p>
 </section>
 <section id="further-functions" class="level2" data-number="2.10">
 <h2 data-number="2.10" class="anchored" data-anchor-id="further-functions"><span class="header-section-number">2.10</span> Further Functions</h2>
 <p>Let’s finish with a few additional functions that are useful inside the <code>with_columns</code> method. We can create new columns that depend on conditions in our existing data using the special function <code>pl.when</code>. The code below shows its use in creating a variable equal to 1 for countries in the Northern Hemisphere and 0 for those in the Southern Hemisphere.</p>
-<div id="cb2e3245" class="cell" data-execution_count="21">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    country</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>        is_north <span class="op">=</span> pl.when(c.lat <span class="op">&gt;=</span> <span class="dv">0</span>).then(<span class="dv">1</span>).otherwise(<span class="dv">0</span>)</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="1c73f353" class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        is_north <span class="op">=</span> pl.when(c.lat <span class="op">&gt;=</span> <span class="dv">0</span>).then(<span class="dv">1</span>).otherwise(<span class="dv">0</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can also access the next or previous values of a column using <code>shift(&lt;i64&gt;)</code>, where <code>&lt;i64&gt;</code> specifies the number of rows to shift: positive values access rows above, and negative values access rows below. For example, the code below shows the percentage by which each country is larger than the next-smallest country in the dataset.</p>
-<div id="308ca136" class="cell" data-execution_count="22">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    country</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    .sort(c.pop, descending<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>        perc_larger <span class="op">=</span> c.pop <span class="op">/</span> c.pop.shift(<span class="op">-</span><span class="dv">1</span>) <span class="op">*</span> <span class="dv">100</span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="bda3401c" class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    .sort(c.pop, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>        perc_larger <span class="op">=</span> c.pop <span class="op">/</span> c.pop.shift(<span class="op">-</span><span class="dv">1</span>) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The <code>.with_columns</code> method can compute values within a group, returning aggregations repeated for each row. However, it does not work with the <code>group_by()</code> function. Instead, use the <code>.over()</code> method on a specific column to indicate the grouping. For example, here we compute the percentage that each country occupies within its region.</p>
-<div id="133b9152" class="cell" data-execution_count="23">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    country</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>        pop_region <span class="op">=</span> c.pop <span class="op">/</span> c.pop.over(<span class="st">"region"</span>).<span class="bu">sum</span>() <span class="op">*</span> <span class="dv">100</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    .sort(c.pop_region, descending<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="dacd3a8f" class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    country</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>        pop_region <span class="op">=</span> c.pop <span class="op">/</span> c.pop.over(<span class="st">"region"</span>).<span class="bu">sum</span>() <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    .sort(c.pop_region, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="18">
 <div><style>
 .dataframe > thead > tr,
