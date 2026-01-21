@@ -145,6 +145,20 @@ To start addressing these issues, we can add the points back into the plot, with
 
 The plot with points and text labels shows that we attempted to avoid overlapping labels by nudging them slightly. The points indicate the specific HDI and happiness scores, while the labels identify which country each point represents.
 
+Another alternative is to use the special `geom_text_repel` geometry, which takes into account overlapping labels, trying to move them if possible and removing those that cannot be placed easily. Often it is useful to change the color of the points so that the labels can partially sit on top of the points while still being readable.
+
+```{python}
+(
+    country
+    .filter(c.region == "Europe")
+    .pipe(ggplot, aes("hdi", "happy"))
+    + geom_point(color="#dddddd")
+    + geom_text_repel(aes(label="iso"), size=6)
+) 
+```
+
+Notice that we need no custing nudging of the data and all of the labels shown are easily readable. The downside is that Albania (ALB) is no longer labelled. We could try to be more aggresive in retaining labels by setting `box_scale` (default `1.0`) to a smaller value, at the risk of creating overlapping text.
+
 ## Lines and Bars
 
 The plotnine package supplies a large number of different geometries. In this section, we will look at two additional geometry types that allow us to investigate common relationships among the columns of a dataset.
