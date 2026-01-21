@@ -71,6 +71,7 @@ The `.filter` method allows for selecting rows based on one or more conditions:
 .filter(c["col1"] > 0.1)     # select rows where col1 is bigger than 0.1
 .filter(c.col1.is_in(["A", "B"]))   # select rows if col1 is "A" or "B"
 .filter(~c.col1.is_in(["A", "B"]))  # select if col1 is neither "A" nor "B"
+.filter(~c.col1.is_null())          # remove rows where col1 is null
 ```
 
 These methods sort the rows of the dataset without changing their contents:
@@ -90,6 +91,7 @@ The `.with_columns` method allows for creating or modifying one or more columns.
     new = c.col1 + c.col2,     # create a new column as sum of col1 and col2
     new2 = c.col3.sqrt(),      # create a new column from square root of col1
     new3 = c.col4.fill_null(0) # replace missing values with '0'
+    new4 = c.col5.abs()        # absolute value of col5
 )
 ```
 
@@ -136,7 +138,8 @@ Common aggregation methods include the following:
 - `.mean()`, `.median()`, `.min()`, `.max()`, `.sum()`, `.quantile(<f64>)`
 - `.first()`, `.last()`
 - `.any()`, `.all()`
-- `.n_unique()`, `.count()`, `.len()` 
+- `.n_unique()`, `.count()` (counts non-missing values)
+- `pl.len` (counts total rows)
 - `pl.concat_str(c.col1, separator="<str>")`
 
 Note that calling mean on a Boolean (True/False) value yields the proportion of values where the condition is True. 
@@ -219,6 +222,7 @@ Here are some of the most common geometries that were introduced in the text alo
 + geom_barplot()
 + geom_violin()
 + geom_text(aes(label="col3"))
++ geom_text_repel(aes(label="col3"))
 + geom_segment(aes(xend="col3", xend="col4"))
 
 + geom_smooth(method="lm", se=False)

@@ -157,7 +157,7 @@ Another alternative is to use the special `geom_text_repel` geometry, which take
 ) 
 ```
 
-Notice that we need no custing nudging of the data and all of the labels shown are easily readable. The downside is that Albania (ALB) is no longer labelled. We could try to be more aggresive in retaining labels by setting `box_scale` (default `1.0`) to a smaller value, at the risk of creating overlapping text.
+Notice that we need no custom nudging of the data and all of the labels shown are easily readable. The downside is that Albania (ALB) is no longer labelled. We could try to be more aggresive in retaining labels by setting `box_scale` (default `1.0`) to a smaller value, at the risk of creating overlapping text.
 
 ## Lines and Bars
 
