@@ -161,58 +161,6 @@ del people
 gc.collect()
 ```
 
-## RVA Flights
-
-Sourced from the U.S. Bureau of Transportation, these five datasets provide a comprehensive record of commercial aviation activity departing from Richmond International Airport (RIC) during its record-breaking year of 2019.
-
-The rva dataset is the central fact table, containing 24,808 rows that represent the complete set of commercial departures from Richmond for the year. It captures the pulse of daily operations, logging scheduling data (planned vs. actual departure/arrival times), delays, and routing information (origin to dest). It also serves as the connector for the other tables, linking to them via keys like carrier, tailnum, and time_hour.
-
-```{python}
-rva = pl.read_csv("data/flightsrva_flights.csv.gz", null_values=["NA"])
-rva.glimpse()
-```
-
-The weather dataset offers an hourly meteorological log for the airport, containing 8,735 observations. It tracks environmental conditions—such as wind speed, visibility, and humidity—that are critical for analyzing flight delays. The time_hour column allows this data to be precisely joined with flight departures to assess the impact of weather on airport performance.
-
-```{python}
-weather = pl.read_csv("data/flightsrva_weather.csv.gz", null_values=["NA"])
-weather.glimpse()
-```
-
-The airport dataset acts as a geospatial lookup table for the 1,251 US destinations accessible from Richmond. It maps three-letter FAA codes (like "ATL" or "ORD") to their full names, time zones, and exact latitude/longitude coordinates, enabling the mapping of flight paths and the calculation of distance-based metrics.
-
-```{python}
-airport = pl.read_csv("data/flightsrva_airports.csv.gz", null_values=["NA"])
-airport.glimpse()
-```
-
-The airline dataset is a small reference table linking the 14 unique two-letter carrier codes found in the flight logs (e.g., "AA", "DL") to their full corporate names (e.g., "American Airlines Inc.", "Delta Air Lines Inc.").
-
-```{python}
-airline = pl.read_csv("data/flightsrva_airlines.csv.gz", null_values=["NA"])
-airline.glimpse()
-```
-
-The plane dataset provides a technical registry for the aircraft used in these flights. Indexed by unique tail numbers, it details the hardware specifications for 3,120 individual planes, including their manufacturer, model year, engine type, and seating capacity, allowing for analysis of fleet modernization and equipment usage.
-
-```{python}
-plane = pl.read_csv("data/flightsrva_planes.csv.gz", null_values=["NA"])
-plane.glimpse()
-```
-
-```{python}
-#| include: false
-
-del rva
-del weather
-del airport
-del airline
-del plane
-gc.collect()
-```
-
-
-
 ## What We Eat in America
 
 The `wweia` dataset serves as a granular log of dietary intake events, containing over 173,000 observations where each row represents a specific food item consumed by a participant. It captures the "what, when, and where" of eating habits: identifying the item via a standard food_code, pinpointing the occasion with temporal markers (time, day_of_week, meal_name), and noting the origin (food_source) and location (at_home). Crucially, this transactional table details the nutritional impact of each specific portion, recording the mass in grams and providing a breakdown of energy (kcal), macronutrients (protein, carbs, fat, sugar), and other constituents like caffeine and alcohol.
@@ -501,7 +449,58 @@ del prov
 gc.collect()
 ```
 
-## U.S. Storms <img style="height:0.8em; width: auto" src="img/spatial.png">
+
+## RVA Flights <img style="height:0.8em; width: auto" src="img/spatial.png"> <img style="height:0.8em; width: auto" src="img/time.png">
+
+Sourced from the U.S. Bureau of Transportation, these five datasets provide a comprehensive record of commercial aviation activity departing from Richmond International Airport (RIC) during its record-breaking year of 2019.
+
+The rva dataset is the central fact table, containing 24,808 rows that represent the complete set of commercial departures from Richmond for the year. It captures the pulse of daily operations, logging scheduling data (planned vs. actual departure/arrival times), delays, and routing information (origin to dest). It also serves as the connector for the other tables, linking to them via keys like carrier, tailnum, and time_hour.
+
+```{python}
+rva = pl.read_csv("data/flightsrva_flights.csv.gz", null_values=["NA"])
+rva.glimpse()
+```
+
+The weather dataset offers an hourly meteorological log for the airport, containing 8,735 observations. It tracks environmental conditions—such as wind speed, visibility, and humidity—that are critical for analyzing flight delays. The time_hour column allows this data to be precisely joined with flight departures to assess the impact of weather on airport performance.
+
+```{python}
+weather = pl.read_csv("data/flightsrva_weather.csv.gz", null_values=["NA"])
+weather.glimpse()
+```
+
+The airport dataset acts as a geospatial lookup table for the 1,251 US destinations accessible from Richmond. It maps three-letter FAA codes (like "ATL" or "ORD") to their full names, time zones, and exact latitude/longitude coordinates, enabling the mapping of flight paths and the calculation of distance-based metrics.
+
+```{python}
+airport = pl.read_csv("data/flightsrva_airports.csv.gz", null_values=["NA"])
+airport.glimpse()
+```
+
+The airline dataset is a small reference table linking the 14 unique two-letter carrier codes found in the flight logs (e.g., "AA", "DL") to their full corporate names (e.g., "American Airlines Inc.", "Delta Air Lines Inc.").
+
+```{python}
+airline = pl.read_csv("data/flightsrva_airlines.csv.gz", null_values=["NA"])
+airline.glimpse()
+```
+
+The plane dataset provides a technical registry for the aircraft used in these flights. Indexed by unique tail numbers, it details the hardware specifications for 3,120 individual planes, including their manufacturer, model year, engine type, and seating capacity, allowing for analysis of fleet modernization and equipment usage.
+
+```{python}
+plane = pl.read_csv("data/flightsrva_planes.csv.gz", null_values=["NA"])
+plane.glimpse()
+```
+
+```{python}
+#| include: false
+
+del rva
+del weather
+del airport
+del airline
+del plane
+gc.collect()
+```
+
+## U.S. Storms <img style="height:0.8em; width: auto" src="img/spatial.png"> <img style="height:0.8em; width: auto" src="img/time.png">
 
 Sourced from NOAA's National Hurricane Center, these three datasets provide a historical record of North Atlantic tropical cyclones. The storm dataset records the comprehensive trajectory and intensity history of tropical cyclones since 1950. It contains over 25,000 timestamped observations, logging the status of a storm every six hours. The data captures the storm's precise geographic position (lat, lon), its maximum sustained wind speed (wind) in knots, and its Saffir-Simpson category (ranging from 0 for tropical storms/depressions to 5 for catastrophic hurricanes).
 
@@ -530,6 +529,70 @@ storm_type.glimpse()
 del storm
 del gender
 del storm_type
+gc.collect()
+```
+
+## English Wikipedia <img style="height:0.8em; width: auto" src="img/network.png">
+
+Derived from the English-language Wikipedia, these three datasets enable network analysis and natural language processing on the encyclopedia's most prominent articles. The article dataset contains metadata for approximately 248,000 pages, capturing each article's title, unique id, and category classification. Structural metrics describe the article's composition: word_count, paragraph_count, section_count, image_count, and link_count (outgoing hyperlinks). The incoming_links column records how many other articles reference each page—a measure of notability. Two-dimensional coordinates (tsne_x, tsne_y) provide a semantic embedding for visualization, placing topically similar articles near each other. For biographical entries, additional columns record wikidata_id, gender, birth_year, death_year, and occupations.
+
+```{python}
+article = pl.read_parquet("data/enwiki_articles.parquet")
+article.glimpse()
+```
+
+The link dataset captures the hyperlink structure of Wikipedia as a directed graph. With 10 million rows, each record represents a single hyperlink from one article (citing_page) to another (cited_page). This edge list supports network analysis tasks such as computing PageRank, identifying hub articles, or tracing how information flows through interconnected topics.
+
+```{python}
+link = pl.read_parquet("data/enwiki_links_p1.parquet")
+link.glimpse()
+```
+
+The distance dataset provides precomputed semantic neighbors for each article. For a given base_page, it lists the most similar articles (neighbor_page) ranked by a similarity score derived from the t-SNE embedding. This table supports recommendation systems, clustering validation, and exploratory analysis of topical relationships without requiring real-time distance calculations.
+
+```{python}
+distance = pl.read_parquet("data/enwiki_distance.parquet")
+distance.glimpse()
+```
+
+```{python}
+#| include: false
+
+del article
+del link
+del distance
+gc.collect()
+```
+
+## SCOTUS <img style="height:0.8em; width: auto" src="img/network.png">
+
+Sourced from the Supreme Court Database, these three datasets document over two centuries of American judicial history. The scotus dataset catalogs more than 24,000 cases dating back to 1798, identified by their official citation (e.g., '3 U.S. 378') and term year. Each record includes the case_name, the presiding chief justice, and the vote breakdown (maj_votes, min_votes). A lean classification marks whether the decision's direction was liberal or conservative, while issue codes and their descriptions categorize the legal subject matter—from federal jurisdiction questions to due process claims.
+
+```{python}
+scotus = pl.read_csv("data/scotus_case.csv")
+scotus.glimpse()
+```
+
+The citation dataset captures the legal precedent network as a directed graph. With over 230,000 rows, each record represents one case (citing_case) referencing another (cited_case). This edge list enables analysis of how legal doctrine evolves—tracing influential precedents, identifying landmark cases by their citation counts, or studying how different areas of law interconnect over time.
+
+```{python}
+citation = pl.read_csv("data/scotus_citation.csv")
+citation.glimpse()
+```
+
+The vote dataset records individual justice behavior across nearly 205,000 case-justice pairs. Each row links a citation to a justice (identified by name_short and name_full) along with their vote_type. That is, whether they joined the majority, dissented, or concurred. This granular voting record supports research into judicial ideology, coalition formation, and how individual justices have shaped constitutional interpretation throughout the Court's history.
+
+```{python}
+vote = pl.read_csv("data/scotus_vote.csv")
+vote.glimpse()
+```
+
+```{python}
+#| include: false
+
+del scotus
+del citation
+del vote
 gc.collect()
 ```
 
