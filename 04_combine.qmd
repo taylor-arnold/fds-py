@@ -95,13 +95,13 @@ There are several other modifications that we can apply to the basic syntax. For
 )
 ```
 
-Or, if the key has different names in the two tables, we can describe them with `on_left` (the first table) and `on_right` (the second table). These can be individual values or lists, where each element in one list corresponds to the element in the other.
+Or, if the key has different names in the two tables, we can describe them with `left_on` (the first table) and `right_on` (the second table). These can be individual values or lists, where each element in one list corresponds to the element in the other.
 
 ```{python}
 #| eval: false
 (
     table_one
-    .join(table_two, on_left=c.key_col1, on_left=c.key_col1)
+    .join(table_two, left_on=c.key_col1, right_on=c.key_col1)
 )
 ```
 
