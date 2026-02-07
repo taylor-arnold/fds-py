@@ -28,8 +28,8 @@ theme_set(theme_minimal())
 Sourced from GapMinder and WikiData, the countries dataset provides a snapshot of 135 nations, identifying each by its full standard name and three-letter ISO code. Geographically, entries are categorized into broad regions and specific subregions, accompanied by precise latitude and longitude coordinates. The data captures essential socioeconomic health through metrics such as total population (in millions), life expectancy, and the Human Development Index (HDI). Economic conditions are represented by GDP figures and the Gini coefficient, which measures income inequality, while broader well-being is gauged via a happiness index. Additionally, the dataset includes infrastructure and cultural details, specifically tracking cellphone adoption rates, the percentage of the population with access to improved water sources, and the primary languages spoken.
 
 ```{python}
-countries = pl.read_csv("data/countries.csv")
-countries.glimpse()
+country = pl.read_csv("data/countries.csv")
+country.glimpse()
 ```
 
 Also sourced from GapMinder, the cellphone dataset is a longitudinal record containing 3,480 observations that track the adoption of mobile technology over time. Unlike the previous cross-sectional dataset, this table uses a time-series format, recording data for specific nations identified by their three-letter iso codes across multiple years. The primary metric, cell, quantifies mobile phone subscriptions (expressed per 100 people), allowing for the analysis of growth trends and technological saturation within different countries over the recorded period.
@@ -42,16 +42,32 @@ cellphone.glimpse()
 Sourced from Wikidata, the borders dataset provides a relational map of international boundaries, containing 829 entries that define connections between nations. Each row represents a single land border, linking a primary country (iso) to one of its adjacent neighbors (iso_neighbor) using their three-letter ISO codes. Because a single country often shares borders with multiple neighbors, the iso column contains repeated values, effectively creating an adjacency list that allows for the analysis of geographic clustering, continent connectivity, and geopolitical relationships.
 
 ```{python}
-borders = pl.read_csv("data/countries_borders.csv")
-borders.glimpse()
+border = pl.read_csv("data/countries_borders.csv")
+border.glimpse()
+```
+
+A spatial dataset from [world-geojson](https://github.com/georgique/world-geojson) provides shape files for all of the world countries. Note that this is a complete set of all countries listed by the U.N., whereas some of the data from GapMinder is filter to avoid countries with a large amount of missing demographic data.
+
+```{python}
+country_geo = DSGeo.read_file("data/countries_polygons.geojson")
+country_geo.drop(c.geometry).glimpse()
+```
+
+A supplementary dataset from [Simple Maps](https://simplemaps.com) provides the locations and populations of world cities, which can be associated with the countries dataset by using spatial joins (data released under CC BY 4.0).
+
+```{python}
+city = pl.read_csv("data/countries_cities.csv")
+city.glimpse()
 ```
 
 ```{python}
 #| include: false
 
-del countries
+del country
 del cellphone
-del borders
+del border
+del country_geo
+del city
 gc.collect()
 ```
 
