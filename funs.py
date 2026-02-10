@@ -1524,7 +1524,10 @@ def _gpd_to_pl(gdf, geometry_col="geometry"):
         gdf = gdf.to_crs(DEFAULT_CRS)
 
     pdf = gdf.copy()
-    pdf[geometry_col] = gdf.geometry.to_wkb()
+    try:
+        pdf[geometry_col] = gdf.geometry.to_wkb()
+    except UserWarning:
+        pass
     pl_df = pl.from_pandas(pdf).with_columns(pl.col(geometry_col).cast(pl.Binary))
 
     other_cols = [c for c in pl_df.columns if c != geometry_col]
@@ -1588,6 +1591,43 @@ class DSGeo:
         if geometry_col != "geometry":
             out = out.rename({"geometry": geometry_col})
         return out
+
+    @staticmethod
+    def buffer(pl_df, distance, crs=None, geometry_col="geometry"):
+        from shapely.geometry import box
+
+        gdf = _pl_to_gpd(pl_df, geometry_col=geometry_col)
+
+        if crs is not None:
+            gdf_proj = gdf.to_crs(epsg=crs)
+        else:
+            gdf_proj = gdf
+
+        buffered_gdf = gdf_proj.set_geometry(gdf_proj.geometry.buffer(distance))
+        buffered_gdf = buffered_gdf.to_crs(DEFAULT_CRS)
+
+
+        world_bounds = box(-180, -90, 180, 90)
+        buffered_gdf['geometry'] = buffered_gdf.geometry.make_valid()
+        buffered_gdf['geometry'] = buffered_gdf.geometry.intersection(
+            world_bounds
+        )
+        buffered_gdf['geometry'] = buffered_gdf.geometry.make_valid()
+
+        out = _gpd_to_pl(buffered_gdf, geometry_col="geometry")
+        return out
+
+    @staticmethod
+    def difference(pl_df1, pl_df2):
+        import geopandas as gpd
+
+        gdf1 = _pl_to_gpd(pl_df1, geometry_col="geometry")
+        gdf2 = _pl_to_gpd(pl_df2, geometry_col="geometry")
+
+        difference_gdf = gpd.overlay(gdf1, gdf2, how='difference')
+        out = _gpd_to_pl(difference_gdf, geometry_col="geometry")
+        return out
+
 
     @staticmethod
     def add_centroid(pl_df, geometry_col="geometry", lon_col="lon", lat_col="lat"):
