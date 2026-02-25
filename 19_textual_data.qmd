@@ -518,7 +518,46 @@ content_pos = ["NOUN", "VERB", "ADJ", "ADV"]
 
 ## TF-IDF
 
-In the previous sections, we saw that counting the number of times each token or lemma occurs in a document is a useful way of quickly summarizing the content of a document. This approach can be improved by using a scaled version of the count metric. The issue with raw counts is that they tend to highlight very common words such as "the", "have", and "her". These can be somewhat avoided by removing a pre-compiled set of known common words—often called *stopwords*—or by doing part of speech filtering. These coarse approaches, however, mostly just move the issue down to a slightly less common set of words that also do not necessarily summarize the contents of each document very well. For example, "publisher" is a frequently used term in many of the documents in this collection due to the subject matter, but that does not mean that it is particularly informative since it occurs in almost every page.
+In the the sections above, we saw that counting the number of times each token or lemma occurs in a document is a useful way of quickly summarizing the content of a document. We can formalize this idea by defining the concept of a *term-frequency matrix*, often abbreviated TF. The matrix consists of a table of rows and columns where: (1) each row corresponds to a document, (2) each column corresponds to a term, and (3) the entries cound the number of times each document contains each term. An example will help explain this. Consider the four following phrases:
+
+1. chop the onion
+2. chop chop chop the garlic
+3. sauté the garlic in olive oil
+4. add the onion and olive oil to the pan
+
+This is what the term-frequency matrix looks like:
+
+```{python}
+#| echo: false
+
+import numpy as np
+import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer
+
+docs = [
+    "chop the onion and garlic",
+    "chop chop chop the garlic",
+    "sauté the garlic in olive oil",
+    "add the onion and olive oil to the pan",
+]
+
+vec = CountVectorizer()
+X = vec.fit_transform(docs)
+
+tf = pd.DataFrame(X.toarray(),
+                  columns=vec.get_feature_names_out(),
+                  index=[f"Doc {i+1}" for i in range(len(docs))])
+
+# Custom TF-IDF: log(N+1) / log(df+1)
+N = len(docs)
+df_counts = (tf > 0).sum(axis=0)  # document frequency per term
+idf = np.log(N + 1) / np.log(df_counts + 1)
+
+tfidf = tf * idf
+tf.style.set_caption("Term Frequencies").background_gradient(cmap="Blues", vmin=0, vmax=tf.max().max())
+```
+
+The approach of using raw counts can be improved by using a scaled version of the count metric. The issue with raw counts is that they tend to highlight very common words such as "the", "have", and "her". These can be somewhat avoided by removing a pre-compiled set of known common words—often called *stopwords* or by doing part of speech filtering. These coarse approaches, however, mostly just move the issue down to a slightly less common set of words that also do not necessarily summarize the contents of each document very well. For example, "publisher" is a frequently used term in many of the documents in the Wikipedia collection due to the subject matter, but that does not mean that it is particularly informative since it occurs in almost every page.
 
 A common alternative technique is to combine information about the frequency of a word within a document with the frequency of the term across the entire collection. We return here to the importance of how we define a document, which will shape our analysis. Metrics of this form are known as *term frequency–inverse document frequency scores* (TF-IDF). A common version of TF-IDF computes a score for every combination of term and document by multiplying the term frequency by the logarithm of the inverse document frequency. The logarithm is a function that is used to make sure that counts do not grow too fast. For example, a count of about 1000 is only approximately twice as big on the logarithmic scale as a count of 25, in comparison to being 40 times larger on a linear scale. Mathematically, we define this TF-IDF function using the following formula, where *tf* gives the term frequency and *df* gives the document frequency:
 
@@ -526,12 +565,22 @@ $$ \text{tfidf} = \text{tf} \times \log\left(\frac{N + 1}{\text{df} + 1}\right) 
 
 Here, *N* is the total number of documents. This score gives a measurement of how important a term is in describing a document in the context of the other documents. If we select words with the highest TF-IDF score for each document, these should give a good measurement of what terms best describe each document uniquely from the rest of the collection. Note that while the scaling functions given above are popular choices, they are not universal. Other papers and software may make different choices with moderate effects on the output results.
 
+For comparison, here is what the corresponding TF-IDF matrix looks like for our small example of four phrases. Notice that while the non-zero numbers change from the TF-IDF example, all of the zeros in the original matrix remain zero here.
+
 ```{python}
-tfidf = DSText.compute_tfidf(anno, min_df=0.1, max_df=0.5)
+#| echo: false
+
+tfidf.style.set_caption("TF-IDF Matrix").background_gradient(cmap="Oranges", vmin=0, vmax=tfidf.max().max()).format("{:.2f}")
+```
+
+Now that we have a conceptual understanding of TF and TF-IDF matrices, let's see how to construct them in Python. It's certainly possible to do this directly with Polars methods, but we also have a wrapper function `DSText.compute_tfidf` that will produce the values for us directly. Rather than producing the wide matrix directly as described in the small examples above, this function pivots the output into a long format (see Chapter 4 for a review of wider versus long), with one non-zero combination of terms and documents in each row. The options `min_df` and `max_df` control the proportion of times that a term can appear in documents before we filter it out as being too rare or too common.
+
+```{python}
+tfidf = DSText.compute_tfidf(anno, min_df=0.01, max_df=0.5)
 tfidf
 ```
 
-Then we can combine the top terms from 
+Once we have this table, we can combine the top terms from each document to characterize their themes.
 
 ```{python}
 (
