@@ -520,7 +520,7 @@ content_pos = ["NOUN", "VERB", "ADJ", "ADV"]
 
 In the the sections above, we saw that counting the number of times each token or lemma occurs in a document is a useful way of quickly summarizing the content of a document. We can formalize this idea by defining the concept of a *term-frequency matrix*, often abbreviated TF. The matrix consists of a table of rows and columns where: (1) each row corresponds to a document, (2) each column corresponds to a term, and (3) the entries cound the number of times each document contains each term. An example will help explain this. Consider the four following phrases:
 
-1. chop the onion
+1. chop the onion and garlic
 2. chop chop chop the garlic
 3. sauté the garlic in olive oil
 4. add the onion and olive oil to the pan
