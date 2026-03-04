@@ -17,6 +17,7 @@ dependencies = [
     "mapclassify>=2.10.0",
     "matplotlib>=3.10.8",
     "mizani>=0.14.3",
+    "nbformat>=5.10.4",
     "openai>=2.14.0",
     "opencv-python>=4.12.0.88",
     "pip>=25.3",

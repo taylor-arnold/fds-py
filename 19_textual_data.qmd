@@ -561,7 +561,7 @@ The approach of using raw counts can be improved by using a scaled version of th
 
 A common alternative technique is to combine information about the frequency of a word within a document with the frequency of the term across the entire collection. We return here to the importance of how we define a document, which will shape our analysis. Metrics of this form are known as *term frequency–inverse document frequency scores* (TF-IDF). A common version of TF-IDF computes a score for every combination of term and document by multiplying the term frequency by the logarithm of the inverse document frequency. The logarithm is a function that is used to make sure that counts do not grow too fast. For example, a count of about 1000 is only approximately twice as big on the logarithmic scale as a count of 25, in comparison to being 40 times larger on a linear scale. Mathematically, we define this TF-IDF function using the following formula, where *tf* gives the term frequency and *df* gives the document frequency:
 
-$$ \text{tfidf} = \text{tf} \times \log\left(\frac{N + 1}{\text{df} + 1}\right) + 1 $$
+$$ \text{tfidf} = \text{tf} \times \left(\log\left(\frac{N + 1}{\text{df} + 1}\right) + 1 \right) $$
 
 Here, *N* is the total number of documents. This score gives a measurement of how important a term is in describing a document in the context of the other documents. If we select words with the highest TF-IDF score for each document, these should give a good measurement of what terms best describe each document uniquely from the rest of the collection. Note that while the scaling functions given above are popular choices, they are not universal. Other papers and software may make different choices with moderate effects on the output results.
 
@@ -576,7 +576,7 @@ tfidf.style.set_caption("TF-IDF Matrix").background_gradient(cmap="Oranges", vmi
 Now that we have a conceptual understanding of TF and TF-IDF matrices, let's see how to construct them in Python. It's certainly possible to do this directly with Polars methods, but we also have a wrapper function `DSText.compute_tfidf` that will produce the values for us directly. Rather than producing the wide matrix directly as described in the small examples above, this function pivots the output into a long format (see Chapter 4 for a review of wider versus long), with one non-zero combination of terms and documents in each row. The options `min_df` and `max_df` control the proportion of times that a term can appear in documents before we filter it out as being too rare or too common.
 
 ```{python}
-tfidf = DSText.compute_tfidf(anno, min_df=0.01, max_df=0.5)
+tfidf = DSText.compute_tfidf(anno, min_df=0.01, max_df=1.0)
 tfidf
 ```
 
@@ -595,31 +595,38 @@ Once we have this table, we can combine the top terms from each document to char
 
 The top TF-IDF terms for each document tend to be proper nouns and domain-specific vocabulary that distinguish one article from another. Compare these to the simple frequency counts from earlier: TF-IDF successfully downweights generic terms like "year" and "work" that appear across all biographies.
 
-## Sparse Encoding
+## Documents as Vectors
 
-The analyses so far have kept our data in *long* format: one row per token or one row per document-term combination. For many applications, it is useful to reshape the data into a *document-term matrix* (DTM), where each row represents a document, each column represents a term, and each cell contains a count or weight. This transformation converts each document into a numerical vector, enabling us to apply the full toolkit of machine learning and dimensionality reduction techniques.
+The TF-IDF matrix introduced above contains a row for each document and a column for each term, with the TF-IDF weight in each cell. There is a powerful way to think about this structure: each row of the matrix is a list of numbers that describes a document. We can interpret this list of numbers as a set of coordinates, turning each document into a *point in space*. This geometric perspective is the key insight that connects textual analysis to the full toolkit of statistical modeling, dimensionality reduction, and prediction that we have developed throughout this book.
 
-When we construct a DTM using TF-IDF weights, each document becomes a vector in a very high-dimensional space. If our vocabulary contains 10,000 unique terms, then each document is represented as a point in 10,000-dimensional space. The coordinate along each dimension indicates the TF-IDF weight for that term in that document. Crucially, most of these coordinates are zero: any given document uses only a small fraction of the total vocabulary. A vector where most entries are zero is called a *sparse* vector, and this representation is therefore known as a *sparse embedding*.
+To build intuition for this idea, let's start with just two terms. Suppose we look at the TF-IDF scores for the lemmas "poem" and "novel" across our collection of author pages. Each document has a TF-IDF score for "poem" and a TF-IDF score for "novel", giving us two numbers per document. We can plot these as coordinates on a standard scatter plot, with one axis for each term.
 
-Mathematically, we can represent document $d$ as a vector $\mathbf{x}_d \in \mathbb{R}^V$ where $V$ is the vocabulary size:
+```{python}
+(
+    tfidf
+    .filter(c.lemma.is_in(["poem", "novel"]))
+    .pivot(on="lemma", index="doc_id", values="tfidf")
+    .fill_null(0)
+    .pipe(ggplot, aes("poem", "novel"))
+    + geom_text(aes(label = "doc_id"), size=7)
+)
+```
+
+In this two-dimensional view, the position of each document tells us something meaningful. Authors whose Wikipedia pages discuss poetry extensively appear far to the right. Those whose pages focus on novels appear near the top. Authors associated with both forms sit in the upper-right region, while those associated with neither sit near the origin. Documents that are close together in this space have similar usage patterns for these two terms.
+
+Now imagine extending this idea beyond two terms. Rather than plotting documents along axes for just "poem" and "novel", we could add a third axis for "play", creating a three-dimensional space where each document is a point. We could keep going: add axes for "war", "london", "publish", "child", and every other term in our vocabulary. If the vocabulary contains $V$ terms, each document becomes a point in $V$-dimensional space. Mathematically, we represent document $d$ as a vector of TF-IDF scores:
 
 $$
 \mathbf{x}_d = \begin{bmatrix} \text{tfidf}(t_1, d) \\ \text{tfidf}(t_2, d) \\ \vdots \\ \text{tfidf}(t_V, d) \end{bmatrix}
 $$
 
-For a vocabulary of 10,000 terms, this vector has 10,000 entries, but a typical document might have non-zero values for only a few hundred of them.
+We cannot visualize a space with thousands of dimensions, but the geometry works the same way regardless of dimensionality. Two documents that are close together in this high-dimensional space use similar vocabulary in similar proportions. Two documents that are far apart use very different language. The notion of distance between points, which is easy to picture with two terms on a scatter plot, extends naturally to any number of dimensions.
 
-This sparse approach contrasts sharply with the *dense embeddings* introduced in @sec-deep. Dense embeddings, produced by neural network models, represent each document as a vector in a much lower-dimensional space—typically 384 to 1024 dimensions—where every coordinate carries meaningful information. Rather than having thousands of interpretable dimensions (one per word), dense embeddings compress semantic meaning into a few hundred opaque dimensions learned during training.
+This is a genuinely powerful realization, because once documents are represented as points in a numeric space, every quantitative technique we have encountered in this book becomes available. We can apply dimensionality reduction methods like PCA or UMAP to project the high-dimensional points down to two dimensions for visualization. We can use prediction models to classify documents into categories based on their position in the space. We can run clustering algorithms to discover groups of similar documents automatically. The text has been converted from unstructured prose into a structured numeric representation, and all of the standard tools apply.
 
-There are several key differences between these approaches. A sparse TF-IDF vector might have $V = 10{,}000$ dimensions with only 200 non-zero entries. A dense embedding has perhaps $d = 384$ dimensions, all non-zero. We can express the sparsity ratio as $\frac{\text{non-zero entries}}{V}$, which is typically below 5% for text data.
+One important feature of these document vectors is that most of their entries are zero. Any given document uses only a small fraction of the total vocabulary, so most TF-IDF scores are zero. A vector with mostly zero entries is called *sparse*, and this representation is sometimes called a *sparse embedding*. Despite the large number of dimensions, the actual information content of each vector is modest, which matters for computational efficiency but does not change how we think about the geometry.
 
-Also, each dimension of a sparse vector corresponds to a specific word, so we can inspect a document's representation directly: a high value in the "algorithm" dimension means the document discusses algorithms. Dense embeddings offer no such transparency. Dimension 147 of a dense vector has no human-interpretable meaning; the representation is distributed across all dimensions in ways learned by the neural network. Furthermore, sparse vectors treat each word independently. The terms "car" and "automobile" occupy different dimensions with no built-in notion that they are synonyms. Dense embeddings, trained on massive text corpora, learn that semantically similar words should produce similar vectors. Two documents discussing the same topic in different vocabulary will have similar dense embeddings but potentially very different sparse vectors.
-
-Finally, sparse vectors are cheap to compute—just count words and apply the TF-IDF formula—but expensive to store naively and limited in semantic power. Dense embeddings require a neural network forward pass, which is more computationally intensive, but the resulting vectors are compact and capture deeper meaning.
-
-Despite these limitations, sparse embeddings remain valuable for many tasks. They require no pre-trained models, work immediately on any language or domain, and produce interpretable results. For exploratory analysis and visualization, sparse methods often provide sufficient structure to reveal patterns in the data.
-
-The code below constructs a sparse document-term matrix from our annotated text, then applies UMAP to project these high-dimensional sparse vectors down to two dimensions for visualization. Documents that use similar vocabulary will cluster together in the resulting plot.
+The code below puts this idea into practice. It constructs a document-term matrix from our annotated text and then applies UMAP to project the high-dimensional document vectors down to two dimensions for visualization. Documents that use similar vocabulary will appear near each other in the resulting plot.
 
 ```{python}
 (
@@ -638,7 +645,7 @@ The code below constructs a sparse document-term matrix from our annotated text,
 )
 ```
 
-The `min_df` and `max_df` parameters filter the vocabulary: terms appearing in fewer than 1% of documents or more than 50% of documents are excluded. This removes both rare terms (which add noise) and ubiquitous terms (which add no discriminative power), focusing the representation on the most informative middle-frequency vocabulary.
+The `min_df` and `max_df` parameters filter the vocabulary before constructing the document vectors: terms appearing in fewer than 1% of documents or more than 50% of documents are excluded. This removes both rare terms (which add noise) and ubiquitous terms (which add no discriminative power), focusing the representation on the most informative vocabulary. The UMAP algorithm then finds a two-dimensional arrangement that preserves, as much as possible, the distances between documents in the original high-dimensional space. The result is a map of the corpus where proximity reflects similarity in language use.
 
 ## Across Languages
 
